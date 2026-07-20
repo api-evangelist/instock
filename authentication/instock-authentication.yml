@@ -1,0 +1,28 @@
+generated: '2026-07-19'
+method: searched
+source: openapi/instock-openapi.json
+docs: https://instock.com/en/docs/api/
+detail: >-
+  Instock API authenticates with a Bearer token (JWT). The token must be present
+  in the Authorization header of every request; requests without authentication
+  fail, and HTTPS is required. The token grants full access to all resources and
+  methods of the Instock API for its client. Tokens are currently issued by
+  Instock and supplied to API users during onboarding (no self-service token
+  provisioning / OAuth flow is documented). There are no scopes documented — the
+  token is all-or-nothing per client.
+summary:
+  types:
+  - http
+  http_schemes:
+  - bearer
+  token_header: Authorization
+  token_format: JWT
+  self_service: false
+  issued_by: Instock (during onboarding)
+schemes:
+- name: bearerAuth
+  type: http
+  scheme: bearer
+  bearerFormat: JWT
+  sources:
+  - openapi/instock-openapi.json
