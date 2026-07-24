@@ -1,0 +1,1061 @@
+openapi: 3.1.0
+info:
+  contact:
+    name: Instock
+    email: info@instock.com
+    url: https://instock.com
+  license:
+    name: Instock
+    url: https://instock.com
+  title: Instock API reference Articles Orders API
+  version: 0.1.0
+  description: "# Overview \nThis reference is a comprehensive guide to understanding of Instock API and is aimed to \nhelp developers to integrate their Host system with Instock Cloud (Incloud).\n\nInstock API is REST-based. It has predictable resource URLs, accepts JSON in the HTTP body, returns JSON-encoded\nresponses, and uses standard HTTP response codes to indicate errors, methods and authentication.\nOur API uses `GET`, `POST`, `PUT` methods to perform all operations. \n`GET` method is both used for retrieval of a single or listing multiple objects at once.\n\n## Conventions\n* HTTPS is required for all requests. Requests over plain HTTP will fail.\n* All requests without authentication will fail.\n* Bulk request is supported only to upload articles into Incloud.\n* Property names are in `snake_case` (not `camelCase` or `kebab-case`).\n* Temporal values (datetimes) are encoded in [RFC 3339](https://www.rfc-editor.org/rfc/rfc3339) strings, e.g. `2022-06-06T12:37:00Z`.\n* All path parameters are always returned in response body, except for `POST` and `PUT` methods.\n\n## Authentication \nInstock API offers authentication in form of Bearer token.\nBearer token must be present in each request header. \nThe token provides a full access to all resources and methods of Instock API to its client.\n\n**Note**: currently Bearer token is issued by Instock and supplied to API users during onboarding.\n\nFor example, if you'd like to retrieve sites available to your organization, your request will look like:\n\n``` cURL\ncurl -X GET \n  -H 'Content-Type: application/json' \\\n  -H 'Authorization: {access_token}' \\\n  https://api.instock.com/v1/sites \\\n```\n\n## Errors \n\nInstock API always returns errors in a common format. For example:\n```JSON\n{\n  \"code\": \"bad_request\",\n  \"message\": \"Request body/path/query params cannot be validated.\"\n}\n```\nThe `code` indicates the general class of error read by your Host system.\nThe `message` is a human-readable explanation of what went wrong.\n\n### Common HTTP error code responses\n\n| **HTTP code** | **Code** | **Description** | **Potential solution** |\n|---|---|---|---|\n| 400 | `bad_request`  | The request could not be understood. | Ensure that syntax is correct in parameters of request and its body. |\n| 400 | `resource_cannot_be_created`  | Resource may already exist or has certain creation rules. | Ensure that resource doesn't already exist or it doesn't have any restrictions for creation.<br> For bulk operations, ensure that all objects are valid. |\n| 400 | `resource_cannot_be_updated`  | Resource has certain update rules. | Ensure that resource doesn't have any restrictions that can yield this error. |\n| 401 | `unauthorized` | Requestor is unauthorized. | Ensure that your access token is valid. |\n| 403 | `forbidden` | Requestor does not have permissions to perform an operation. | Ensure that your access token has permissions to perform an operation. |\n| 404 | `resource_not_found` | Resource doesn't exist. | Ensure that the resource is correctly identified by ID. |\n| 500 | `internal_server_error` | Something went wrong on our end. | An unexpected error occurred. Reach out to Instock for support. |\n\n**Note**: each endpoint below has samples of errors it may return. \n\n## Request IDs\nInstock API auto-generates request identifier with each API response.\nYou can find this value in the response headers as `Instock-Request-ID`.\nUse it to refer to a specific request when debugging or reaching out to Instock for support.\n\n``` \nInstock-Request-ID: request_id\n```\n\n## Correlation IDs\nYou can optionally extend your request and add `Instock-Correlation-ID` to the header.\nUse it to analyze incorrect and faulty behavior across your Host system. \nFor example, if you'd like to retrieve sites available to your organization and pass `Instock-Correlation-ID`, your\nrequest will look like:\n\n``` cURL\ncurl -X GET \n  -H 'Content-Type: application/json' \\\n  -H 'Authorization: your-token' \\\n  -H 'Instock-Correlation-ID: your-correlation-id' \\\n  https://api.instock.com/v1/sites \\\n```\n\n## Pagination \nEndpoints that return a list of objects use pagination. Instock API uses cursor-based pagination.\nThis approach allows Host system to request a part of the list, receiving results and `next_cursor` in the response.\nThe latter could be used to access the next part of the list.\n\n**Note**: setting `page_size` lesser than 10 or greater than 1000 will yield an error.\n\n| Parameter | Request/Response | Type | Description |\n|---|---|---|---|\n| `start_cursor` | Request | string<br>(optional) | Cursor returned from a previous response, used to request the next page of the results. |\n| `page_size` | Request | string<br>(optional) | The number of objects returned in response. <br>Has default and maximum values. |\n| `has_more` | Response | bool | If `true`, use `next_cursor` to access next part of the list. <br>If `false`, response includes the end of the list. |\n| `next_cursor` | Response | string | Only available when `has_more` is `true`. <br>Used to retrieve the next page of results by passing the value as the `start_cursor`<br>parameter to the same endpoint. |\n\n## Unique identifiers\n\nThroughout API reference below, you will encounter multiple unique identifiers (UIDs) that are required to perform\ncertain operations.\nFor example, to create customer order, your Host system must:\n  * provide `site_id` to specify exact instance of Instock ASRS installation,\n  * and supply `order_id`. Usually `order_id` value corresponds to the ID of an order that Host system has.\n\nThe table below indicates source (which system issues UID) and scope (at what level UID must be unique).\n\n| ID | Source | Scope | Description |\n|---|---|---|---|\n| `org_id` | Instock | Global | ID assigned to your organization by Instock. |\n| `site_id` | Instock | Global | ID assigned to an individual Instock site that belongs to your organization. |\n| `article_id` | Host | Organization | ID of a product/SKU uploaded by Host system to Incloud. |\n| `order_id` | Host | Organization | ID of an order created by Host system in Incloud. |\n| `ordertask_id` | Instock | Organization | ID of an individual chunk of order fulfillment. |\n\n## Additional attributes \n\nEvery article and order contain `attributes`, which are reserved for custom and pre-defined parameters that your \norganization may require for fulfillment-related operations. \n\n### Custom attributes\n\nBefore integration, your IT and Instock teams should agree upon `attributes` that will be configured \nspecifically for your site(s). Incloud will consume these attributes to perform certain operations throughout \nfulfillment process, e.g. decanting, picking. Attributes can be added or updated in two ways: via API during operations\nsuch as customer order creation or through the workstation UI during operation at ASRS, like decanting.\n\n#### Order attributes\n\nFor example, `cutoff_time` for a customer order — the time when order fulfillment starts, i.e. change its status from `registered` to `reserved`. \n\n``` JSON\n{\n  \"org_id\": \"org_id_001\",\n  \"site_id\": \"1.1.0-1\",\n  \"order_id\": \"order_id_001\",\n  \"kind\": \"customer\",\n  \"placed_at\": \"2022-03-05T07:38:39Z\",\n  \"attributes\": {\n    \"cutoff_time\": \"2022-03-05T16:00:00Z\",\n  },\n  \"lines\": [\n    {\n      \"line_id\": \"00132455-1\",\n      \"article_id\": \"1003000031678\",\n      \"qty\": 1\n    }\n  ]\n}\n```\n\nAnother example involves adding an Advanced Shipping Notice ID (ASN ID) by an associate during decanting.\nThis attribute can be retrieved via API in a reception order. This way, you'll be able to track reception in your\nsystem using the order attribute during decanting.\n\n```\n{\n  \"org_id\": \"org_id_001\",\n  \"site_id\": \"1.1.0-1\",\n  \"order_id\": \"8b72a983-c909-4dd6-b5d4-01d1f4b2a608\",\n  \"kind\": \"reception\",\n  \"placed_at\": \"2024-03-27T13:22:47Z\",\n  \"attributes\": {\n      \"org_id_001:asn\": \"ASN-1818AE4RF\"\n  },\n  \"lines\": [\n      {\n          \"line_id\": \"af7e23f7-08e7-4cf1-b644-1b0cf329e574\",\n          \"article_id\": \"99.21004\",\n          \"qty\": 15\n      }\n  ]\n}\n```\n\n#### Article attributes\n\nAnother example involves the use of product identifiers. While `article_id` serves as the standard unique identifier, \nour system allows organizations to incorporate alternative identifiers, such as EAN, SKU, UPC, ISBN within the article\nobject as attributes (see the example below). These identifiers enable warehouse associates to scan products\nusing those specific codes designated by your organization during decanting.\n\n``` JSON\n{\n  \"articles\": [\n    {\n      \"article_id\": \"116000487727\",\n      \"name\": \"Cheerios Original Cereal, 12 Oz\",\n      \"is_serial_numbered\": false,\n      \"dimensions\": {\n        \"x\": \"7.75\",\n        \"y\": \"12\",\n        \"z\": \"2.75\",\n        \"uom\": \"in\"\n      },\n      \"attributes\": {\n        \"upc\": \"016000275287\",\n        \"sku\": \"CHRC-120Z-001\"\n      }\n    }\n  ]\n}\n```\n\n### Pre-defined attributes\nPre-defined attributes are parameters set by the system to cater to common requirements across different organizations.\nThese attributes are standardized and offer functionalities that are frequently needed in the fulfillment process.\n\n| Attribute | Description |\n|---|---|\n| `main_image` | Stores article's main image URL, helping with quick identification and differentiation of articles, for example, during picking. Images can be in `.png`, `.jpg`, or `.gif` format.|\n\n## Available API methods\n\nThe table below contains the summary of available API methods for the Instock API client.\n\n| Resource   | Available API methods |\n|------------|-----------------------|\n| Sites      | `GET` - List all sites |\n| Articles   | `POST` - Upload article(s)<br>`GET` - List all articles<br>`GET` - Retrieve article<br>`PUT` - Update article |\n| Orders     | `POST` - Create customer order<br>`GET` - List all orders<br>`PUT` - Update customer order<br>`GET` - Retrieve order<br>`GET` - Retrieve order status<br>`POST` - Advance order status (debug)<br>`DELETE` - Cancel registered order |\n| Ordertasks | `GET` - Retrieve ordertask |\n| Inventory  | `GET` - List all articles inventory<br>`POST` - Retrieve multiple articles inventory<br>`PUT` - Adjust article inventory (debug)<br>`GET` - Retrieve article inventory |\n| Moves      | `GET` - List all articles moves<br>`GET` - Retrieve article moves |\n"
+servers:
+- url: https://api.instock.com/v1
+security:
+- bearerAuth: []
+tags:
+- name: Orders
+  description: "Intentions of users of Instock ASRS are represented by `orders` structure.\n\nOrders resource allows:\n* create/update/retrieve records for picking of goods from the ASRS (`customer` orders)\n* retrieve-only access to records for induction/adjustment/extraction of inventory\n(`adjustment`, `reception`, `extraction` orders)\n\nAll operations with orders are performed in scope of a particular site and require\n`site_id` as a path parameter.\n\nThe following kinds and statuses of orders are in use:\n| Order Kind | Description |\n|--------------|------------------------------------------------------------------------------------------------|\n| `customer`   | order that needs to be fulfilled from ASRS and are placed by you, as client of API. |\n| `adjustment` | order to correct current inventory. |   \n| `reception`  | order to receive goods or assets into ASRS, triggered by shipment from supplier, return of goods, etc. |\n| `extraction` | order to extract assets from ASRS. |\n\n| Order Status | Description |\n|----------------|-----------------------------------------------|\n| `registered`   | order registered and awaiting for fulfillment in scope of ordertask(s).|\n| `reserved`     | fulfillment in progress.                      |\n| `done`         | order has been fulfilled.                     | \n| `canceled`    | order has been canceled.                     |    \n \n\n**Note**: \n* only `customer` orders can be updated, and only while they are in status `registered`. Once order\nfulfillment has started Instock ASRS freezes (makes read-only) customer orders.\n* custom `attributes` object values are optional and defined upon initial integration with Incloud.\n"
+paths:
+  /{site_id}/orders:
+    post:
+      tags:
+      - Orders
+      summary: Create customer order
+      description: 'Creates a single new customer order within a particular site of your organization.
+
+
+        **Note**: if `lines` object contains a line with an article that is not uploaded, Incloud will yield `404` and request will fail.
+
+        '
+      operationId: addOrder
+      x-codeSamples:
+      - lang: cURL
+        label: cURL
+        source: "curl -X POST 'https://api.instock.com/v1/{site_id}/orders' \\\n-H 'Authorization: Bearer {ACCESS_TOKEN}' \\\n-H 'Content-Type: application/json' \\\n--data-raw '{\n  \"org_id\": \"org_id_001\",\n  \"site_id\": \"site_id_001\",\n  \"order_id\": \"00132455\",\n  \"kind\": \"customer\",\n  \"placed_at\": \"2023-07-17T19:08:00Z\",\n  \"attributes\": {\n    \"wave\": \"3\"\n  },\n  \"lines\": [\n    {\n      \"line_id\": \"00132455-1\",\n      \"article_id\": \"016000124790\",\n      \"qty\": 2\n    }\n  ]\n}'\n"
+      parameters:
+      - $ref: '#/components/parameters/instockCorrelationID'
+      - $ref: '#/components/parameters/siteID'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/order'
+            examples:
+              Order with a single line:
+                $ref: '#/components/examples/orderSingleLine'
+              Order with multiple lines:
+                $ref: '#/components/examples/orderSeveralLines'
+      responses:
+        '200':
+          description: Successful operation.
+          headers:
+            Instock-Response-ID:
+              $ref: '#/components/headers/instockRequestID'
+          content:
+            application/json:
+              schema:
+                type: string
+              examples:
+                response:
+                  value: Successful operation.
+        '400':
+          description: Bad request
+          headers:
+            Instock-Response-ID:
+              $ref: '#/components/headers/instockRequestID'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                Bad request:
+                  value:
+                    code: bad_request
+                    message: Request body/path/query params cannot be validated.
+                Order already exists:
+                  value:
+                    code: resource_cannot_be_created
+                    message: order_id already exists.
+                Restricted order kind:
+                  value:
+                    code: resource_cannot_be_created
+                    message: Only customer order allowed.
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          description: Not found
+          headers:
+            Instock-Response-ID:
+              $ref: '#/components/headers/instockRequestID'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                Site doesn't exist:
+                  value:
+                    code: resource_not_found
+                    message: site_id doesn't exist.
+                Article doesn't exist:
+                  value:
+                    code: resource_not_found
+                    message: article_id doesn't exist.
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+    get:
+      tags:
+      - Orders
+      summary: List all orders
+      description: 'Returns a paginated list of all orders within specific site of an organization.
+
+        '
+      operationId: ListSiteOrders
+      x-codeSamples:
+      - lang: cURL
+        label: cURL
+        source: 'curl -X GET ''https://api.instock.com/v1/{site_id}/orders?start_cursor={START_CURSOR}&page_size={PAGE_SIZE}'' \
+
+          -H ''Authorization: Bearer {ACCESS_TOKEN}''
+
+          '
+      parameters:
+      - $ref: '#/components/parameters/instockCorrelationID'
+      - $ref: '#/components/parameters/siteID'
+      - $ref: '#/components/parameters/startCursor'
+      - $ref: '#/components/parameters/pageSize'
+      responses:
+        '200':
+          description: Successful operation
+          headers:
+            Instock-Response-ID:
+              $ref: '#/components/headers/instockRequestID'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/listSiteOrders'
+              examples:
+                List of orders:
+                  $ref: '#/components/examples/listOfSiteOrders'
+        '400':
+          description: Bad request
+          headers:
+            Instock-Response-ID:
+              $ref: '#/components/headers/instockRequestID'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                Bad request:
+                  value:
+                    code: bad_request
+                    message: Request body/path/query params cannot be validated.
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          description: Not found
+          headers:
+            Instock-Response-ID:
+              $ref: '#/components/headers/instockRequestID'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                Site doesn't exist:
+                  value:
+                    code: resource_not_found
+                    message: site_id doesn't exist.
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /{site_id}/orders/{order_id}:
+    put:
+      tags:
+      - Orders
+      summary: Update customer order
+      description: "Updates a single existing order with kind `customer`. \nOnly `registered` orders can be updated.\n\n**Note**: order update operation is performed via `PUT` method — when updating an order, all parameters must be\npassed.\n"
+      operationId: updateOrder
+      x-codeSamples:
+      - lang: cURL
+        label: cURL
+        source: "curl -X PUT 'https://api.instock.com/v1/{site_id}/orders/{order_id}' \\\n-H 'Authorization: Bearer {ACCESS_TOKEN}' \\\n-H 'Content-Type: application/json' \\\n--data-raw '{\n  \"org_id\": \"org_id_001\",\n  \"site_id\": \"site_id_001\",\n  \"order_id\": \"00132455\",\n  \"kind\": \"customer\",\n  \"placed_at\": \"2023-07-17T19:08:00Z\",\n  \"attributes\": {\n    \"wave\": \"3\"\n  },\n  \"lines\": [\n    {\n      \"line_id\": \"00132455-1\",\n      \"article_id\": \"016000124790\",\n      \"qty\": 15\n    }\n  ]\n}'\n"
+      parameters:
+      - $ref: '#/components/parameters/instockCorrelationID'
+      - $ref: '#/components/parameters/siteID'
+      - $ref: '#/components/parameters/orderID'
+      requestBody:
+        description: Update a single order with properties to be changed.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/order'
+            examples:
+              Update customer order with a single line:
+                $ref: '#/components/examples/orderSingleLine'
+              Update customer order with multiple lines:
+                $ref: '#/components/examples/orderSeveralLines'
+      responses:
+        '200':
+          description: Successful operation.
+          headers:
+            Instock-Response-ID:
+              $ref: '#/components/headers/instockRequestID'
+          content:
+            application/json:
+              schema:
+                type: string
+              examples:
+                response:
+                  value: Successful operation.
+        '400':
+          description: Bad request
+          headers:
+            Instock-Response-ID:
+              $ref: '#/components/headers/instockRequestID'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                Bad request:
+                  value:
+                    code: bad_request
+                    message: Request body/path/query params cannot be validated.
+                Restricted order kind:
+                  value:
+                    code: order_cannot_be_updated
+                    message: Only customer order can be updated via API.
+                Order is not in status "registered":
+                  value:
+                    code: order_cannot_be_updated
+                    message: Customer order is already being fulfilled or fulfilled.
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          description: Not found
+          headers:
+            Instock-Response-ID:
+              $ref: '#/components/headers/instockRequestID'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                Site doesn't exist:
+                  value:
+                    code: resource_not_found
+                    message: site_id doesn't exist.
+                Order doesn't exist:
+                  value:
+                    code: resource_not_found
+                    message: order_id doesn't exist.
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+    get:
+      tags:
+      - Orders
+      summary: Retrieve order
+      description: 'Retrieves a single existing order data.
+
+        '
+      operationId: getOrder
+      x-codeSamples:
+      - lang: cURL
+        label: cURL
+        source: 'curl -X GET ''https://api.instock.com/v1/{site_id}/orders/{order_id}'' \
+
+          -H ''Authorization: Bearer {ACCESS_TOKEN}''
+
+          '
+      parameters:
+      - $ref: '#/components/parameters/instockCorrelationID'
+      - $ref: '#/components/parameters/siteID'
+      - $ref: '#/components/parameters/orderID'
+      responses:
+        '200':
+          description: Successful operation.
+          headers:
+            Instock-Response-ID:
+              $ref: '#/components/headers/instockRequestID'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/getSingleOrder'
+              examples:
+                Customer order with a single line:
+                  $ref: '#/components/examples/orderSingleLine'
+                Customer order with multiple lines:
+                  $ref: '#/components/examples/orderSeveralLines'
+                Reception order:
+                  $ref: '#/components/examples/receptionOrder'
+        '400':
+          description: Bad request
+          headers:
+            Instock-Response-ID:
+              $ref: '#/components/headers/instockRequestID'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                Bad request:
+                  value:
+                    code: bad_request
+                    message: Request body/path/query params cannot be validated.
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          description: Not found
+          headers:
+            Instock-Response-ID:
+              $ref: '#/components/headers/instockRequestID'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                Site doesn't exist:
+                  value:
+                    code: resource_not_found
+                    message: site_id doesn't exist.
+                Order doesn't exist:
+                  value:
+                    code: resource_not_found
+                    message: order_id doesn't exist.
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /{site_id}/orders/{order_id}/status:
+    get:
+      tags:
+      - Orders
+      summary: Retrieve order status
+      description: Retrieves a single existing order data and its ordertask status.
+      operationId: getOrderStatus
+      x-codeSamples:
+      - lang: cURL
+        label: cURL
+        source: 'curl -X GET ''https://api.instock.com/v1/{site_id}/orders/{order_id}/status'' \
+
+          -H ''Authorization: Bearer {ACCESS_TOKEN}''
+
+          '
+      parameters:
+      - $ref: '#/components/parameters/instockCorrelationID'
+      - $ref: '#/components/parameters/siteID'
+      - $ref: '#/components/parameters/orderID'
+      responses:
+        '200':
+          description: Successful operation
+          headers:
+            Instock-Response-ID:
+              $ref: '#/components/headers/instockRequestID'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/orderStatus'
+              examples:
+                Order registered:
+                  $ref: '#/components/examples/orderStatusRegistered'
+                Order reserved:
+                  $ref: '#/components/examples/orderStatusReserved'
+                Order done:
+                  $ref: '#/components/examples/orderStatusDone'
+                Order canceled:
+                  $ref: '#/components/examples/orderStatusCancelled'
+        '400':
+          description: Bad request
+          headers:
+            Instock-Response-ID:
+              $ref: '#/components/headers/instockRequestID'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                Bad request:
+                  value:
+                    code: bad_request
+                    message: Request body/path/query params cannot be validated.
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          description: Not found
+          headers:
+            Instock-Response-ID:
+              $ref: '#/components/headers/instockRequestID'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                Site doesn't exist:
+                  value:
+                    code: resource_not_found
+                    message: site_id doesn't exist.
+                Order doesn't exist:
+                  value:
+                    code: resource_not_found
+                    message: order_id doesn't exist.
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+    post:
+      tags:
+      - Orders
+      summary: Advance order status
+      description: "> **Important**: this a debug endpoint, use it during integration with Incloud or during debugging.\n\nAdvances order status for virtual site from `registered` to `reserved`, from `reserved` to `done`.\n\nA request body is mandatory for this endpoint. If there's no need to specify a target storage cell for the order, the body should be an empty JSON object (`{}`). \nHowever, if you wish to control the storage cell where the order is being moved, you can include the optional parameter `to_cell_id` within the body.\n\n**Note**: If there is not enough inventory for `article_id` within order then, Incloud will set order status to `canceled`.\n"
+      operationId: advanceOrderStatus
+      x-codeSamples:
+      - lang: cURL
+        label: cURL
+        source: 'curl -X POST ''https://api.instock.com/v1/{site_id}/orders/{order_id}/status'' \
+
+          -H ''Content-Type: application/json'' \
+
+          --data-raw ''{"to_cell_id": "VM-TIY6J-P001"}''
+
+          '
+      parameters:
+      - $ref: '#/components/parameters/instockCorrelationID'
+      - $ref: '#/components/parameters/siteID'
+      - $ref: '#/components/parameters/orderID'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                to_cell_id:
+                  $ref: '#/components/schemas/toCellId'
+      responses:
+        '201':
+          description: Successful operation.
+          headers:
+            Instock-Response-ID:
+              $ref: '#/components/headers/instockRequestID'
+          content:
+            application/json:
+              schema:
+                type: string
+              examples:
+                response:
+                  value: ''
+        '404':
+          description: Not found
+          headers:
+            Instock-Response-ID:
+              $ref: '#/components/headers/instockRequestID'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                Order doesn't exist:
+                  value:
+                    code: resource_not_found
+                    message: order_id doesn't exist.
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+    delete:
+      tags:
+      - Orders
+      summary: Cancel registered order
+      description: 'Cancels a single registered customer order within a particular site of your organization.
+
+        '
+      operationId: cancelRegisteredOrder
+      x-codeSamples:
+      - lang: cURL
+        label: cURL
+        source: 'curl -X DELETE ''https://api.instock.com/v1/{site_id}/orders/{order_id}/status'' \
+
+          -H ''Authorization: Bearer {ACCESS_TOKEN}''
+
+          '
+      parameters:
+      - $ref: '#/components/parameters/instockCorrelationID'
+      - $ref: '#/components/parameters/siteID'
+      - $ref: '#/components/parameters/orderID'
+      responses:
+        '200':
+          description: Successful operation.
+          headers:
+            Instock-Response-ID:
+              $ref: '#/components/headers/instockRequestID'
+          content:
+            application/json:
+              schema:
+                type: string
+              examples:
+                response:
+                  value: ''
+        '400':
+          description: Bad request
+          headers:
+            Instock-Response-ID:
+              $ref: '#/components/headers/instockRequestID'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                Bad request:
+                  value:
+                    code: bad_request
+                    message: Request body/path/query params cannot be validated.
+                Order is not in status "registered":
+                  value:
+                    code: order_cannot_be_updated
+                    message: couldn't update order status (current reserved, pending canceled.
+        '404':
+          description: Not found
+          headers:
+            Instock-Response-ID:
+              $ref: '#/components/headers/instockRequestID'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                Order doesn't exist:
+                  value:
+                    code: resource_not_found
+                    message: order_id doesn't exist.
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+components:
+  examples:
+    receptionOrder:
+      value:
+        org_id: org_id_001
+        site_id: 1.1.0-1
+        order_id: 8b72a983-c909-4dd6-b5d4-01d1f4b2a669
+        kind: reception
+        placed_at: '2024-03-27T13:24:47Z'
+        attributes:
+          org_id_001:asn: ASN-1818AE4RF
+        lines:
+        - line_id: af7e23f7-08e7-4cf1-b644-1b0cf289e574
+          article_id: '99.21004'
+          qty: 15
+        - line_id: e9ce63cc-dfa3-4edb-adf5-cec750e56bcd
+          article_id: '99.91001'
+          qty: 100
+    orderStatusDone:
+      value:
+        org_id: org_id_001
+        site_id: 1.1.0-1
+        order_id: '00132456'
+        order_status: done
+        timestamp: '2022-03-05T09:30:20Z'
+        ordertask_ids:
+        - ot0001
+        - ot0002
+        lines:
+        - line_id: 00132456-1
+          article_id: '116000487727'
+          qty:
+            reserved: 10
+            free: 10
+            requested: 10
+        - line_id: 00132456-2
+          article_id: '1003000031678'
+          qty:
+            reserved: 5
+            free: 195
+            requested: 5
+    orderStatusCancelled:
+      value:
+        org_id: org_id_001
+        site_id: 1.1.0-1
+        order_id: '00132457'
+        order_status: canceled
+        timestamp: '2022-03-05T08:30:25Z'
+        ordertask_ids:
+        - ot0003
+        - ot0004
+        lines:
+        - line_id: 00132456-1
+          article_id: '116000487727'
+          qty:
+            reserved: 10
+            free: 10
+            requested: 10
+        - line_id: 00132456-2
+          article_id: '1003000031678'
+          qty:
+            reserved: 5
+            free: 195
+            requested: 5
+    listOfSiteOrders:
+      value:
+        has_more: false
+        next_cursor: ''
+        org_id: org_id_001
+        site_id: 1.1.0-1
+        orders:
+        - order_id: '00132457'
+          site_id: 1.1.0-1
+          kind: customer
+          placed_at: '2022-03-06T12:45:09Z'
+          attributes:
+            property1: string
+            property2: string
+          lines:
+          - line_id: 00132457-1
+            article_id: '116000275270'
+            qty: 1
+          - line_id: 00132457-2
+            article_id: '1003000031678'
+            qty: 2
+          - line_id: 00132457-3
+            article_id: '116000487727'
+            qty: 3
+        - order_id: 00132458
+          site_id: 1.1.0-1
+          kind: adjustment
+          placed_at: '2022-03-06T12:47:19Z'
+          attributes:
+            property1: string
+            property2: string
+          lines:
+          - line_id: 00132458-1
+            article_id: '116000275270'
+            qty: 1
+        - order_id: 00132459
+          site_id: 1.1.0-1
+          kind: reception
+          placed_at: '2022-03-06T12:47:19Z'
+          attributes:
+            property1: string
+            property2: string
+          lines:
+          - line_id: 00132459-1
+            article_id: '116000275270'
+            qty: 14
+          - line_id: 00132459-2
+            article_id: '116000275271'
+            qty: 20
+          - line_id: 00132459-3
+            article_id: '116000275274'
+            qty: 10
+    orderStatusReserved:
+      value:
+        org_id: org_id_001
+        site_id: 1.1.0-1
+        order_id: '00132456'
+        order_status: registered
+        timestamp: '2022-03-05T08:30:20Z'
+        ordertask_ids:
+        - ot0001
+        - ot0002
+        lines:
+        - line_id: 00132456-1
+          article_id: '116000487727'
+          qty:
+            reserved: 10
+            free: 10
+            requested: 10
+        - line_id: 00132456-2
+          article_id: '1003000031678'
+          qty:
+            reserved: 5
+            free: 195
+            requested: 5
+    orderSeveralLines:
+      value:
+        org_id: org_id_001
+        site_id: 1.1.0-1
+        order_id: '00132456'
+        kind: customer
+        placed_at: '2022-03-05T10:45:09Z'
+        attributes:
+          property1: string
+          property2: string
+        lines:
+        - line_id: 00132456-1
+          article_id: '116000487727'
+          qty: 1
+        - line_id: 00132456-2
+          article_id: '1003000031678'
+          qty: 2
+    orderStatusRegistered:
+      value:
+        org_id: org_id_001
+        site_id: 1.1.0-1
+        order_id: '00132456'
+        order_status: registered
+        timestamp: '2022-03-05T08:15:21Z'
+        ordertask_ids:
+        - ''
+        lines:
+        - line_id: 00132456-1
+          article_id: '116000487727'
+          qty:
+            reserved: 0
+            free: 20
+            requested: 10
+        - line_id: 00132456-2
+          article_id: '1003000031678'
+          qty:
+            reserved: 0
+            free: 200
+            requested: 5
+    orderSingleLine:
+      value:
+        org_id: org_id_001
+        site_id: 1.1.0-1
+        order_id: '00132455'
+        kind: customer
+        placed_at: '2022-03-05T07:38:39Z'
+        attributes:
+          property1: string
+          property2: string
+        lines:
+        - line_id: 00132455-1
+          article_id: '1003000031678'
+          qty: 1
+  parameters:
+    siteID:
+      name: site_id
+      in: path
+      required: true
+      description: ID of Instock site. Globally unique.
+      schema:
+        $ref: '#/components/schemas/siteId'
+      example: 1.1.0-1
+    instockCorrelationID:
+      name: Instock-Correlation-ID
+      description: Optional header ID to track and analyze requests and behaviors across your Host system.
+      in: header
+      required: false
+      schema:
+        type: string
+    pageSize:
+      name: page_size
+      in: query
+      required: false
+      description: "The number of articles returned in response. \nDefault (minimum) value is 10, maximum value is 1000.\n"
+      schema:
+        type: integer
+        format: int64
+        example: 10
+        default: 10
+        maximum: 1000
+    startCursor:
+      name: start_cursor
+      in: query
+      required: false
+      description: "Cursor returned from a previous response, \nused to request the next page of the results. \n"
+      schema:
+        type: string
+        example: fe2cc560-036c-44cd-90e8-294d5a74cebc
+        default: ''
+    orderID:
+      name: order_id
+      in: path
+      description: ID of an order. Unique in scope of your organization(s).
+      required: true
+      schema:
+        type: string
+      example: '00132455'
+  responses:
+    InternalServerError:
+      description: Internal server error
+      headers:
+        Instock-Response-ID:
+          $ref: '#/components/headers/instockRequestID'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            code: internal_server_error
+            message: Unexpected error occurred.
+    Forbidden:
+      description: Forbidden
+      headers:
+        Instock-Response-ID:
+          $ref: '#/components/headers/instockRequestID'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            code: forbidden
+            message: API key doesn't have permissions to perform the request.
+    Unauthorized:
+      description: Unauthorized
+      headers:
+        Instock-Response-ID:
+          $ref: '#/components/headers/instockRequestID'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            code: unauthorized
+            message: API key is not valid.
+  schemas:
+    getSingleOrder:
+      type: object
+      properties:
+        org_id:
+          type: string
+          description: ID of an organization. Globally unique.
+        site_id:
+          type: string
+          description: ID of Instock site. Globally unique.
+        order_id:
+          $ref: '#/components/schemas/orderId'
+        kind:
+          type: string
+          enum:
+          - customer
+          - adjustment
+          - reception
+          - extraction
+          default: customer
+          description: "Type of an order:\n  * `customer` - order placed by a customer.\n  * `adjustment`- order to correct inventory.\n  * `reception` - order to receive goods from suppliers.\n  * `extraction` - order to extract assets from ASRS.\n"
+        placed_at:
+          $ref: '#/components/schemas/placedAtTimestamp'
+        attributes:
+          type: object
+          description: Custom attribute(s) added to an order.
+          additionalProperties:
+            type: string
+        lines:
+          type: array
+          description: List of lines within an order.
+          items:
+            type: object
+            properties:
+              line_id:
+                $ref: '#/components/schemas/lineId'
+              article_id:
+                $ref: '#/components/schemas/articleId'
+              qty:
+                type: integer
+                format: int64
+                description: Quantity of a specific article in a single order line.
+    order:
+      type: object
+      properties:
+        org_id:
+          type: string
+          description: ID of an organization. Globally unique.
+        site_id:
+          type: string
+          description: ID of Instock site. Globally unique.
+        order_id:
+          $ref: '#/components/schemas/orderId'
+        kind:
+          type: string
+          enum:
+          - customer
+          default: customer
+          description: "Type of an order:\n * `customer` - order placed by a customer.\n"
+        placed_at:
+          $ref: '#/components/schemas/placedAtTimestamp'
+        attributes:
+          type: object
+          description: Custom attribute(s) added to an order.
+          additionalProperties:
+            type: string
+        lines:
+          type: array
+          description: List of lines within an order.
+          items:
+            type: object
+            properties:
+              line_id:
+                $ref: '#/components/schemas/lineId'
+              article_id:
+                $ref: '#/components/schemas/articleId'
+              qty:
+                type: integer
+                format: int64
+                description: Quantity of a specific article in a single order line.
+    toCellId:
+      type: string
+      description: ID of the target storage cell to which a specific article moved.
+      minLength: 1
+      maxLength: 1024
+      example: VM-TIY6J-P001
+    siteId:
+      type: string
+      description: ID of Instock site. Globally unique.
+    placedAtTimestamp:
+      type: string
+      format: date-time
+      description: Time when order was placed [RFC 3339](https://www.rfc-editor.org/rfc/rfc3339).
+      example: '2023-01-01T00:00:00Z'
+    articleId:
+      type: string
+      description: ID of an article. Unique in scope of your organization(s).
+      pattern: ^[a-zA-Z0-9_+.]+$
+    orderId:
+      type: string
+      description: ID of an order. Unique in scope of your organization(s).
+      pattern: ^[a-zA-Z0-9_+.:-]+$
+      minLength: 1
+      maxLength: 128
+    lineId:
+      type: string
+      description: ID of an order line. Unique in scope of your organization(s).
+      pattern: ^[a-zA-Z0-9_+.:-]+$
+      minLength: 1
+      maxLength: 128
+    listSiteOrders:
+      type: object
+      properties:
+        has_more:
+          type: boolean
+          description: 'If `true`, `next_cursor` to access next part of the list.
+
+            If `false`, response includes the end of the list.
+
+            '
+        next_cursor:
+          type: string
+          description: "Only available when `has_more` is `true`.\nUsed to retrieve the next page of results by \npassing the value as the `start_cursor` parameter \nto the same endpoint.\n"
+        org_id:
+          type: string
+          description: ID of an organization. Globally unique.
+        site_id:
+          type: string
+          description: ID of an Instock site.
+        orders:
+          type: array
+          items:
+            type: object
+            properties:
+              site_id:
+                type: string
+                description: ID of an Instock site.
+              order_id:
+                $ref: '#/components/schemas/orderId'
+              kind:
+                type: string
+                enum:
+                - customer
+                - adjustment
+                - reception
+                - extraction
+                default: customer
+                description: "Type of an order:\n * `customer` - order placed by a customer.\n * `adjustment`- order to correct inventory.\n * `reception` - order to receive goods from suppliers.\n * `extraction` - order to extract assets from ASRS.\n"
+              placed_at:
+                $ref: '#/components/schemas/placedAtTimestamp'
+              attributes:
+                type: object
+                description: Custom attribute(s) added to a specific article.
+                additionalProperties:
+                  type: string
+              lines:
+                type: array
+                description: List of lines within an order.
+                items:
+                  type: object
+                  properties:
+                    line_id:
+                      $ref: '#/components/schemas/lineId'
+                    article_id:
+                      $ref: '#/components/schemas/articleId'
+                    qty:
+                      type: integer
+                      format: int64
+    orderStatusRequestTimestamp:
+      type: string
+      format: date-time
+      description: Timestamp of order status request [RFC 3339](https://www.rfc-editor.org/rfc/rfc3339).
+      example: '2023-01-01T00:00:00Z'
+    orderStatus:
+      type: object
+      properties:
+        org_id:
+          type: string
+          description: ID of an organization. Globally unique.
+        site_id:
+          type: string
+          description: ID of Instock site. Globally unique.
+        order_id:
+          $ref: '#/components/schemas/orderId'
+        order_status:
+          type: string
+          enum:
+          - registered
+          - reserved
+          - done
+          - canceled
+          description: '* `registered` - order registered and awaiting for fulfillment
+
+            * `reserved` - fulfillment in progress
+
+            * `done` - order has been fulfilled
+
+            * `canceled` - order has been canceled
+
+            '
+        timestamp:
+          $ref: '#/components/schemas/orderStatusRequestTimestamp'
+        ordertask_ids:
+          type: array
+          description: List of ordertasks created for a specific order.
+          items:
+            type: string
+            description: ID of an order task. Unique in scope of your organization(s).
+        lines:
+          description: List of lines within an order.
+          type: array
+          items:
+            type: object
+            properties:
+              line_id:
+                $ref: '#/components/schemas/lineId'
+              article_id:
+                $ref: '#/components/schemas/articleId'
+              qty:
+                type: object
+                properties:
+                  reserved:
+                    type: integer
+                    format: int64
+                  free:
+                    type: integer
+                    format: int64
+                  requested:
+                    type: integer
+                    format: int64
+                description: "Quantity of articles in a specific state:\n  * `reserved` - quantity of articles that is reserved for fulfillment order that is in progress\n  * `free` - quantity of articles that is available in stock\n  * `requested` - quantity of articles that is requested for an order that is awaiting its fulfillment\n"
+    Error:
+      type: object
+      properties:
+        code:
+          description: Code that identifies the reason of an error.
+          type: string
+        message:
+          description: Description of an error.
+          type: string
+  headers:
+    instockRequestID:
+      description: Auto-generated ID in the response headers to reference a specific request, useful for debugging or seeking support.
+      schema:
+        type: string
+  securitySchemes:
+    bearerAuth:
+      bearerFormat: JWT
+      type: http
+      scheme: bearer

@@ -1,0 +1,605 @@
+openapi: 3.1.0
+info:
+  contact:
+    name: Instock
+    email: info@instock.com
+    url: https://instock.com
+  license:
+    name: Instock
+    url: https://instock.com
+  title: Instock API reference Articles API
+  version: 0.1.0
+  description: "# Overview \nThis reference is a comprehensive guide to understanding of Instock API and is aimed to \nhelp developers to integrate their Host system with Instock Cloud (Incloud).\n\nInstock API is REST-based. It has predictable resource URLs, accepts JSON in the HTTP body, returns JSON-encoded\nresponses, and uses standard HTTP response codes to indicate errors, methods and authentication.\nOur API uses `GET`, `POST`, `PUT` methods to perform all operations. \n`GET` method is both used for retrieval of a single or listing multiple objects at once.\n\n## Conventions\n* HTTPS is required for all requests. Requests over plain HTTP will fail.\n* All requests without authentication will fail.\n* Bulk request is supported only to upload articles into Incloud.\n* Property names are in `snake_case` (not `camelCase` or `kebab-case`).\n* Temporal values (datetimes) are encoded in [RFC 3339](https://www.rfc-editor.org/rfc/rfc3339) strings, e.g. `2022-06-06T12:37:00Z`.\n* All path parameters are always returned in response body, except for `POST` and `PUT` methods.\n\n## Authentication \nInstock API offers authentication in form of Bearer token.\nBearer token must be present in each request header. \nThe token provides a full access to all resources and methods of Instock API to its client.\n\n**Note**: currently Bearer token is issued by Instock and supplied to API users during onboarding.\n\nFor example, if you'd like to retrieve sites available to your organization, your request will look like:\n\n``` cURL\ncurl -X GET \n  -H 'Content-Type: application/json' \\\n  -H 'Authorization: {access_token}' \\\n  https://api.instock.com/v1/sites \\\n```\n\n## Errors \n\nInstock API always returns errors in a common format. For example:\n```JSON\n{\n  \"code\": \"bad_request\",\n  \"message\": \"Request body/path/query params cannot be validated.\"\n}\n```\nThe `code` indicates the general class of error read by your Host system.\nThe `message` is a human-readable explanation of what went wrong.\n\n### Common HTTP error code responses\n\n| **HTTP code** | **Code** | **Description** | **Potential solution** |\n|---|---|---|---|\n| 400 | `bad_request`  | The request could not be understood. | Ensure that syntax is correct in parameters of request and its body. |\n| 400 | `resource_cannot_be_created`  | Resource may already exist or has certain creation rules. | Ensure that resource doesn't already exist or it doesn't have any restrictions for creation.<br> For bulk operations, ensure that all objects are valid. |\n| 400 | `resource_cannot_be_updated`  | Resource has certain update rules. | Ensure that resource doesn't have any restrictions that can yield this error. |\n| 401 | `unauthorized` | Requestor is unauthorized. | Ensure that your access token is valid. |\n| 403 | `forbidden` | Requestor does not have permissions to perform an operation. | Ensure that your access token has permissions to perform an operation. |\n| 404 | `resource_not_found` | Resource doesn't exist. | Ensure that the resource is correctly identified by ID. |\n| 500 | `internal_server_error` | Something went wrong on our end. | An unexpected error occurred. Reach out to Instock for support. |\n\n**Note**: each endpoint below has samples of errors it may return. \n\n## Request IDs\nInstock API auto-generates request identifier with each API response.\nYou can find this value in the response headers as `Instock-Request-ID`.\nUse it to refer to a specific request when debugging or reaching out to Instock for support.\n\n``` \nInstock-Request-ID: request_id\n```\n\n## Correlation IDs\nYou can optionally extend your request and add `Instock-Correlation-ID` to the header.\nUse it to analyze incorrect and faulty behavior across your Host system. \nFor example, if you'd like to retrieve sites available to your organization and pass `Instock-Correlation-ID`, your\nrequest will look like:\n\n``` cURL\ncurl -X GET \n  -H 'Content-Type: application/json' \\\n  -H 'Authorization: your-token' \\\n  -H 'Instock-Correlation-ID: your-correlation-id' \\\n  https://api.instock.com/v1/sites \\\n```\n\n## Pagination \nEndpoints that return a list of objects use pagination. Instock API uses cursor-based pagination.\nThis approach allows Host system to request a part of the list, receiving results and `next_cursor` in the response.\nThe latter could be used to access the next part of the list.\n\n**Note**: setting `page_size` lesser than 10 or greater than 1000 will yield an error.\n\n| Parameter | Request/Response | Type | Description |\n|---|---|---|---|\n| `start_cursor` | Request | string<br>(optional) | Cursor returned from a previous response, used to request the next page of the results. |\n| `page_size` | Request | string<br>(optional) | The number of objects returned in response. <br>Has default and maximum values. |\n| `has_more` | Response | bool | If `true`, use `next_cursor` to access next part of the list. <br>If `false`, response includes the end of the list. |\n| `next_cursor` | Response | string | Only available when `has_more` is `true`. <br>Used to retrieve the next page of results by passing the value as the `start_cursor`<br>parameter to the same endpoint. |\n\n## Unique identifiers\n\nThroughout API reference below, you will encounter multiple unique identifiers (UIDs) that are required to perform\ncertain operations.\nFor example, to create customer order, your Host system must:\n  * provide `site_id` to specify exact instance of Instock ASRS installation,\n  * and supply `order_id`. Usually `order_id` value corresponds to the ID of an order that Host system has.\n\nThe table below indicates source (which system issues UID) and scope (at what level UID must be unique).\n\n| ID | Source | Scope | Description |\n|---|---|---|---|\n| `org_id` | Instock | Global | ID assigned to your organization by Instock. |\n| `site_id` | Instock | Global | ID assigned to an individual Instock site that belongs to your organization. |\n| `article_id` | Host | Organization | ID of a product/SKU uploaded by Host system to Incloud. |\n| `order_id` | Host | Organization | ID of an order created by Host system in Incloud. |\n| `ordertask_id` | Instock | Organization | ID of an individual chunk of order fulfillment. |\n\n## Additional attributes \n\nEvery article and order contain `attributes`, which are reserved for custom and pre-defined parameters that your \norganization may require for fulfillment-related operations. \n\n### Custom attributes\n\nBefore integration, your IT and Instock teams should agree upon `attributes` that will be configured \nspecifically for your site(s). Incloud will consume these attributes to perform certain operations throughout \nfulfillment process, e.g. decanting, picking. Attributes can be added or updated in two ways: via API during operations\nsuch as customer order creation or through the workstation UI during operation at ASRS, like decanting.\n\n#### Order attributes\n\nFor example, `cutoff_time` for a customer order — the time when order fulfillment starts, i.e. change its status from `registered` to `reserved`. \n\n``` JSON\n{\n  \"org_id\": \"org_id_001\",\n  \"site_id\": \"1.1.0-1\",\n  \"order_id\": \"order_id_001\",\n  \"kind\": \"customer\",\n  \"placed_at\": \"2022-03-05T07:38:39Z\",\n  \"attributes\": {\n    \"cutoff_time\": \"2022-03-05T16:00:00Z\",\n  },\n  \"lines\": [\n    {\n      \"line_id\": \"00132455-1\",\n      \"article_id\": \"1003000031678\",\n      \"qty\": 1\n    }\n  ]\n}\n```\n\nAnother example involves adding an Advanced Shipping Notice ID (ASN ID) by an associate during decanting.\nThis attribute can be retrieved via API in a reception order. This way, you'll be able to track reception in your\nsystem using the order attribute during decanting.\n\n```\n{\n  \"org_id\": \"org_id_001\",\n  \"site_id\": \"1.1.0-1\",\n  \"order_id\": \"8b72a983-c909-4dd6-b5d4-01d1f4b2a608\",\n  \"kind\": \"reception\",\n  \"placed_at\": \"2024-03-27T13:22:47Z\",\n  \"attributes\": {\n      \"org_id_001:asn\": \"ASN-1818AE4RF\"\n  },\n  \"lines\": [\n      {\n          \"line_id\": \"af7e23f7-08e7-4cf1-b644-1b0cf329e574\",\n          \"article_id\": \"99.21004\",\n          \"qty\": 15\n      }\n  ]\n}\n```\n\n#### Article attributes\n\nAnother example involves the use of product identifiers. While `article_id` serves as the standard unique identifier, \nour system allows organizations to incorporate alternative identifiers, such as EAN, SKU, UPC, ISBN within the article\nobject as attributes (see the example below). These identifiers enable warehouse associates to scan products\nusing those specific codes designated by your organization during decanting.\n\n``` JSON\n{\n  \"articles\": [\n    {\n      \"article_id\": \"116000487727\",\n      \"name\": \"Cheerios Original Cereal, 12 Oz\",\n      \"is_serial_numbered\": false,\n      \"dimensions\": {\n        \"x\": \"7.75\",\n        \"y\": \"12\",\n        \"z\": \"2.75\",\n        \"uom\": \"in\"\n      },\n      \"attributes\": {\n        \"upc\": \"016000275287\",\n        \"sku\": \"CHRC-120Z-001\"\n      }\n    }\n  ]\n}\n```\n\n### Pre-defined attributes\nPre-defined attributes are parameters set by the system to cater to common requirements across different organizations.\nThese attributes are standardized and offer functionalities that are frequently needed in the fulfillment process.\n\n| Attribute | Description |\n|---|---|\n| `main_image` | Stores article's main image URL, helping with quick identification and differentiation of articles, for example, during picking. Images can be in `.png`, `.jpg`, or `.gif` format.|\n\n## Available API methods\n\nThe table below contains the summary of available API methods for the Instock API client.\n\n| Resource   | Available API methods |\n|------------|-----------------------|\n| Sites      | `GET` - List all sites |\n| Articles   | `POST` - Upload article(s)<br>`GET` - List all articles<br>`GET` - Retrieve article<br>`PUT` - Update article |\n| Orders     | `POST` - Create customer order<br>`GET` - List all orders<br>`PUT` - Update customer order<br>`GET` - Retrieve order<br>`GET` - Retrieve order status<br>`POST` - Advance order status (debug)<br>`DELETE` - Cancel registered order |\n| Ordertasks | `GET` - Retrieve ordertask |\n| Inventory  | `GET` - List all articles inventory<br>`POST` - Retrieve multiple articles inventory<br>`PUT` - Adjust article inventory (debug)<br>`GET` - Retrieve article inventory |\n| Moves      | `GET` - List all articles moves<br>`GET` - Retrieve article moves |\n"
+servers:
+- url: https://api.instock.com/v1
+security:
+- bearerAuth: []
+tags:
+- name: Articles
+  description: "Instock is using the term `article` to describe unique product or SKU managed by Instock ASRS.\nArticles resource is mostly managed by you as a client of Instock API.\nArticle data is shared across all sites that belong to your organization.\n\n**Note**: \n  * currently articles with `is_serial_numbered: true` value cannot be uploaded or updated, Incloud will yield an error.\n  * `attributes` object can contain both custom and pre-defined values. Custom attributes defined\n   upon initial integration with Incloud.\n"
+paths:
+  /articles:
+    post:
+      tags:
+      - Articles
+      summary: Upload article(s)
+      description: "Uploads single or multiple articles to your Instock organization account. \n\n**Note**: \n  * if a particular article is not uploaded to your organization, warehouse operators won't be able to \nreceive it into Instock ASRS (decant).\n  * if bulk article upload contains at least one article that cannot be validated, Incloud will yield `400`\n  and entire request will fail.\n  * bulk article upload has a limit of maximum 1000 articles per request.   \n"
+      operationId: uploadArticles
+      x-codeSamples:
+      - lang: cURL
+        label: cURL
+        source: "curl -X POST 'https://api.instock.com/v1/articles' \\\n-H 'Authorization: Bearer {ACCESS_TOKEN}' \\\n-H 'Content-Type: application/json' \\\n--data-raw '{\n  \"articles\": [\n    {\n      \"article_id\": \"016000124790\",\n      \"name\": \"Honey Nut Cheerios (10.8oz)\",\n      \"is_serial_numbered\": false,\n      \"dimensions\": {\n        \"x\": \"1.9\",\n        \"y\": \"7.7\",\n        \"z\": \"11.3\",\n        \"uom\": \"in\"\n      },\n      \"attributes\": {\n        \"product_category_name\": \"Cereals and bars\",\n        \"temp_zone\": \"ambient\"\n      }\n    },\n    {\n      \"article_id\": \"HOOD_M_SIZE_2A1T\",\n      \"name\": \"Relaxed fit pullover hooded sewatshirt\",\n      \"is_serial_numbered\": false,\n      \"dimensions\": {\n        \"x\": \"12\",\n        \"y\": \"2\",\n        \"z\": \"14\",\n        \"uom\": \"in\"\n      },\n      \"attributes\": {\n        \"product_category_name\": \"Apparel\",\n        \"product_photo\": \"https://via.placeholder.com/image.png\",\n        \"product_size\": \"M\",\n      }\n    }\n  ]\n}'\n"
+      parameters:
+      - $ref: '#/components/parameters/instockCorrelationID'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/createArticles'
+            examples:
+              Create single article:
+                $ref: '#/components/examples/SingleArticle'
+              Create multiple articles:
+                $ref: '#/components/examples/MultipleArticles'
+      responses:
+        '200':
+          description: Successful operation.
+          headers:
+            Instock-Response-ID:
+              $ref: '#/components/headers/instockRequestID'
+          content:
+            application/json:
+              schema:
+                type: string
+              examples:
+                response:
+                  value: Successful operation.
+        '400':
+          description: Bad request
+          headers:
+            Instock-Response-ID:
+              $ref: '#/components/headers/instockRequestID'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                Bad request:
+                  value:
+                    code: bad_request
+                    message: Request body/path/query params cannot be validated.
+                Article already exists:
+                  value:
+                    code: resource_cannot_be_created
+                    message: article_id already exists.
+                Invalid article(s):
+                  value:
+                    code: resource_cannot_be_created
+                    message: Validation failed for one or more articles.
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+    get:
+      tags:
+      - Articles
+      summary: List all articles
+      description: Returns a paginated list of all articles known within your organization account.
+      operationId: listArticles
+      x-codeSamples:
+      - lang: cURL
+        label: cURL
+        source: 'curl -X GET ''https://api.instock.com/v1/articles'' \
+
+          -H ''Authorization: Bearer {ACCESS_TOKEN}''
+
+          '
+      parameters:
+      - $ref: '#/components/parameters/instockCorrelationID'
+      - $ref: '#/components/parameters/startCursor'
+      - $ref: '#/components/parameters/pageSize'
+      responses:
+        '200':
+          description: Successful operation.
+          headers:
+            Instock-Response-ID:
+              $ref: '#/components/headers/instockRequestID'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/listArticles'
+              examples:
+                List of articles:
+                  $ref: '#/components/examples/listOfArticles'
+        '400':
+          description: Bad request
+          headers:
+            Instock-Response-ID:
+              $ref: '#/components/headers/instockRequestID'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                Bad request:
+                  value:
+                    code: bad_request
+                    message: Request body/path/query params cannot be validated.
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /articles/{article_id}:
+    get:
+      tags:
+      - Articles
+      summary: Retrieve article
+      description: 'Retrieves a single existing article. Supply `article_id` either from article upload or articles list request,
+
+        and Instock will return the corresponding article data.
+
+        '
+      operationId: getArticle
+      x-codeSamples:
+      - lang: cURL
+        label: cURL
+        source: 'curl -X GET ''https://api.instock.com/v1/articles/{ARTICLE_ID}'' \
+
+          -H ''Authorization: Bearer {ACCESS_TOKEN}''
+
+          '
+      parameters:
+      - $ref: '#/components/parameters/instockCorrelationID'
+      - $ref: '#/components/parameters/articleID'
+      responses:
+        '200':
+          description: Successful operation
+          headers:
+            Instock-Response-ID:
+              $ref: '#/components/headers/instockRequestID'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/article'
+              examples:
+                Article:
+                  $ref: '#/components/examples/RetrieveSingleArticle'
+        '400':
+          description: Bad request
+          headers:
+            Instock-Response-ID:
+              $ref: '#/components/headers/instockRequestID'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                Bad request:
+                  value:
+                    code: bad_request
+                    message: Request body/path/query params cannot be validated.
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          description: Not found
+          headers:
+            Instock-Response-ID:
+              $ref: '#/components/headers/instockRequestID'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                Article doesn't exist:
+                  value:
+                    code: resource_not_found
+                    message: article_id doesn't exist.
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+    put:
+      tags:
+      - Articles
+      summary: Update article
+      description: "Updates a single existing article by setting the values of parameters passed.\n\n**Note**: \n  * article update operation is performed via `PUT` method —\n  when updating an article, a complete order record (all fields) must be passed.\n  * if `article_id` has inventory moves, Incloud will yield `400` error. \n  In other words, if an article has already been decanted into ASRS, its properties cannot be updated as\n  Incloud already relies on its properties.\n  \n"
+      operationId: updateArticle
+      x-codeSamples:
+      - lang: cURL
+        label: cURL
+        source: "curl -X PUT 'https://api.instock.com/v1/articles/{ARTICLE_ID}' \\\n-H 'Authorization: Bearer {ACCESS_TOKEN}' \\\n-H 'Content-Type: application/json' \\\n--data-raw '{\n  \"article_id\": \"016000124790\",\n  \"name\": \"Honey Nut Cheerios (10.8oz)\",\n  \"is_serial_numbered\": false,\n  \"dimensions\": {\n    \"x\": \"2\",\n    \"y\": \"7.7\",\n    \"z\": \"11.3\",\n    \"uom\": \"in\"\n  },\n  \"attributes\": {\n    \"product_category_name\": \"Cereals\",\n    \"temp_zone\": \"Ambient\",\n    \"promotion_price\": \"0.99\"\n  }\n}'\n"
+      parameters:
+      - $ref: '#/components/parameters/instockCorrelationID'
+      - $ref: '#/components/parameters/articleID'
+      requestBody:
+        required: true
+        description: Update a single existing article with properties in the request body.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/article'
+            examples:
+              Update an article:
+                $ref: '#/components/examples/UpdateArticle'
+      responses:
+        '200':
+          description: Successful operation.
+          headers:
+            Instock-Response-ID:
+              $ref: '#/components/headers/instockRequestID'
+          content:
+            application/json:
+              schema:
+                type: string
+              examples:
+                response:
+                  value: Successful operation.
+        '400':
+          description: Bad request
+          headers:
+            Instock-Response-ID:
+              $ref: '#/components/headers/instockRequestID'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                Bad request:
+                  value:
+                    code: bad_request
+                    message: Request body/path/query params cannot be validated.
+                Article already has moves:
+                  value:
+                    code: resource_cannot_be_updated
+                    message: Article cannot be updated as it already has moves.
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          description: Not found
+          headers:
+            Instock-Response-ID:
+              $ref: '#/components/headers/instockRequestID'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                Article doesn't exist:
+                  value:
+                    code: resource_not_found
+                    message: article_id doesn't exist.
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+components:
+  responses:
+    Forbidden:
+      description: Forbidden
+      headers:
+        Instock-Response-ID:
+          $ref: '#/components/headers/instockRequestID'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            code: forbidden
+            message: API key doesn't have permissions to perform the request.
+    Unauthorized:
+      description: Unauthorized
+      headers:
+        Instock-Response-ID:
+          $ref: '#/components/headers/instockRequestID'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            code: unauthorized
+            message: API key is not valid.
+    InternalServerError:
+      description: Internal server error
+      headers:
+        Instock-Response-ID:
+          $ref: '#/components/headers/instockRequestID'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            code: internal_server_error
+            message: Unexpected error occurred.
+  parameters:
+    startCursor:
+      name: start_cursor
+      in: query
+      required: false
+      description: "Cursor returned from a previous response, \nused to request the next page of the results. \n"
+      schema:
+        type: string
+        example: fe2cc560-036c-44cd-90e8-294d5a74cebc
+        default: ''
+    instockCorrelationID:
+      name: Instock-Correlation-ID
+      description: Optional header ID to track and analyze requests and behaviors across your Host system.
+      in: header
+      required: false
+      schema:
+        type: string
+    pageSize:
+      name: page_size
+      in: query
+      required: false
+      description: "The number of articles returned in response. \nDefault (minimum) value is 10, maximum value is 1000.\n"
+      schema:
+        type: integer
+        format: int64
+        example: 10
+        default: 10
+        maximum: 1000
+    articleID:
+      name: article_id
+      in: path
+      description: ID of an article. Unique in scope of your organization(s).
+      required: true
+      schema:
+        $ref: '#/components/schemas/articleId'
+      example: 016000487727
+  examples:
+    listOfArticles:
+      value:
+        has_more: false
+        next_cursor: ''
+        articles:
+        - article_id: '1003000031678'
+          name: Quaker Apples and Cinnamon Instant Oatmeal Packets
+          is_serial_numbered: false
+          dimensions:
+            x: '4.9'
+            y: '7.9'
+            z: '3.1'
+            uom: m
+          attributes:
+            product_category_name: Cereals & Bars
+            temp_zone: ambient
+            promotion_price: '2.99'
+        - article_id: '116000487727'
+          name: Cheerios Original Cereal, 12 Oz
+          is_serial_numbered: false
+          dimensions:
+            x: '7.75'
+            y: '12'
+            z: '2.75'
+            uom: in
+          attributes:
+            product_category_name: Cereals & Bars
+        - article_id: '116000275270'
+          name: Cheerios Honey Nut Cereal, 12 Oz
+          is_serial_numbered: false
+          dimensions:
+            x: '7.75'
+            y: '12'
+            z: '2.75'
+            uom: in
+          attributes:
+            product_category_name: Cereals & Bars
+    UpdateArticle:
+      value:
+        article_id: '116000487727'
+        name: Cheerios Original Cereal, 12 Oz
+        is_serial_numbered: false
+        dimensions:
+          x: '7.75'
+          y: '12'
+          z: '2.75'
+          uom: in
+        attributes:
+          product_category_name: Cereals & Bars
+          temp_zone: ambient
+          promotion_price: '1.69'
+    SingleArticle:
+      value:
+        articles:
+        - article_id: '116000487727'
+          name: Cheerios Original Cereal, 12 Oz
+          is_serial_numbered: false
+          dimensions:
+            x: '7.75'
+            y: '12'
+            z: '2.75'
+            uom: in
+          attributes:
+            product_category_name: Cereals & Bars
+            temp_zone: ambient
+    RetrieveSingleArticle:
+      value:
+        article_id: '116000487727'
+        name: Cheerios Original Cereal, 12 Oz
+        is_serial_numbered: false
+        dimensions:
+          x: '7.75'
+          y: '12'
+          z: '2.75'
+          uom: in
+        attributes:
+          product_category_name: Cereals & Bars
+          temp_zone: ambient
+    MultipleArticles:
+      value:
+        articles:
+        - article_id: '1003000031678'
+          name: Quaker Apples and Cinnamon Instant Oatmeal Packets
+          is_serial_numbered: false
+          dimensions:
+            x: '4.9'
+            y: '7.9'
+            z: '3.1'
+            uom: m
+          attributes:
+            product_category_name: Cereals & Bars
+            temp_zone: ambient
+            promotion_price: '2.99'
+        - article_id: '116000487727'
+          name: Cheerios Original Cereal, 12 Oz
+          is_serial_numbered: false
+          dimensions:
+            x: '7.75'
+            y: '12'
+            z: '2.75'
+            uom: in
+          attributes:
+            product_category_name: Cereals & Bars
+  schemas:
+    listArticles:
+      type: object
+      properties:
+        has_more:
+          type: boolean
+          description: 'If `true`, `next_cursor` to access next part of the list.
+
+            If `false`, response includes the end of the list.
+
+            '
+        next_cursor:
+          type: string
+          description: "Only available when `has_more` is `true`.\nUsed to retrieve the next page of results by \npassing the value as the `start_cursor` parameter \nto the same endpoint.\n"
+        articles:
+          type: array
+          items:
+            type: object
+            properties:
+              article_id:
+                $ref: '#/components/schemas/articleId'
+              is_serial_numbered:
+                type: boolean
+                description: Is article serial numbered?
+              name:
+                type: string
+                description: Name of an article.
+              dimensions:
+                description: Dimensions of an article.
+                properties:
+                  x:
+                    type: string
+                    description: Width.
+                  y:
+                    type: string
+                    description: Height.
+                  z:
+                    type: string
+                    description: Depth.
+                  uom:
+                    type: string
+                    enum:
+                    - m
+                    - in
+                    description: Units of measurement, meters or inches.
+              attributes:
+                type: object
+                description: Custom attribute(s) added to a specific article.
+                additionalProperties:
+                  type: string
+    Error:
+      type: object
+      properties:
+        code:
+          description: Code that identifies the reason of an error.
+          type: string
+        message:
+          description: Description of an error.
+          type: string
+    articleId:
+      type: string
+      description: ID of an article. Unique in scope of your organization(s).
+      pattern: ^[a-zA-Z0-9_+.]+$
+    article:
+      type: object
+      properties:
+        article_id:
+          $ref: '#/components/schemas/articleId'
+        name:
+          type: string
+          description: Name of an article.
+        is_serial_numbered:
+          type: boolean
+          description: Is article serial numbered?
+          default: false
+        dimensions:
+          description: Dimensions of an article.
+          properties:
+            x:
+              type: string
+              description: Width.
+            y:
+              type: string
+              description: Height.
+            z:
+              type: string
+              description: Depth.
+            uom:
+              type: string
+              enum:
+              - m
+              - in
+              description: Units of measurement, meters or inches.
+        attributes:
+          type: object
+          description: Custom attribute(s) added to a specific article.
+          additionalProperties:
+            type: string
+    createArticles:
+      type: object
+      properties:
+        articles:
+          type: array
+          items:
+            type: object
+            properties:
+              article_id:
+                $ref: '#/components/schemas/articleId'
+              is_serial_numbered:
+                type: boolean
+                description: Is article serial numbered?
+                default: false
+              name:
+                type: string
+                description: Name of an article.
+              dimensions:
+                description: Dimensions of an article.
+                properties:
+                  x:
+                    type: string
+                    description: Width.
+                  y:
+                    type: string
+                    description: Height.
+                  z:
+                    type: string
+                    description: Depth.
+                  uom:
+                    type: string
+                    enum:
+                    - m
+                    - in
+                    description: Units of measurement, meters or inches.
+              attributes:
+                type: object
+                description: Custom attribute(s) added to a specific article.
+                additionalProperties:
+                  type: string
+  headers:
+    instockRequestID:
+      description: Auto-generated ID in the response headers to reference a specific request, useful for debugging or seeking support.
+      schema:
+        type: string
+  securitySchemes:
+    bearerAuth:
+      bearerFormat: JWT
+      type: http
+      scheme: bearer
