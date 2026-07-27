@@ -1,24 +1,249 @@
 aid: instock
 name: Instock
-description: 'Instock is a company surfaced as a portfolio company of lux-capital and added to the API
-  Evangelist network as a stub for enrichment. Sector: robotics. This profile is a lead awaiting the enrichment
-  pipeline.'
+description: >-
+  Instock is a robotics company delivering a goods-to-person automated storage
+  and retrieval system (ASRS) as a fulfillment robotics-as-a-service (RaaS)
+  offering. The system pairs a static "Grid" racking framework, stackable
+  "Bins", and autonomous three-dimensional "Robots" with "Incloud", a cloud
+  software platform that orchestrates warehouse fulfillment operations. Instock
+  publishes a REST-based HTTP API (Incloud) that lets a customer's host systems
+  (PIM/IMS/OMS) integrate with the ASRS: managing sites, uploading articles
+  (SKUs), creating and advancing customer orders, tracking order tasks, and
+  reading inventory and article moves. The API accepts and returns JSON, uses
+  Bearer-token (JWT) authentication issued during onboarding, cursor-based
+  pagination, snake_case properties, and RFC 3339 timestamps. Instock was
+  surfaced as a portfolio company of Lux Capital. Sector: robotics / warehouse
+  automation.
 url: https://raw.githubusercontent.com/api-evangelist/instock/refs/heads/main/apis.yml
+accessModel:
+  pricing: unknown
+  onboarding: self-serve
+  trial: false
+  try_now: false
+  public: false
+  label: Self-serve signup
+  confidence: medium
+  source:
+  - authentication
+  generated: '2026-07-22'
+  method: derived
+image: https://instock.com/en/images/logo.svg
 x-type: company
 x-source: vc-portfolio
 x-backed-by:
 - lux-capital
-x-tier: stub
+x-tier: enriched
 x-tier-reason: portfolio-lead
 specificationVersion: '0.20'
 created: '2026-07-17'
-modified: '2026-07-17'
+modified: '2026-07-19'
 tags:
 - Company
 - Robotics
-apis: []
+- Warehouse Automation
+- Fulfillment
+- Logistics
+- ASRS
+- Supply Chain
+- Inventory Management
+apis:
+- aid: instock:instock-articles-api
+  name: Instock Articles API
+  description: "Instock is using the term `article` to describe unique product or SKU managed by Instock\
+    \ ASRS.\nArticles resource is mostly managed by you as a client of Instock API.\nArticle data is shared\
+    \ across all sites that belong to your organization.\n\n**Note**: \n  * currently articles with `is_serial_numbered:\
+    \ true` value cannot be uploaded or updated, Incloud will yield an error.\n  * `attributes` object\
+    \ can contain both custom and pre-defined values. Custom attributes defined\n   upon initial integration\
+    \ with Incloud."
+  humanURL: https://instock.com/en/docs/api/
+  baseURL: https://api.instock.com/v1
+  tags:
+  - Articles
+  properties:
+  - type: OpenAPI
+    url: openapi/instock-articles-api-openapi.yml
+  - type: Documentation
+    url: https://instock.com/en/docs/
+  - type: APIReference
+    url: https://instock.com/en/docs/api/
+  - type: GettingStarted
+    url: https://instock.com/en/docs/getting-started/
+- aid: instock:instock-inventory-api
+  name: Instock Inventory API
+  description: "Inventory resource returns data on the current quantity  of article(s) that your organization\
+    \ has uploaded, use it to track \narticles that are low in stock or out-of-stock and require replenishment\
+    \ in scope of particular site."
+  humanURL: https://instock.com/en/docs/api/
+  baseURL: https://api.instock.com/v1
+  tags:
+  - Inventory
+  properties:
+  - type: OpenAPI
+    url: openapi/instock-inventory-api-openapi.yml
+  - type: Documentation
+    url: https://instock.com/en/docs/
+  - type: APIReference
+    url: https://instock.com/en/docs/api/
+  - type: GettingStarted
+    url: https://instock.com/en/docs/getting-started/
+- aid: instock:instock-moves-api
+  name: Instock Moves API
+  description: "Moves allow to retrieve data on article(s) flow in and out of of a particular site owned\
+    \ by your organization. \nList moves of all articles or retrieve them for a single article.\n\n**Note**:\
+    \ Refine your search with `from_timestamp` and `to_timestamp` — most recent moves will be on top of\
+    \ the list."
+  humanURL: https://instock.com/en/docs/api/
+  baseURL: https://api.instock.com/v1
+  tags:
+  - Moves
+  properties:
+  - type: OpenAPI
+    url: openapi/instock-moves-api-openapi.yml
+  - type: Documentation
+    url: https://instock.com/en/docs/
+  - type: APIReference
+    url: https://instock.com/en/docs/api/
+  - type: GettingStarted
+    url: https://instock.com/en/docs/getting-started/
+- aid: instock:instock-orders-api
+  name: Instock Orders API
+  description: "Intentions of users of Instock ASRS are represented by `orders` structure.\n\nOrders resource\
+    \ allows:\n* create/update/retrieve records for picking of goods from the ASRS (`customer` orders)\n\
+    * retrieve-only access to records for induction/adjustment/extraction of inventory\n(`adjustment`,\
+    \ `reception`, `extraction` orders)\n\nAll operations with orders are performed in scope of a particular\
+    \ site and require\n`site_id` as a path parameter.\n\nThe following kinds and statuses of orders are\
+    \ in use:\n| Order Kind | Description |\n|--------------|------------------------------------------------------------------------------------------------|\n\
+    | `customer`   | order that needs to be fulfilled from ASRS and are placed by you, as client of API.\
+    \ |\n| `adjustment` | order to correct current inventory. |   \n| `reception`  | order to receive\
+    \ goods or assets into ASRS, triggered by shipment from supplier, return of goods, etc. |\n| `extraction`\
+    \ | order to extract assets from ASRS. |\n\n| Order Status | Description |\n|----------------|-----------------------------------------------|\n\
+    | `registered`   | order registered and awaiting for fulfillment in scope of ordertask(s).|\n| `reserved`\
+    \     | fulfillment in progress.                      |\n| `done`         | order has been fulfilled.\
+    \                     | \n| `canceled`    | order has been canceled.                     |    \n \n\
+    \n**Note**: \n* only `customer` orders can be updated, and only while they are in status `registered`.\
+    \ Once order\nfulfillment has started Instock ASRS freezes (makes read-only) customer orders.\n* custom\
+    \ `attributes` object values are optional and defined upon initial integration with Incloud."
+  humanURL: https://instock.com/en/docs/api/
+  baseURL: https://api.instock.com/v1
+  tags:
+  - Orders
+  properties:
+  - type: OpenAPI
+    url: openapi/instock-orders-api-openapi.yml
+  - type: Documentation
+    url: https://instock.com/en/docs/
+  - type: APIReference
+    url: https://instock.com/en/docs/api/
+  - type: GettingStarted
+    url: https://instock.com/en/docs/getting-started/
+- aid: instock:instock-ordertasks-api
+  name: Instock Ordertasks API
+  description: "Fulfillment of orders by associates and ASRS is split into chunks called `ordertasks`.\n\
+    An `ordertask` can represent a picking of several lines of customer order, for example.\nEach ordertask\
+    \ corresponds to exactly one order and one order can have multiple ordertasks.\nOn the other side,\
+    \ each action of robots of ASRS can be attributed back to exactly one ordertask.\n\nIncloud promises,\
+    \ once order gets into one of the terminal statuses (`done` or `canceled`) the set\nof corresponding\
+    \ ordertasks is immutable, i.e. no new ordertasks to be added, and each ordertask record\nis immutable.\n\
+    \nOrdertasks corresponding to customer order are created after order fulfillment is planned, i.e.\
+    \ after\norder status changes from `registered` to `reserved`.\nOnce customer order is `done` or `canceled`,\
+    \ a client of API can reconstruct full picture of fulfillment of \norder by retrieving ordertasks\
+    \ data.\nOrdertasks may be presented by Incloud for all type of orders\n(`customer`, `reception`,\
+    \ `adjustment`, `extraction`).\n\n| Ordertask status | Description |\n|----------------|---------------|\n\
+    | `reserved`     | ordertask is in progress. |\n| `done`         | ordertask has been completed. |\
+    \ \n| `canceled`    | ordertask has been canceled. |"
+  humanURL: https://instock.com/en/docs/api/
+  baseURL: https://api.instock.com/v1
+  tags:
+  - Ordertasks
+  properties:
+  - type: OpenAPI
+    url: openapi/instock-ordertasks-api-openapi.yml
+  - type: Documentation
+    url: https://instock.com/en/docs/
+  - type: APIReference
+    url: https://instock.com/en/docs/api/
+  - type: GettingStarted
+    url: https://instock.com/en/docs/getting-started/
+- aid: instock:instock-sites-api
+  name: Instock Sites API
+  description: >-
+    Each Instock site (or just site) represents a single instance of Instock ASRS.
+
+    Such instance can represent either physical installation of ASRS or a simulation in sandbox environment.
+
+    Organization may own many sites.
+
+    A single physical site may have many sandboxes and each sandbox will be characterized by its own `site_id`.
+
+
+    **Note**: `site_id` is required to perform operations with orders, ordertasks, inventory and moves.
+  humanURL: https://instock.com/en/docs/api/
+  baseURL: https://api.instock.com/v1
+  tags:
+  - Sites
+  properties:
+  - type: OpenAPI
+    url: openapi/instock-sites-api-openapi.yml
+  - type: Documentation
+    url: https://instock.com/en/docs/
+  - type: APIReference
+    url: https://instock.com/en/docs/api/
+  - type: GettingStarted
+    url: https://instock.com/en/docs/getting-started/
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com
 - FN: APIs.json
   email: info@apis.io
+common:
+- type: DomainSecurity
+  url: security/instock-domain-security.yml
+- type: Authentication
+  url: authentication/instock-authentication.yml
+- type: Website
+  url: https://instock.com
+- type: DeveloperPortal
+  url: https://instock.com/en/docs/
+- type: Documentation
+  url: https://instock.com/en/docs/
+- type: APIReference
+  url: https://instock.com/en/docs/api/
+- type: GettingStarted
+  url: https://instock.com/en/docs/getting-started/
+- type: Login
+  url: https://cloud.instock.com/sign-in/
+- type: Support
+  url: https://instock.com/en/contact-us/
+- type: PrivacyPolicy
+  url: https://instock.com/en/privacy-policy
+- type: Blog
+  url: https://instock.com/en/news/
+- type: Careers
+  url: https://instock.com/en/careers/
+- type: Conventions
+  url: conventions/instock-conventions.yml
+- type: ErrorCatalog
+  url: errors/instock-error-codes.yml
+- type: Lifecycle
+  url: lifecycle/instock-lifecycle.yml
+- type: Conformance
+  url: conformance/instock-conformance.yml
+- type: DataModel
+  url: data-model/instock-data-model.yml
+- type: Sandbox
+  url: sandbox/instock-sandbox.yml
+- type: MCPServer
+  url: mcp/instock-mcp.yml
+- type: LLMsTxt
+  url: llms/instock-llms.txt
+- type: AgentSkill
+  url: skills/_index.yml
+- type: Overlay
+  url: overlays/instock-openapi-overlay.yaml
+- type: OpenAPI
+  url: openapi/instock-openapi.json
+x-enrichment:
+  date: '2026-07-19'
+  status: backfilled
+  pass: local-v1
+  note: backfilled from .gitignore signal + verified work evidence

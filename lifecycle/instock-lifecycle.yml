@@ -1,0 +1,27 @@
+generated: '2026-07-19'
+method: searched
+source: https://instock.com/en/docs/api/
+description: >-
+  Versioning and lifecycle posture for the Instock (Incloud) API, captured from
+  the published API reference and developer site.
+versioning:
+  scheme: uri-path
+  current: v1
+  spec_version: 0.1.0
+  base_url: https://api.instock.com/v1
+  docs: https://instock.com/en/docs/api/
+deprecation:
+  policy_documented: false
+  sunset_header: false
+  note: No deprecation policy or RFC 8594 Sunset/Deprecation header support is documented.
+sla:
+  documented: false
+status_page:
+  found: false
+  note: No public status page was found for Instock / Incloud.
+deprecated_operations: []
+notes:
+  - >-
+    The API is early-stage (spec version 0.1.0); tokens are issued during
+    onboarding and the surface is aimed at customer host-system integration
+    rather than open self-service developers.

@@ -1,0 +1,32 @@
+# Instock
+
+> Instock is a robotics company delivering a goods-to-person automated storage and retrieval system (ASRS) as fulfillment robotics-as-a-service (RaaS). Its Incloud cloud platform exposes a REST API so customer host systems (PIM/IMS/OMS) can manage sites, articles (SKUs), orders, order tasks, inventory, and article moves. REST over HTTPS, JSON bodies, Bearer-token (JWT) auth, cursor pagination, snake_case, RFC 3339 timestamps. Backed by Lux Capital.
+
+## APIs
+
+- [Instock API reference](https://instock.com/en/docs/api/): REST API for the Instock ASRS (Incloud). Base URL https://api.instock.com/v1.
+- [OpenAPI 3.1 definition](https://raw.githubusercontent.com/api-evangelist/instock/refs/heads/main/openapi/instock-openapi.json): 19 operations across Sites, Articles, Orders, Ordertasks, Inventory, and Moves.
+
+## Docs
+
+- [Documentation](https://instock.com/en/docs/)
+- [Getting started](https://instock.com/en/docs/getting-started/)
+- [Authentication](https://instock.com/en/docs/api/): Bearer token (JWT) in the Authorization header, issued by Instock during onboarding.
+
+## Specs and artifacts
+
+- [OpenAPI](https://raw.githubusercontent.com/api-evangelist/instock/refs/heads/main/openapi/instock-openapi.json)
+- [Authentication profile](https://raw.githubusercontent.com/api-evangelist/instock/refs/heads/main/authentication/instock-authentication.yml)
+- [Conventions](https://raw.githubusercontent.com/api-evangelist/instock/refs/heads/main/conventions/instock-conventions.yml)
+- [Error codes](https://raw.githubusercontent.com/api-evangelist/instock/refs/heads/main/errors/instock-error-codes.yml)
+- [Data model](https://raw.githubusercontent.com/api-evangelist/instock/refs/heads/main/data-model/instock-data-model.yml)
+- [Lifecycle](https://raw.githubusercontent.com/api-evangelist/instock/refs/heads/main/lifecycle/instock-lifecycle.yml)
+- [MCP (candidate tools)](https://raw.githubusercontent.com/api-evangelist/instock/refs/heads/main/mcp/instock-mcp.yml)
+
+## Company
+
+- [Website](https://instock.com)
+- [Careers](https://instock.com/en/careers/)
+- [News](https://instock.com/en/news/)
+- [Privacy policy](https://instock.com/en/privacy-policy)
+- [Sign in (Incloud)](https://cloud.instock.com/sign-in/)

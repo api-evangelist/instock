@@ -1,0 +1,22 @@
+overlay: 1.0.0
+info:
+  title: API Evangelist enhancements for Instock API
+  version: 1.0.0
+extends: openapi/instock-openapi.json
+actions:
+- target: $.info
+  update:
+    x-apievangelist-enriched: '2026-07-19'
+    x-apievangelist-provider: instock
+    x-apievangelist-auth: Bearer token (JWT), issued by Instock during onboarding
+    x-apievangelist-pagination: cursor (start_cursor/page_size -> has_more/next_cursor)
+    x-apievangelist-error-envelope: 'custom {code, message} (not RFC 9457)'
+    x-apievangelist-conventions: conventions/instock-conventions.yml
+- target: $.info
+  update:
+    x-apievangelist-tags:
+    - Robotics
+    - Warehouse Automation
+    - Fulfillment
+    - Inventory Management
+    - Supply Chain

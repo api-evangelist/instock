@@ -1,0 +1,52 @@
+generated: '2026-07-19'
+method: searched
+source: https://instock.com/en/docs/api/
+derived_from: openapi/instock-openapi.json
+format: custom
+description: >-
+  Instock API returns errors in a common envelope (NOT RFC 9457 problem+json).
+  The envelope carries a machine-readable `code` (general class of error) and a
+  human-readable `message`. HTTP status codes seen across the 19 documented
+  operations are 400, 401, 403, 404, and 500 (200/201 on success). The registry
+  below is captured verbatim from the API reference "Common HTTP error code
+  responses" table.
+envelope:
+  code: string — general class of error, read by the host system.
+  message: string — human-readable explanation of what went wrong.
+  example:
+    code: bad_request
+    message: Request body/path/query params cannot be validated.
+error_codes:
+- code: bad_request
+  http_status: 400
+  description: The request could not be understood.
+  remediation: Ensure that syntax is correct in the parameters of the request and its body.
+- code: resource_cannot_be_created
+  http_status: 400
+  description: Resource may already exist or has certain creation rules.
+  remediation: >-
+    Ensure that the resource doesn't already exist or that it has no restrictions
+    for creation. For bulk operations, ensure that all objects are valid.
+- code: resource_cannot_be_updated
+  http_status: 400
+  description: Resource has certain update rules.
+  remediation: Ensure that the resource has no restrictions that can yield this error.
+- code: unauthorized
+  http_status: 401
+  description: Requestor is unauthorized.
+  remediation: Ensure that your access token is valid.
+- code: forbidden
+  http_status: 403
+  description: Requestor does not have permissions to perform an operation.
+  remediation: Ensure that your access token has permissions to perform the operation.
+- code: resource_not_found
+  http_status: 404
+  description: Resource doesn't exist.
+  remediation: Ensure that the resource is correctly identified by ID.
+- code: internal_server_error
+  http_status: 500
+  description: Something went wrong on Instock's end.
+  remediation: An unexpected error occurred. Reach out to Instock for support.
+notes:
+  - Each endpoint in the reference also documents samples of the errors it may return.
+  - Use the Instock-Request-ID response header when reporting an error to Instock support.

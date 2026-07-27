@@ -1,0 +1,82 @@
+generated: '2026-07-19'
+method: derived
+source: openapi/instock-openapi.json
+docs: https://instock.com/en/docs/api/
+description: >-
+  Entity-relationship graph derived from the Instock OpenAPI schemas and the
+  documented unique-identifier model (org_id, site_id, article_id, order_id,
+  ordertask_id). Instock ASRS is multi-tenant: an organization owns sites, and
+  most order/inventory/move resources are scoped under a site.
+entities:
+- name: organization
+  id: org_id
+  id_source: Instock
+  scope: global
+  description: Tenant assigned by Instock; owns sites, articles, and orders.
+- name: site
+  id: site_id
+  id_source: Instock
+  scope: global
+  description: A single Instock ASRS installation belonging to an organization.
+- name: article
+  id: article_id
+  id_source: Host
+  scope: organization
+  description: A unique product / SKU managed by Incloud; carries custom attributes.
+- name: order
+  id: order_id
+  id_source: Host
+  scope: organization
+  description: A customer order (intention) fulfilled by the ASRS; carries line items and attributes.
+- name: ordertask
+  id: ordertask_id
+  id_source: Instock
+  scope: organization
+  description: An individual chunk of order fulfillment executed by associates and the ASRS.
+- name: inventory
+  id: null
+  description: Current on-hand quantity of an article at a site.
+- name: move
+  id: null
+  description: Record of an article's flow in and out of a particular site.
+relationships:
+- from: organization
+  to: site
+  type: has_many
+  via: org_id
+- from: site
+  to: organization
+  type: belongs_to
+  via: org_id
+- from: order
+  to: site
+  type: belongs_to
+  via: site_id
+- from: order
+  to: ordertask
+  type: has_many
+  via: order_id
+- from: ordertask
+  to: order
+  type: belongs_to
+  via: order_id
+- from: inventory
+  to: site
+  type: belongs_to
+  via: site_id
+- from: inventory
+  to: article
+  type: belongs_to
+  via: article_id
+- from: move
+  to: site
+  type: belongs_to
+  via: site_id
+- from: move
+  to: article
+  type: belongs_to
+  via: article_id
+- from: article
+  to: organization
+  type: belongs_to
+  via: org_id

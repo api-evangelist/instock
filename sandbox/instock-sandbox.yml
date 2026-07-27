@@ -1,0 +1,28 @@
+generated: '2026-07-19'
+method: searched
+source: https://instock.com/en/docs/
+description: >-
+  Instock offers a simulation-first sandbox: customers integrate with a
+  simulation environment and model their future fulfillment operations for free
+  before any commitment. Each planned site is built as a high-fidelity "digital
+  twin" and simulated in a sandbox before physical installation. This is a
+  simulation/pre-deployment sandbox rather than a payments-style test-key
+  environment.
+sandbox:
+  type: simulation / digital-twin
+  free: true
+  purpose: >-
+    Integrate against a sandbox and simulate future operations before committing;
+    validate host-system integration and model site throughput.
+  access: Provisioned with Instock during onboarding (no self-service test keys documented).
+  docs: https://instock.com/en/docs/getting-started/
+test_values:
+  published: false
+  note: >-
+    Instock does not publish magic test identifiers, test cards, or fixed
+    sandbox credentials. No test values are invented here.
+key_separation:
+  documented: false
+  note: >-
+    The API reference documents a single Bearer-token model issued during
+    onboarding; no distinct test-vs-live key prefixes are published.

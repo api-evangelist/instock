@@ -1,0 +1,73 @@
+generated: '2026-07-19'
+method: derived
+status: candidate
+source: openapi/instock-openapi.json
+description: >-
+  No official hosted/remote MCP server was found for Instock. This is a
+  candidate tool surface derived one-to-one from the 19 documented Instock API
+  operations, for building an MCP server over the Incloud REST API. Not an
+  Instock-published artifact.
+server:
+  name: instock
+  transport: http
+  url: null
+auth:
+  scheme: Bearer token (JWT) in Authorization header (issued by Instock during onboarding)
+tools:
+- name: list_sites
+  description: List all Instock sites available to your organization.
+  source_operation: openapi/instock-openapi.json#getSites
+- name: upload_articles
+  description: Upload one or more articles (SKUs) into Incloud (bulk supported).
+  source_operation: openapi/instock-openapi.json#uploadArticles
+- name: list_articles
+  description: List all articles.
+  source_operation: openapi/instock-openapi.json#listArticles
+- name: get_article
+  description: Retrieve a single article by article_id.
+  source_operation: openapi/instock-openapi.json#getArticle
+- name: update_article
+  description: Update an article.
+  source_operation: openapi/instock-openapi.json#updateArticle
+- name: create_order
+  description: Create a customer order for a site.
+  source_operation: openapi/instock-openapi.json#addOrder
+- name: list_orders
+  description: List all orders for a site.
+  source_operation: openapi/instock-openapi.json#ListSiteOrders
+- name: update_order
+  description: Update a customer order.
+  source_operation: openapi/instock-openapi.json#updateOrder
+- name: get_order
+  description: Retrieve an order.
+  source_operation: openapi/instock-openapi.json#getOrder
+- name: get_order_status
+  description: Retrieve the status of an order.
+  source_operation: openapi/instock-openapi.json#getOrderStatus
+- name: advance_order_status
+  description: Advance an order to the next status.
+  source_operation: openapi/instock-openapi.json#advanceOrderStatus
+- name: cancel_registered_order
+  description: Cancel a registered order.
+  source_operation: openapi/instock-openapi.json#cancelRegisteredOrder
+- name: get_ordertask
+  description: Retrieve an order task (a chunk of order fulfillment).
+  source_operation: openapi/instock-openapi.json#getOrderTask
+- name: list_inventory
+  description: List inventory for all articles at a site.
+  source_operation: openapi/instock-openapi.json#getAllInventory
+- name: retrieve_multiple_articles_inventory
+  description: Retrieve inventory for multiple articles at a site.
+  source_operation: openapi/instock-openapi.json#retrieveMultipleArticlesInventory
+- name: adjust_article_inventory
+  description: Adjust inventory quantity for an article.
+  source_operation: openapi/instock-openapi.json#adjustArticleInventory
+- name: get_article_inventory
+  description: Retrieve inventory for a single article.
+  source_operation: openapi/instock-openapi.json#getInventoryArticleId
+- name: list_moves
+  description: List article moves (flow in/out) for a site.
+  source_operation: openapi/instock-openapi.json#getAllArticlesMoves
+- name: get_article_moves
+  description: Retrieve moves for a single article.
+  source_operation: openapi/instock-openapi.json#getArticleIdMove

@@ -1,0 +1,41 @@
+generated: '2026-07-19'
+method: derived
+source: openapi/instock-openapi.json
+description: >-
+  Which industry / cross-cutting standards the Instock API conforms to, derived
+  from its OpenAPI definition and published conventions. No compliance
+  certifications (SOC 2, ISO 27001, etc.) are published by Instock, so no
+  `Compliance` pointer is emitted.
+standards:
+- id: openapi-3.1
+  conforms: true
+  evidence: Published OpenAPI 3.1.0 definition (Redocly reference).
+- id: rest
+  conforms: true
+  evidence: Predictable resource URLs, JSON bodies, standard HTTP methods/status codes.
+- id: http-bearer-jwt
+  conforms: true
+  evidence: securitySchemes bearerAuth (type http, scheme bearer, bearerFormat JWT).
+- id: oauth2
+  conforms: false
+  evidence: No oauth2 security scheme; tokens issued manually during onboarding.
+- id: oidc
+  conforms: false
+- id: cursor-pagination
+  conforms: true
+  evidence: start_cursor / page_size request params; has_more / next_cursor response fields.
+- id: rfc3339-datetimes
+  conforms: true
+  evidence: Temporal values encoded as RFC 3339 strings.
+- id: rfc9457-problem-details
+  conforms: false
+  evidence: Custom error envelope ({code, message}); not application/problem+json.
+- id: rfc9116-security-txt
+  conforms: false
+  evidence: No /.well-known/security.txt served (real 404 on api.instock.com).
+- id: idempotency
+  conforms: false
+  evidence: No idempotency-key mechanism documented.
+- id: webhooks
+  conforms: false
+  evidence: No webhook / event / AsyncAPI surface documented.

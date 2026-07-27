@@ -1,0 +1,24 @@
+{
+  "provider": "instock",
+  "sources": [
+    "instock-articles-api-openapi.yml",
+    "instock-inventory-api-openapi.yml",
+    "instock-moves-api-openapi.yml",
+    "instock-orders-api-openapi.yml",
+    "instock-ordertasks-api-openapi.yml",
+    "instock-sites-api-openapi.yml"
+  ],
+  "outputs": [
+    "instock-articles-api-openapi.yml",
+    "instock-inventory-api-openapi.yml",
+    "instock-moves-api-openapi.yml",
+    "instock-orders-api-openapi.yml",
+    "instock-ordertasks-api-openapi.yml",
+    "instock-sites-api-openapi.yml"
+  ],
+  "archived": [],
+  "errors": [],
+  "warnings": [],
+  "notes": [],
+  "skipped": []
+}

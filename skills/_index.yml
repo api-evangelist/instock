@@ -1,0 +1,16 @@
+generated: '2026-07-19'
+method: generated
+source: openapi/instock-openapi.json
+skills:
+- file: instock-onboard-articles.md
+  name: Onboard articles (SKUs) into Instock
+  api: openapi/instock-openapi.json
+  operations: [uploadArticles, listArticles, getArticle, updateArticle]
+- file: instock-create-and-fulfill-order.md
+  name: Create and fulfill a customer order
+  api: openapi/instock-openapi.json
+  operations: [getSites, addOrder, getOrder, getOrderStatus, advanceOrderStatus, getOrderTask, cancelRegisteredOrder]
+- file: instock-track-inventory-and-moves.md
+  name: Track inventory and article moves
+  api: openapi/instock-openapi.json
+  operations: [getAllInventory, retrieveMultipleArticlesInventory, adjustArticleInventory, getInventoryArticleId, getAllArticlesMoves, getArticleIdMove]
