@@ -241,7 +241,7 @@ common:
 - type: Overlay
   url: overlays/instock-openapi-overlay.yaml
 - type: OpenAPI
-  url: openapi/instock-openapi.json
+  url: openapi/_original/instock-openapi.json
 x-enrichment:
   date: '2026-07-19'
   status: backfilled
