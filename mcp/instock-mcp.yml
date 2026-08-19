@@ -2,11 +2,9 @@ generated: '2026-07-19'
 method: derived
 status: candidate
 source: openapi/instock-openapi.json
-description: >-
-  No official hosted/remote MCP server was found for Instock. This is a
-  candidate tool surface derived one-to-one from the 19 documented Instock API
-  operations, for building an MCP server over the Incloud REST API. Not an
-  Instock-published artifact.
+description: No official hosted/remote MCP server was found for Instock. This is a candidate tool surface
+  derived one-to-one from the 19 documented Instock API operations, for building an MCP server over the
+  Incloud REST API. Not an Instock-published artifact.
 server:
   name: instock
   transport: http
@@ -71,3 +69,9 @@ tools:
 - name: get_article_moves
   description: Retrieve moves for a single article.
   source_operation: openapi/instock-openapi.json#getArticleIdMove
+deployment:
+  mode: none
+  verified: derived
+  tools: 19
+  checked: '2026-08-12'
+  source: catalog MCP census

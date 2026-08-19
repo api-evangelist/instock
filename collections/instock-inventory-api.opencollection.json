@@ -1,0 +1,150 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Instock API reference Articles Inventory API",
+    "version": "0.1.0"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Inventory",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List all articles inventory",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.instock.com/v1/:site_id/inventory",
+            "headers": [
+              {
+                "name": "Instock-Correlation-ID",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "site_id",
+                "value": "1.1.0-1",
+                "type": "path",
+                "description": "ID of Instock site. Globally unique."
+              },
+              {
+                "name": "start_cursor",
+                "value": "",
+                "type": "query",
+                "description": "Cursor returned from a previous response, \nused to request the next page of the results. \n"
+              },
+              {
+                "name": "page_size",
+                "value": "",
+                "type": "query",
+                "description": "The number of articles returned in response. \nDefault (minimum) value is 10, maximum value is 1000.\n"
+              }
+            ]
+          },
+          "docs": "Returns a paginated list of inventory for all articles within specific site.\n\n**Note**: The response excludes articles where `free`, `reserved` and `registered` quantity values are all equal to `0`.\n    However, those articles are still in Incloud and their inventory data can be retrieved individually\n    via article inventory retrieval.\n"
+        },
+        {
+          "info": {
+            "name": "Retrieve multiple articles inventory",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.instock.com/v1/:site_id/inventory",
+            "headers": [
+              {
+                "name": "Instock-Correlation-ID",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "site_id",
+                "value": "1.1.0-1",
+                "type": "path",
+                "description": "ID of Instock site. Globally unique."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Returns inventory for multiple articles by article IDs within specific site.\n"
+        },
+        {
+          "info": {
+            "name": "Adjust article inventory",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "https://api.instock.com/v1/:site_id/inventory",
+            "headers": [
+              {
+                "name": "Instock-Correlation-ID",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "site_id",
+                "value": "1.1.0-1",
+                "type": "path",
+                "description": "ID of Instock site. Globally unique."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "> **Important**: this a debug endpoint, use it during integration with Incloud or during debugging.\n\nAdjusts inventory of one or more articles for virtual site. \n\n**Note**: `\"qty\": 0` will remove inventory (free stock) of a given article.\n"
+        },
+        {
+          "info": {
+            "name": "Retrieve article inventory",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.instock.com/v1/:site_id/inventory/:article_id",
+            "headers": [
+              {
+                "name": "Instock-Correlation-ID",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "site_id",
+                "value": "1.1.0-1",
+                "type": "path",
+                "description": "ID of Instock site. Globally unique."
+              },
+              {
+                "name": "article_id",
+                "value": "16000487727",
+                "type": "path",
+                "description": "ID of an article. Unique in scope of your organization(s)."
+              }
+            ]
+          },
+          "docs": "Returns inventory for a single article by article ID within specific site."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

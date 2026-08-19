@@ -1,0 +1,253 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Instock API reference Articles Orders API",
+    "version": "0.1.0"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Orders",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List all orders",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.instock.com/v1/:site_id/orders",
+            "headers": [
+              {
+                "name": "Instock-Correlation-ID",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "site_id",
+                "value": "1.1.0-1",
+                "type": "path",
+                "description": "ID of Instock site. Globally unique."
+              },
+              {
+                "name": "start_cursor",
+                "value": "",
+                "type": "query",
+                "description": "Cursor returned from a previous response, \nused to request the next page of the results. \n"
+              },
+              {
+                "name": "page_size",
+                "value": "",
+                "type": "query",
+                "description": "The number of articles returned in response. \nDefault (minimum) value is 10, maximum value is 1000.\n"
+              }
+            ]
+          },
+          "docs": "Returns a paginated list of all orders within specific site of an organization.\n"
+        },
+        {
+          "info": {
+            "name": "Create customer order",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.instock.com/v1/:site_id/orders",
+            "headers": [
+              {
+                "name": "Instock-Correlation-ID",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "site_id",
+                "value": "1.1.0-1",
+                "type": "path",
+                "description": "ID of Instock site. Globally unique."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Creates a single new customer order within a particular site of your organization.\n\n**Note**: if `lines` object contains a line with an article that is not uploaded, Incloud will yield `404` and request will fail.\n"
+        },
+        {
+          "info": {
+            "name": "Retrieve order",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.instock.com/v1/:site_id/orders/:order_id",
+            "headers": [
+              {
+                "name": "Instock-Correlation-ID",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "site_id",
+                "value": "1.1.0-1",
+                "type": "path",
+                "description": "ID of Instock site. Globally unique."
+              },
+              {
+                "name": "order_id",
+                "value": "00132455",
+                "type": "path",
+                "description": "ID of an order. Unique in scope of your organization(s)."
+              }
+            ]
+          },
+          "docs": "Retrieves a single existing order data.\n"
+        },
+        {
+          "info": {
+            "name": "Update customer order",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "https://api.instock.com/v1/:site_id/orders/:order_id",
+            "headers": [
+              {
+                "name": "Instock-Correlation-ID",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "site_id",
+                "value": "1.1.0-1",
+                "type": "path",
+                "description": "ID of Instock site. Globally unique."
+              },
+              {
+                "name": "order_id",
+                "value": "00132455",
+                "type": "path",
+                "description": "ID of an order. Unique in scope of your organization(s)."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Updates a single existing order with kind `customer`. \nOnly `registered` orders can be updated.\n\n**Note**: order update operation is performed via `PUT` method — when updating an order, all parameters must be\npassed.\n"
+        },
+        {
+          "info": {
+            "name": "Retrieve order status",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.instock.com/v1/:site_id/orders/:order_id/status",
+            "headers": [
+              {
+                "name": "Instock-Correlation-ID",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "site_id",
+                "value": "1.1.0-1",
+                "type": "path",
+                "description": "ID of Instock site. Globally unique."
+              },
+              {
+                "name": "order_id",
+                "value": "00132455",
+                "type": "path",
+                "description": "ID of an order. Unique in scope of your organization(s)."
+              }
+            ]
+          },
+          "docs": "Retrieves a single existing order data and its ordertask status."
+        },
+        {
+          "info": {
+            "name": "Advance order status",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.instock.com/v1/:site_id/orders/:order_id/status",
+            "headers": [
+              {
+                "name": "Instock-Correlation-ID",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "site_id",
+                "value": "1.1.0-1",
+                "type": "path",
+                "description": "ID of Instock site. Globally unique."
+              },
+              {
+                "name": "order_id",
+                "value": "00132455",
+                "type": "path",
+                "description": "ID of an order. Unique in scope of your organization(s)."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "> **Important**: this a debug endpoint, use it during integration with Incloud or during debugging.\n\nAdvances order status for virtual site from `registered` to `reserved`, from `reserved` to `done`.\n\nA request body is mandatory for this endpoint. If there's no need to specify a target storage cell for the order, the body should be an empty JSON object (`{}`). \nHowever, if you wish to control the storage cell where the order is being moved, you can include the optional parameter `to_cell_id` wit"
+        },
+        {
+          "info": {
+            "name": "Cancel registered order",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://api.instock.com/v1/:site_id/orders/:order_id/status",
+            "headers": [
+              {
+                "name": "Instock-Correlation-ID",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "site_id",
+                "value": "1.1.0-1",
+                "type": "path",
+                "description": "ID of Instock site. Globally unique."
+              },
+              {
+                "name": "order_id",
+                "value": "00132455",
+                "type": "path",
+                "description": "ID of an order. Unique in scope of your organization(s)."
+              }
+            ]
+          },
+          "docs": "Cancels a single registered customer order within a particular site of your organization.\n"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

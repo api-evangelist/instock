@@ -1,0 +1,41 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Instock API reference Articles Sites API",
+    "version": "0.1.0"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Sites",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List all sites",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.instock.com/v1/sites",
+            "headers": [
+              {
+                "name": "Instock-Correlation-ID",
+                "value": ""
+              }
+            ]
+          },
+          "docs": "Returns a list of sites available to your organization and their properties."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

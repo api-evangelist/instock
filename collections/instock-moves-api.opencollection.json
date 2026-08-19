@@ -1,0 +1,129 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Instock API reference Articles Moves API",
+    "version": "0.1.0"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Moves",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List all articles moves",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.instock.com/v1/:site_id/moves",
+            "headers": [
+              {
+                "name": "Instock-Correlation-ID",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "site_id",
+                "value": "1.1.0-1",
+                "type": "path",
+                "description": "ID of Instock site. Globally unique."
+              },
+              {
+                "name": "start_cursor",
+                "value": "",
+                "type": "query",
+                "description": "Cursor returned from a previous response, \nused to request the next page of the results. \n"
+              },
+              {
+                "name": "page_size",
+                "value": "",
+                "type": "query",
+                "description": "The number of articles returned in response. \nDefault (minimum) value is 10, maximum value is 1000.\n"
+              },
+              {
+                "name": "from_timestamp",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "to_timestamp",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "to_cell_id",
+                "value": "",
+                "type": "query"
+              }
+            ]
+          },
+          "docs": "Returns a paginated list of all moves for all articles within specific site.\n\n**Note**:  Results are sorted in a descending order of their timestamps, meaning the latest results are displayed first.\n"
+        },
+        {
+          "info": {
+            "name": "Retrieve article moves",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.instock.com/v1/:site_id/moves/:article_id",
+            "headers": [
+              {
+                "name": "Instock-Correlation-ID",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "site_id",
+                "value": "1.1.0-1",
+                "type": "path",
+                "description": "ID of Instock site. Globally unique."
+              },
+              {
+                "name": "article_id",
+                "value": "16000487727",
+                "type": "path",
+                "description": "ID of an article. Unique in scope of your organization(s)."
+              },
+              {
+                "name": "start_cursor",
+                "value": "",
+                "type": "query",
+                "description": "Cursor returned from a previous response, \nused to request the next page of the results. \n"
+              },
+              {
+                "name": "page_size",
+                "value": "",
+                "type": "query",
+                "description": "The number of articles returned in response. \nDefault (minimum) value is 10, maximum value is 1000.\n"
+              },
+              {
+                "name": "from_timestamp",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "to_timestamp",
+                "value": "",
+                "type": "query"
+              }
+            ]
+          },
+          "docs": "Returns a paginated list of all moves of a single article within a specific site.\n\n**Note**:  Results are sorted in a descending order of their timestamps, meaning the latest results are displayed first.\n"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

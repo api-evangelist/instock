@@ -1,0 +1,3241 @@
+{
+  "item": [
+    {
+      "id": "4bce4e1e-3aaa-462c-a11f-0a2bd38da07e",
+      "name": "Orders",
+      "description": {
+        "content": "Intentions of users of Instock ASRS are represented by `orders` structure.\n\nOrders resource allows:\n* create/update/retrieve records for picking of goods from the ASRS (`customer` orders)\n* retrieve-only access to records for induction/adjustment/extraction of inventory\n(`adjustment`, `reception`, `extraction` orders)\n\nAll operations with orders are performed in scope of a particular site and require\n`site_id` as a path parameter.\n\nThe following kinds and statuses of orders are in use:\n| Order Kind | Description |\n|--------------|------------------------------------------------------------------------------------------------|\n| `customer`   | order that needs to be fulfilled from ASRS and are placed by you, as client of API. |\n| `adjustment` | order to correct current inventory. |   \n| `reception`  | order to receive goods or assets into ASRS, triggered by shipment from supplier, return of goods, etc. |\n| `extraction` | order to extract assets from ASRS. |\n\n| Order Status | Description |\n|----------------|-----------------------------------------------|\n| `registered`   | order registered and awaiting for fulfillment in scope of ordertask(s).|\n| `reserved`     | fulfillment in progress.                      |\n| `done`         | order has been fulfilled.                     | \n| `canceled`    | order has been canceled.                     |    \n \n\n**Note**: \n* only `customer` orders can be updated, and only while they are in status `registered`. Once order\nfulfillment has started Instock ASRS freezes (makes read-only) customer orders.\n* custom `attributes` object values are optional and defined upon initial integration with Incloud.\n",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "9c1e7f2e-f49b-484b-8ce5-f70334e66a2d",
+          "name": "Create customer order",
+          "request": {
+            "name": "Create customer order",
+            "description": {
+              "content": "Creates a single new customer order within a particular site of your organization.\n\n**Note**: if `lines` object contains a line with an article that is not uploaded, Incloud will yield `404` and request will fail.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                ":site_id",
+                "orders"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "site_id",
+                  "description": "(Required) ID of Instock site. Globally unique."
+                }
+              ]
+            },
+            "header": [
+              {
+                "disabled": false,
+                "description": "Optional header ID to track and analyze requests and behaviors across your Host system.",
+                "key": "Instock-Correlation-ID",
+                "value": "<string>"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"org_id\": \"<string>\",\n  \"site_id\": \"<string>\",\n  \"order_id\": \"<string>\",\n  \"kind\": \"customer\",\n  \"placed_at\": \"<dateTime>\",\n  \"attributes\": {\n    \"key_0\": \"<string>\",\n    \"key_1\": \"<string>\"\n  },\n  \"lines\": [\n    {\n      \"line_id\": \"<string>\",\n      \"article_id\": \"<string>\",\n      \"qty\": \"<long>\"\n    },\n    {\n      \"line_id\": \"<string>\",\n      \"article_id\": \"<string>\",\n      \"qty\": \"<long>\"\n    }\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "f8240555-9868-47ae-a1cc-ae4838ae4656",
+              "name": "Successful operation.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    ":site_id",
+                    "orders"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "site_id",
+                      "description": "(Required) ID of Instock site. Globally unique."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Optional header ID to track and analyze requests and behaviors across your Host system.",
+                    "key": "Instock-Correlation-ID",
+                    "value": "<string>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"org_id\": \"org_id_001\",\n  \"site_id\": \"1.1.0-1\",\n  \"order_id\": \"00132455\",\n  \"kind\": \"customer\",\n  \"placed_at\": \"2022-03-05T07:38:39Z\",\n  \"attributes\": {\n    \"property1\": \"string\",\n    \"property2\": \"string\"\n  },\n  \"lines\": [\n    {\n      \"line_id\": \"00132455-1\",\n      \"article_id\": \"1003000031678\",\n      \"qty\": 1\n    }\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "Auto-generated ID in the response headers to reference a specific request, useful for debugging or seeking support.",
+                  "key": "Instock-Response-ID",
+                  "value": "string"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "\"Successful operation.\"",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "cd776b90-0c90-4254-b097-1f8072b1f997",
+              "name": "Bad request",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    ":site_id",
+                    "orders"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "site_id",
+                      "description": "(Required) ID of Instock site. Globally unique."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Optional header ID to track and analyze requests and behaviors across your Host system.",
+                    "key": "Instock-Correlation-ID",
+                    "value": "<string>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"org_id\": \"org_id_001\",\n  \"site_id\": \"1.1.0-1\",\n  \"order_id\": \"00132455\",\n  \"kind\": \"customer\",\n  \"placed_at\": \"2022-03-05T07:38:39Z\",\n  \"attributes\": {\n    \"property1\": \"string\",\n    \"property2\": \"string\"\n  },\n  \"lines\": [\n    {\n      \"line_id\": \"00132455-1\",\n      \"article_id\": \"1003000031678\",\n      \"qty\": 1\n    }\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "Auto-generated ID in the response headers to reference a specific request, useful for debugging or seeking support.",
+                  "key": "Instock-Response-ID",
+                  "value": "string"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"bad_request\",\n  \"message\": \"Request body/path/query params cannot be validated.\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "d1f920a6-e75d-44b9-bdab-cc1a08e436cf",
+              "name": "Unauthorized",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    ":site_id",
+                    "orders"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "site_id",
+                      "description": "(Required) ID of Instock site. Globally unique."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Optional header ID to track and analyze requests and behaviors across your Host system.",
+                    "key": "Instock-Correlation-ID",
+                    "value": "<string>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"org_id\": \"org_id_001\",\n  \"site_id\": \"1.1.0-1\",\n  \"order_id\": \"00132455\",\n  \"kind\": \"customer\",\n  \"placed_at\": \"2022-03-05T07:38:39Z\",\n  \"attributes\": {\n    \"property1\": \"string\",\n    \"property2\": \"string\"\n  },\n  \"lines\": [\n    {\n      \"line_id\": \"00132455-1\",\n      \"article_id\": \"1003000031678\",\n      \"qty\": 1\n    }\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "Auto-generated ID in the response headers to reference a specific request, useful for debugging or seeking support.",
+                  "key": "Instock-Response-ID",
+                  "value": "string"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"unauthorized\",\n  \"message\": \"API key is not valid.\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "a84048ea-e39e-4c76-8769-5eafa44f1db6",
+              "name": "Forbidden",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    ":site_id",
+                    "orders"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "site_id",
+                      "description": "(Required) ID of Instock site. Globally unique."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Optional header ID to track and analyze requests and behaviors across your Host system.",
+                    "key": "Instock-Correlation-ID",
+                    "value": "<string>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"org_id\": \"org_id_001\",\n  \"site_id\": \"1.1.0-1\",\n  \"order_id\": \"00132455\",\n  \"kind\": \"customer\",\n  \"placed_at\": \"2022-03-05T07:38:39Z\",\n  \"attributes\": {\n    \"property1\": \"string\",\n    \"property2\": \"string\"\n  },\n  \"lines\": [\n    {\n      \"line_id\": \"00132455-1\",\n      \"article_id\": \"1003000031678\",\n      \"qty\": 1\n    }\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "Auto-generated ID in the response headers to reference a specific request, useful for debugging or seeking support.",
+                  "key": "Instock-Response-ID",
+                  "value": "string"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"forbidden\",\n  \"message\": \"API key doesn't have permissions to perform the request.\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "29abff69-4af6-4172-a029-dc0ca4eb1a5e",
+              "name": "Not found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    ":site_id",
+                    "orders"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "site_id",
+                      "description": "(Required) ID of Instock site. Globally unique."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Optional header ID to track and analyze requests and behaviors across your Host system.",
+                    "key": "Instock-Correlation-ID",
+                    "value": "<string>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"org_id\": \"org_id_001\",\n  \"site_id\": \"1.1.0-1\",\n  \"order_id\": \"00132455\",\n  \"kind\": \"customer\",\n  \"placed_at\": \"2022-03-05T07:38:39Z\",\n  \"attributes\": {\n    \"property1\": \"string\",\n    \"property2\": \"string\"\n  },\n  \"lines\": [\n    {\n      \"line_id\": \"00132455-1\",\n      \"article_id\": \"1003000031678\",\n      \"qty\": 1\n    }\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "Auto-generated ID in the response headers to reference a specific request, useful for debugging or seeking support.",
+                  "key": "Instock-Response-ID",
+                  "value": "string"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"resource_not_found\",\n  \"message\": \"site_id doesn't exist.\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "8dfc3159-08bd-4de8-a7e3-7b1d11312dfb",
+              "name": "Internal server error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    ":site_id",
+                    "orders"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "site_id",
+                      "description": "(Required) ID of Instock site. Globally unique."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Optional header ID to track and analyze requests and behaviors across your Host system.",
+                    "key": "Instock-Correlation-ID",
+                    "value": "<string>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"org_id\": \"org_id_001\",\n  \"site_id\": \"1.1.0-1\",\n  \"order_id\": \"00132455\",\n  \"kind\": \"customer\",\n  \"placed_at\": \"2022-03-05T07:38:39Z\",\n  \"attributes\": {\n    \"property1\": \"string\",\n    \"property2\": \"string\"\n  },\n  \"lines\": [\n    {\n      \"line_id\": \"00132455-1\",\n      \"article_id\": \"1003000031678\",\n      \"qty\": 1\n    }\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "Auto-generated ID in the response headers to reference a specific request, useful for debugging or seeking support.",
+                  "key": "Instock-Response-ID",
+                  "value": "string"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"internal_server_error\",\n  \"message\": \"Unexpected error occurred.\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "18db4013-15b0-48f8-a51c-156c07433523",
+          "name": "List all orders",
+          "request": {
+            "name": "List all orders",
+            "description": {
+              "content": "Returns a paginated list of all orders within specific site of an organization.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                ":site_id",
+                "orders"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "start_cursor",
+                  "value": "",
+                  "description": "Cursor returned from a previous response, \nused to request the next page of the results. \n"
+                },
+                {
+                  "disabled": false,
+                  "key": "page_size",
+                  "value": "10",
+                  "description": "The number of articles returned in response. \nDefault (minimum) value is 10, maximum value is 1000.\n"
+                }
+              ],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "site_id",
+                  "description": "(Required) ID of Instock site. Globally unique."
+                }
+              ]
+            },
+            "header": [
+              {
+                "disabled": false,
+                "description": "Optional header ID to track and analyze requests and behaviors across your Host system.",
+                "key": "Instock-Correlation-ID",
+                "value": "<string>"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "1b54c565-7052-4487-9699-f287abf072f3",
+              "name": "Successful operation",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    ":site_id",
+                    "orders"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "start_cursor",
+                      "value": "fe2cc560-036c-44cd-90e8-294d5a74cebc"
+                    },
+                    {
+                      "key": "page_size",
+                      "value": "10"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "site_id",
+                      "description": "(Required) ID of Instock site. Globally unique."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Optional header ID to track and analyze requests and behaviors across your Host system.",
+                    "key": "Instock-Correlation-ID",
+                    "value": "<string>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "Auto-generated ID in the response headers to reference a specific request, useful for debugging or seeking support.",
+                  "key": "Instock-Response-ID",
+                  "value": "string"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"has_more\": false,\n  \"next_cursor\": \"\",\n  \"org_id\": \"org_id_001\",\n  \"site_id\": \"1.1.0-1\",\n  \"orders\": [\n    {\n      \"order_id\": \"00132457\",\n      \"site_id\": \"1.1.0-1\",\n      \"kind\": \"customer\",\n      \"placed_at\": \"2022-03-06T12:45:09Z\",\n      \"attributes\": {\n        \"property1\": \"string\",\n        \"property2\": \"string\"\n      },\n      \"lines\": [\n        {\n          \"line_id\": \"00132457-1\",\n          \"article_id\": \"116000275270\",\n          \"qty\": 1\n        },\n        {\n          \"line_id\": \"00132457-2\",\n          \"article_id\": \"1003000031678\",\n          \"qty\": 2\n        },\n        {\n          \"line_id\": \"00132457-3\",\n          \"article_id\": \"116000487727\",\n          \"qty\": 3\n        }\n      ]\n    },\n    {\n      \"order_id\": 132458,\n      \"site_id\": \"1.1.0-1\",\n      \"kind\": \"adjustment\",\n      \"placed_at\": \"2022-03-06T12:47:19Z\",\n      \"attributes\": {\n        \"property1\": \"string\",\n        \"property2\": \"string\"\n      },\n      \"lines\": [\n        {\n          \"line_id\": \"00132458-1\",\n          \"article_id\": \"116000275270\",\n          \"qty\": 1\n        }\n      ]\n    },\n    {\n      \"order_id\": 132459,\n      \"site_id\": \"1.1.0-1\",\n      \"kind\": \"reception\",\n      \"placed_at\": \"2022-03-06T12:47:19Z\",\n      \"attributes\": {\n        \"property1\": \"string\",\n        \"property2\": \"string\"\n      },\n      \"lines\": [\n        {\n          \"line_id\": \"00132459-1\",\n          \"article_id\": \"116000275270\",\n          \"qty\": 14\n        },\n        {\n          \"line_id\": \"00132459-2\",\n          \"article_id\": \"116000275271\",\n          \"qty\": 20\n        },\n        {\n          \"line_id\": \"00132459-3\",\n          \"article_id\": \"116000275274\",\n          \"qty\": 10\n        }\n      ]\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "3e5bc689-be6e-4d14-b740-9036c537f910",
+              "name": "Bad request",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    ":site_id",
+                    "orders"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "start_cursor",
+                      "value": "fe2cc560-036c-44cd-90e8-294d5a74cebc"
+                    },
+                    {
+                      "key": "page_size",
+                      "value": "10"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "site_id",
+                      "description": "(Required) ID of Instock site. Globally unique."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Optional header ID to track and analyze requests and behaviors across your Host system.",
+                    "key": "Instock-Correlation-ID",
+                    "value": "<string>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "Auto-generated ID in the response headers to reference a specific request, useful for debugging or seeking support.",
+                  "key": "Instock-Response-ID",
+                  "value": "string"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"bad_request\",\n  \"message\": \"Request body/path/query params cannot be validated.\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "8548a1aa-badb-4a25-af43-8a29fe597607",
+              "name": "Unauthorized",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    ":site_id",
+                    "orders"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "start_cursor",
+                      "value": "fe2cc560-036c-44cd-90e8-294d5a74cebc"
+                    },
+                    {
+                      "key": "page_size",
+                      "value": "10"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "site_id",
+                      "description": "(Required) ID of Instock site. Globally unique."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Optional header ID to track and analyze requests and behaviors across your Host system.",
+                    "key": "Instock-Correlation-ID",
+                    "value": "<string>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "Auto-generated ID in the response headers to reference a specific request, useful for debugging or seeking support.",
+                  "key": "Instock-Response-ID",
+                  "value": "string"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"unauthorized\",\n  \"message\": \"API key is not valid.\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "9f75ad64-b0fd-4460-b96a-eb35d7716994",
+              "name": "Forbidden",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    ":site_id",
+                    "orders"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "start_cursor",
+                      "value": "fe2cc560-036c-44cd-90e8-294d5a74cebc"
+                    },
+                    {
+                      "key": "page_size",
+                      "value": "10"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "site_id",
+                      "description": "(Required) ID of Instock site. Globally unique."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Optional header ID to track and analyze requests and behaviors across your Host system.",
+                    "key": "Instock-Correlation-ID",
+                    "value": "<string>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "Auto-generated ID in the response headers to reference a specific request, useful for debugging or seeking support.",
+                  "key": "Instock-Response-ID",
+                  "value": "string"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"forbidden\",\n  \"message\": \"API key doesn't have permissions to perform the request.\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "4fa331da-6aa0-4970-b405-86f3bf2348e0",
+              "name": "Not found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    ":site_id",
+                    "orders"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "start_cursor",
+                      "value": "fe2cc560-036c-44cd-90e8-294d5a74cebc"
+                    },
+                    {
+                      "key": "page_size",
+                      "value": "10"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "site_id",
+                      "description": "(Required) ID of Instock site. Globally unique."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Optional header ID to track and analyze requests and behaviors across your Host system.",
+                    "key": "Instock-Correlation-ID",
+                    "value": "<string>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "Auto-generated ID in the response headers to reference a specific request, useful for debugging or seeking support.",
+                  "key": "Instock-Response-ID",
+                  "value": "string"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"resource_not_found\",\n  \"message\": \"site_id doesn't exist.\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "b6976974-811b-4e27-8255-df769d57fa52",
+              "name": "Internal server error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    ":site_id",
+                    "orders"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "start_cursor",
+                      "value": "fe2cc560-036c-44cd-90e8-294d5a74cebc"
+                    },
+                    {
+                      "key": "page_size",
+                      "value": "10"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "site_id",
+                      "description": "(Required) ID of Instock site. Globally unique."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Optional header ID to track and analyze requests and behaviors across your Host system.",
+                    "key": "Instock-Correlation-ID",
+                    "value": "<string>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "Auto-generated ID in the response headers to reference a specific request, useful for debugging or seeking support.",
+                  "key": "Instock-Response-ID",
+                  "value": "string"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"internal_server_error\",\n  \"message\": \"Unexpected error occurred.\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "6e7a0447-f118-4320-9ef0-f5686d90b584",
+          "name": "Update customer order",
+          "request": {
+            "name": "Update customer order",
+            "description": {
+              "content": "Updates a single existing order with kind `customer`. \nOnly `registered` orders can be updated.\n\n**Note**: order update operation is performed via `PUT` method — when updating an order, all parameters must be\npassed.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                ":site_id",
+                "orders",
+                ":order_id"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "site_id",
+                  "description": "(Required) ID of Instock site. Globally unique."
+                },
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "order_id",
+                  "description": "(Required) ID of an order. Unique in scope of your organization(s)."
+                }
+              ]
+            },
+            "header": [
+              {
+                "disabled": false,
+                "description": "Optional header ID to track and analyze requests and behaviors across your Host system.",
+                "key": "Instock-Correlation-ID",
+                "value": "<string>"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "PUT",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"org_id\": \"<string>\",\n  \"site_id\": \"<string>\",\n  \"order_id\": \"<string>\",\n  \"kind\": \"customer\",\n  \"placed_at\": \"<dateTime>\",\n  \"attributes\": {\n    \"key_0\": \"<string>\",\n    \"key_1\": \"<string>\"\n  },\n  \"lines\": [\n    {\n      \"line_id\": \"<string>\",\n      \"article_id\": \"<string>\",\n      \"qty\": \"<long>\"\n    },\n    {\n      \"line_id\": \"<string>\",\n      \"article_id\": \"<string>\",\n      \"qty\": \"<long>\"\n    }\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "d486071a-1fca-4cbe-9f83-210ad847a362",
+              "name": "Successful operation.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    ":site_id",
+                    "orders",
+                    ":order_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "site_id",
+                      "description": "(Required) ID of Instock site. Globally unique."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "order_id",
+                      "description": "(Required) ID of an order. Unique in scope of your organization(s)."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Optional header ID to track and analyze requests and behaviors across your Host system.",
+                    "key": "Instock-Correlation-ID",
+                    "value": "<string>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PUT",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"org_id\": \"org_id_001\",\n  \"site_id\": \"1.1.0-1\",\n  \"order_id\": \"00132455\",\n  \"kind\": \"customer\",\n  \"placed_at\": \"2022-03-05T07:38:39Z\",\n  \"attributes\": {\n    \"property1\": \"string\",\n    \"property2\": \"string\"\n  },\n  \"lines\": [\n    {\n      \"line_id\": \"00132455-1\",\n      \"article_id\": \"1003000031678\",\n      \"qty\": 1\n    }\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "Auto-generated ID in the response headers to reference a specific request, useful for debugging or seeking support.",
+                  "key": "Instock-Response-ID",
+                  "value": "string"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "\"Successful operation.\"",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "8772ee3d-7fcb-4c9c-9cdb-23f2f8380841",
+              "name": "Bad request",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    ":site_id",
+                    "orders",
+                    ":order_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "site_id",
+                      "description": "(Required) ID of Instock site. Globally unique."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "order_id",
+                      "description": "(Required) ID of an order. Unique in scope of your organization(s)."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Optional header ID to track and analyze requests and behaviors across your Host system.",
+                    "key": "Instock-Correlation-ID",
+                    "value": "<string>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PUT",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"org_id\": \"org_id_001\",\n  \"site_id\": \"1.1.0-1\",\n  \"order_id\": \"00132455\",\n  \"kind\": \"customer\",\n  \"placed_at\": \"2022-03-05T07:38:39Z\",\n  \"attributes\": {\n    \"property1\": \"string\",\n    \"property2\": \"string\"\n  },\n  \"lines\": [\n    {\n      \"line_id\": \"00132455-1\",\n      \"article_id\": \"1003000031678\",\n      \"qty\": 1\n    }\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "Auto-generated ID in the response headers to reference a specific request, useful for debugging or seeking support.",
+                  "key": "Instock-Response-ID",
+                  "value": "string"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"bad_request\",\n  \"message\": \"Request body/path/query params cannot be validated.\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "5e8ebceb-8ffe-42ee-b649-47b028f18823",
+              "name": "Unauthorized",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    ":site_id",
+                    "orders",
+                    ":order_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "site_id",
+                      "description": "(Required) ID of Instock site. Globally unique."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "order_id",
+                      "description": "(Required) ID of an order. Unique in scope of your organization(s)."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Optional header ID to track and analyze requests and behaviors across your Host system.",
+                    "key": "Instock-Correlation-ID",
+                    "value": "<string>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PUT",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"org_id\": \"org_id_001\",\n  \"site_id\": \"1.1.0-1\",\n  \"order_id\": \"00132455\",\n  \"kind\": \"customer\",\n  \"placed_at\": \"2022-03-05T07:38:39Z\",\n  \"attributes\": {\n    \"property1\": \"string\",\n    \"property2\": \"string\"\n  },\n  \"lines\": [\n    {\n      \"line_id\": \"00132455-1\",\n      \"article_id\": \"1003000031678\",\n      \"qty\": 1\n    }\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "Auto-generated ID in the response headers to reference a specific request, useful for debugging or seeking support.",
+                  "key": "Instock-Response-ID",
+                  "value": "string"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"unauthorized\",\n  \"message\": \"API key is not valid.\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "3515af59-a7e5-4e15-981b-736df0704c83",
+              "name": "Forbidden",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    ":site_id",
+                    "orders",
+                    ":order_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "site_id",
+                      "description": "(Required) ID of Instock site. Globally unique."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "order_id",
+                      "description": "(Required) ID of an order. Unique in scope of your organization(s)."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Optional header ID to track and analyze requests and behaviors across your Host system.",
+                    "key": "Instock-Correlation-ID",
+                    "value": "<string>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PUT",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"org_id\": \"org_id_001\",\n  \"site_id\": \"1.1.0-1\",\n  \"order_id\": \"00132455\",\n  \"kind\": \"customer\",\n  \"placed_at\": \"2022-03-05T07:38:39Z\",\n  \"attributes\": {\n    \"property1\": \"string\",\n    \"property2\": \"string\"\n  },\n  \"lines\": [\n    {\n      \"line_id\": \"00132455-1\",\n      \"article_id\": \"1003000031678\",\n      \"qty\": 1\n    }\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "Auto-generated ID in the response headers to reference a specific request, useful for debugging or seeking support.",
+                  "key": "Instock-Response-ID",
+                  "value": "string"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"forbidden\",\n  \"message\": \"API key doesn't have permissions to perform the request.\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "888912c6-2e13-4538-bf57-20a9e8fb9cfc",
+              "name": "Not found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    ":site_id",
+                    "orders",
+                    ":order_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "site_id",
+                      "description": "(Required) ID of Instock site. Globally unique."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "order_id",
+                      "description": "(Required) ID of an order. Unique in scope of your organization(s)."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Optional header ID to track and analyze requests and behaviors across your Host system.",
+                    "key": "Instock-Correlation-ID",
+                    "value": "<string>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PUT",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"org_id\": \"org_id_001\",\n  \"site_id\": \"1.1.0-1\",\n  \"order_id\": \"00132455\",\n  \"kind\": \"customer\",\n  \"placed_at\": \"2022-03-05T07:38:39Z\",\n  \"attributes\": {\n    \"property1\": \"string\",\n    \"property2\": \"string\"\n  },\n  \"lines\": [\n    {\n      \"line_id\": \"00132455-1\",\n      \"article_id\": \"1003000031678\",\n      \"qty\": 1\n    }\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "Auto-generated ID in the response headers to reference a specific request, useful for debugging or seeking support.",
+                  "key": "Instock-Response-ID",
+                  "value": "string"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"resource_not_found\",\n  \"message\": \"site_id doesn't exist.\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "7c3b8abc-40c5-4f56-b462-a428466b7fe7",
+              "name": "Internal server error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    ":site_id",
+                    "orders",
+                    ":order_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "site_id",
+                      "description": "(Required) ID of Instock site. Globally unique."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "order_id",
+                      "description": "(Required) ID of an order. Unique in scope of your organization(s)."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Optional header ID to track and analyze requests and behaviors across your Host system.",
+                    "key": "Instock-Correlation-ID",
+                    "value": "<string>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PUT",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"org_id\": \"org_id_001\",\n  \"site_id\": \"1.1.0-1\",\n  \"order_id\": \"00132455\",\n  \"kind\": \"customer\",\n  \"placed_at\": \"2022-03-05T07:38:39Z\",\n  \"attributes\": {\n    \"property1\": \"string\",\n    \"property2\": \"string\"\n  },\n  \"lines\": [\n    {\n      \"line_id\": \"00132455-1\",\n      \"article_id\": \"1003000031678\",\n      \"qty\": 1\n    }\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "Auto-generated ID in the response headers to reference a specific request, useful for debugging or seeking support.",
+                  "key": "Instock-Response-ID",
+                  "value": "string"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"internal_server_error\",\n  \"message\": \"Unexpected error occurred.\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "0cf783fe-0221-462e-a4fe-e1aa14d863ae",
+          "name": "Retrieve order",
+          "request": {
+            "name": "Retrieve order",
+            "description": {
+              "content": "Retrieves a single existing order data.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                ":site_id",
+                "orders",
+                ":order_id"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "site_id",
+                  "description": "(Required) ID of Instock site. Globally unique."
+                },
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "order_id",
+                  "description": "(Required) ID of an order. Unique in scope of your organization(s)."
+                }
+              ]
+            },
+            "header": [
+              {
+                "disabled": false,
+                "description": "Optional header ID to track and analyze requests and behaviors across your Host system.",
+                "key": "Instock-Correlation-ID",
+                "value": "<string>"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "36c90f55-b243-416b-82f3-baf392b0d809",
+              "name": "Successful operation.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    ":site_id",
+                    "orders",
+                    ":order_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "site_id",
+                      "description": "(Required) ID of Instock site. Globally unique."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "order_id",
+                      "description": "(Required) ID of an order. Unique in scope of your organization(s)."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Optional header ID to track and analyze requests and behaviors across your Host system.",
+                    "key": "Instock-Correlation-ID",
+                    "value": "<string>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "Auto-generated ID in the response headers to reference a specific request, useful for debugging or seeking support.",
+                  "key": "Instock-Response-ID",
+                  "value": "string"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"org_id\": \"org_id_001\",\n  \"site_id\": \"1.1.0-1\",\n  \"order_id\": \"00132455\",\n  \"kind\": \"customer\",\n  \"placed_at\": \"2022-03-05T07:38:39Z\",\n  \"attributes\": {\n    \"property1\": \"string\",\n    \"property2\": \"string\"\n  },\n  \"lines\": [\n    {\n      \"line_id\": \"00132455-1\",\n      \"article_id\": \"1003000031678\",\n      \"qty\": 1\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "69a3da32-6fec-4811-aa93-cab36050e79a",
+              "name": "Bad request",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    ":site_id",
+                    "orders",
+                    ":order_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "site_id",
+                      "description": "(Required) ID of Instock site. Globally unique."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "order_id",
+                      "description": "(Required) ID of an order. Unique in scope of your organization(s)."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Optional header ID to track and analyze requests and behaviors across your Host system.",
+                    "key": "Instock-Correlation-ID",
+                    "value": "<string>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "Auto-generated ID in the response headers to reference a specific request, useful for debugging or seeking support.",
+                  "key": "Instock-Response-ID",
+                  "value": "string"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"bad_request\",\n  \"message\": \"Request body/path/query params cannot be validated.\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "6c7f900d-6bbf-429f-ad1b-d99b77184d69",
+              "name": "Unauthorized",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    ":site_id",
+                    "orders",
+                    ":order_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "site_id",
+                      "description": "(Required) ID of Instock site. Globally unique."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "order_id",
+                      "description": "(Required) ID of an order. Unique in scope of your organization(s)."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Optional header ID to track and analyze requests and behaviors across your Host system.",
+                    "key": "Instock-Correlation-ID",
+                    "value": "<string>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "Auto-generated ID in the response headers to reference a specific request, useful for debugging or seeking support.",
+                  "key": "Instock-Response-ID",
+                  "value": "string"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"unauthorized\",\n  \"message\": \"API key is not valid.\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "c77b03e8-0cf0-47bd-9c8a-62c64a81001e",
+              "name": "Forbidden",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    ":site_id",
+                    "orders",
+                    ":order_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "site_id",
+                      "description": "(Required) ID of Instock site. Globally unique."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "order_id",
+                      "description": "(Required) ID of an order. Unique in scope of your organization(s)."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Optional header ID to track and analyze requests and behaviors across your Host system.",
+                    "key": "Instock-Correlation-ID",
+                    "value": "<string>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "Auto-generated ID in the response headers to reference a specific request, useful for debugging or seeking support.",
+                  "key": "Instock-Response-ID",
+                  "value": "string"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"forbidden\",\n  \"message\": \"API key doesn't have permissions to perform the request.\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "f8e71f20-0822-4aa9-9cbf-fd2881144164",
+              "name": "Not found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    ":site_id",
+                    "orders",
+                    ":order_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "site_id",
+                      "description": "(Required) ID of Instock site. Globally unique."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "order_id",
+                      "description": "(Required) ID of an order. Unique in scope of your organization(s)."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Optional header ID to track and analyze requests and behaviors across your Host system.",
+                    "key": "Instock-Correlation-ID",
+                    "value": "<string>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "Auto-generated ID in the response headers to reference a specific request, useful for debugging or seeking support.",
+                  "key": "Instock-Response-ID",
+                  "value": "string"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"resource_not_found\",\n  \"message\": \"site_id doesn't exist.\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "e1bc72bf-a025-4af8-bdc0-32ee1c396343",
+              "name": "Internal server error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    ":site_id",
+                    "orders",
+                    ":order_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "site_id",
+                      "description": "(Required) ID of Instock site. Globally unique."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "order_id",
+                      "description": "(Required) ID of an order. Unique in scope of your organization(s)."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Optional header ID to track and analyze requests and behaviors across your Host system.",
+                    "key": "Instock-Correlation-ID",
+                    "value": "<string>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "Auto-generated ID in the response headers to reference a specific request, useful for debugging or seeking support.",
+                  "key": "Instock-Response-ID",
+                  "value": "string"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"internal_server_error\",\n  \"message\": \"Unexpected error occurred.\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "7345fb5a-b5e0-4a07-8b78-962fa7bb1aab",
+          "name": "Retrieve order status",
+          "request": {
+            "name": "Retrieve order status",
+            "description": {
+              "content": "Retrieves a single existing order data and its ordertask status.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                ":site_id",
+                "orders",
+                ":order_id",
+                "status"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "site_id",
+                  "description": "(Required) ID of Instock site. Globally unique."
+                },
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "order_id",
+                  "description": "(Required) ID of an order. Unique in scope of your organization(s)."
+                }
+              ]
+            },
+            "header": [
+              {
+                "disabled": false,
+                "description": "Optional header ID to track and analyze requests and behaviors across your Host system.",
+                "key": "Instock-Correlation-ID",
+                "value": "<string>"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "17840ae1-4a6a-45ab-b6cd-0edd58316b96",
+              "name": "Successful operation",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    ":site_id",
+                    "orders",
+                    ":order_id",
+                    "status"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "site_id",
+                      "description": "(Required) ID of Instock site. Globally unique."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "order_id",
+                      "description": "(Required) ID of an order. Unique in scope of your organization(s)."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Optional header ID to track and analyze requests and behaviors across your Host system.",
+                    "key": "Instock-Correlation-ID",
+                    "value": "<string>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "Auto-generated ID in the response headers to reference a specific request, useful for debugging or seeking support.",
+                  "key": "Instock-Response-ID",
+                  "value": "string"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"org_id\": \"org_id_001\",\n  \"site_id\": \"1.1.0-1\",\n  \"order_id\": \"00132456\",\n  \"order_status\": \"registered\",\n  \"timestamp\": \"2022-03-05T08:15:21Z\",\n  \"ordertask_ids\": [\n    \"\"\n  ],\n  \"lines\": [\n    {\n      \"line_id\": \"00132456-1\",\n      \"article_id\": \"116000487727\",\n      \"qty\": {\n        \"reserved\": 0,\n        \"free\": 20,\n        \"requested\": 10\n      }\n    },\n    {\n      \"line_id\": \"00132456-2\",\n      \"article_id\": \"1003000031678\",\n      \"qty\": {\n        \"reserved\": 0,\n        \"free\": 200,\n        \"requested\": 5\n      }\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "f1e4c0f2-ba42-4aaf-9fda-2c72c75b95f8",
+              "name": "Bad request",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    ":site_id",
+                    "orders",
+                    ":order_id",
+                    "status"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "site_id",
+                      "description": "(Required) ID of Instock site. Globally unique."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "order_id",
+                      "description": "(Required) ID of an order. Unique in scope of your organization(s)."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Optional header ID to track and analyze requests and behaviors across your Host system.",
+                    "key": "Instock-Correlation-ID",
+                    "value": "<string>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "Auto-generated ID in the response headers to reference a specific request, useful for debugging or seeking support.",
+                  "key": "Instock-Response-ID",
+                  "value": "string"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"bad_request\",\n  \"message\": \"Request body/path/query params cannot be validated.\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "82c7dd0d-939b-4788-96e0-522de72c999c",
+              "name": "Unauthorized",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    ":site_id",
+                    "orders",
+                    ":order_id",
+                    "status"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "site_id",
+                      "description": "(Required) ID of Instock site. Globally unique."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "order_id",
+                      "description": "(Required) ID of an order. Unique in scope of your organization(s)."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Optional header ID to track and analyze requests and behaviors across your Host system.",
+                    "key": "Instock-Correlation-ID",
+                    "value": "<string>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "Auto-generated ID in the response headers to reference a specific request, useful for debugging or seeking support.",
+                  "key": "Instock-Response-ID",
+                  "value": "string"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"unauthorized\",\n  \"message\": \"API key is not valid.\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "fd06a64d-55fd-4117-aea1-e6129e59f25d",
+              "name": "Forbidden",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    ":site_id",
+                    "orders",
+                    ":order_id",
+                    "status"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "site_id",
+                      "description": "(Required) ID of Instock site. Globally unique."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "order_id",
+                      "description": "(Required) ID of an order. Unique in scope of your organization(s)."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Optional header ID to track and analyze requests and behaviors across your Host system.",
+                    "key": "Instock-Correlation-ID",
+                    "value": "<string>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "Auto-generated ID in the response headers to reference a specific request, useful for debugging or seeking support.",
+                  "key": "Instock-Response-ID",
+                  "value": "string"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"forbidden\",\n  \"message\": \"API key doesn't have permissions to perform the request.\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "30dd3421-42cb-496f-b3d9-001f36b3eeee",
+              "name": "Not found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    ":site_id",
+                    "orders",
+                    ":order_id",
+                    "status"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "site_id",
+                      "description": "(Required) ID of Instock site. Globally unique."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "order_id",
+                      "description": "(Required) ID of an order. Unique in scope of your organization(s)."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Optional header ID to track and analyze requests and behaviors across your Host system.",
+                    "key": "Instock-Correlation-ID",
+                    "value": "<string>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "Auto-generated ID in the response headers to reference a specific request, useful for debugging or seeking support.",
+                  "key": "Instock-Response-ID",
+                  "value": "string"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"resource_not_found\",\n  \"message\": \"site_id doesn't exist.\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "9fc4b641-1198-48c7-9906-2e43763d1988",
+              "name": "Internal server error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    ":site_id",
+                    "orders",
+                    ":order_id",
+                    "status"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "site_id",
+                      "description": "(Required) ID of Instock site. Globally unique."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "order_id",
+                      "description": "(Required) ID of an order. Unique in scope of your organization(s)."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Optional header ID to track and analyze requests and behaviors across your Host system.",
+                    "key": "Instock-Correlation-ID",
+                    "value": "<string>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "Auto-generated ID in the response headers to reference a specific request, useful for debugging or seeking support.",
+                  "key": "Instock-Response-ID",
+                  "value": "string"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"internal_server_error\",\n  \"message\": \"Unexpected error occurred.\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "d922e1fa-0a17-44dc-a1cc-8d3412ed33ee",
+          "name": "Advance order status",
+          "request": {
+            "name": "Advance order status",
+            "description": {
+              "content": "> **Important**: this a debug endpoint, use it during integration with Incloud or during debugging.\n\nAdvances order status for virtual site from `registered` to `reserved`, from `reserved` to `done`.\n\nA request body is mandatory for this endpoint. If there's no need to specify a target storage cell for the order, the body should be an empty JSON object (`{}`). \nHowever, if you wish to control the storage cell where the order is being moved, you can include the optional parameter `to_cell_id` within the body.\n\n**Note**: If there is not enough inventory for `article_id` within order then, Incloud will set order status to `canceled`.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                ":site_id",
+                "orders",
+                ":order_id",
+                "status"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "site_id",
+                  "description": "(Required) ID of Instock site. Globally unique."
+                },
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "order_id",
+                  "description": "(Required) ID of an order. Unique in scope of your organization(s)."
+                }
+              ]
+            },
+            "header": [
+              {
+                "disabled": false,
+                "description": "Optional header ID to track and analyze requests and behaviors across your Host system.",
+                "key": "Instock-Correlation-ID",
+                "value": "<string>"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"to_cell_id\": \"<string>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "b9a91aa1-1080-4b63-93e8-b9a764d602d4",
+              "name": "Successful operation.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    ":site_id",
+                    "orders",
+                    ":order_id",
+                    "status"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "site_id",
+                      "description": "(Required) ID of Instock site. Globally unique."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "order_id",
+                      "description": "(Required) ID of an order. Unique in scope of your organization(s)."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Optional header ID to track and analyze requests and behaviors across your Host system.",
+                    "key": "Instock-Correlation-ID",
+                    "value": "<string>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"to_cell_id\": \"VM-TIY6J-P001\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "Auto-generated ID in the response headers to reference a specific request, useful for debugging or seeking support.",
+                  "key": "Instock-Response-ID",
+                  "value": "string"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "\"\"",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "a193abc5-3c30-4a97-b1a4-6b816b2e05e3",
+              "name": "Not found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    ":site_id",
+                    "orders",
+                    ":order_id",
+                    "status"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "site_id",
+                      "description": "(Required) ID of Instock site. Globally unique."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "order_id",
+                      "description": "(Required) ID of an order. Unique in scope of your organization(s)."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Optional header ID to track and analyze requests and behaviors across your Host system.",
+                    "key": "Instock-Correlation-ID",
+                    "value": "<string>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"to_cell_id\": \"VM-TIY6J-P001\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "Auto-generated ID in the response headers to reference a specific request, useful for debugging or seeking support.",
+                  "key": "Instock-Response-ID",
+                  "value": "string"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"resource_not_found\",\n  \"message\": \"order_id doesn't exist.\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "6a788c1c-b115-45d1-9d5e-410d34be3b63",
+              "name": "Internal server error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    ":site_id",
+                    "orders",
+                    ":order_id",
+                    "status"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "site_id",
+                      "description": "(Required) ID of Instock site. Globally unique."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "order_id",
+                      "description": "(Required) ID of an order. Unique in scope of your organization(s)."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Optional header ID to track and analyze requests and behaviors across your Host system.",
+                    "key": "Instock-Correlation-ID",
+                    "value": "<string>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"to_cell_id\": \"VM-TIY6J-P001\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "Auto-generated ID in the response headers to reference a specific request, useful for debugging or seeking support.",
+                  "key": "Instock-Response-ID",
+                  "value": "string"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"internal_server_error\",\n  \"message\": \"Unexpected error occurred.\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "476275b4-877e-4a40-99a3-68c5c75d1ff5",
+          "name": "Cancel registered order",
+          "request": {
+            "name": "Cancel registered order",
+            "description": {
+              "content": "Cancels a single registered customer order within a particular site of your organization.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                ":site_id",
+                "orders",
+                ":order_id",
+                "status"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "site_id",
+                  "description": "(Required) ID of Instock site. Globally unique."
+                },
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "order_id",
+                  "description": "(Required) ID of an order. Unique in scope of your organization(s)."
+                }
+              ]
+            },
+            "header": [
+              {
+                "disabled": false,
+                "description": "Optional header ID to track and analyze requests and behaviors across your Host system.",
+                "key": "Instock-Correlation-ID",
+                "value": "<string>"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "DELETE",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "9bfbb0c4-96b5-490b-b2bc-623d0f7e8a8e",
+              "name": "Successful operation.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    ":site_id",
+                    "orders",
+                    ":order_id",
+                    "status"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "site_id",
+                      "description": "(Required) ID of Instock site. Globally unique."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "order_id",
+                      "description": "(Required) ID of an order. Unique in scope of your organization(s)."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Optional header ID to track and analyze requests and behaviors across your Host system.",
+                    "key": "Instock-Correlation-ID",
+                    "value": "<string>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "Auto-generated ID in the response headers to reference a specific request, useful for debugging or seeking support.",
+                  "key": "Instock-Response-ID",
+                  "value": "string"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "\"\"",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "c3d5cb3c-fb9a-47f7-b1ec-13e49c8ac304",
+              "name": "Bad request",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    ":site_id",
+                    "orders",
+                    ":order_id",
+                    "status"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "site_id",
+                      "description": "(Required) ID of Instock site. Globally unique."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "order_id",
+                      "description": "(Required) ID of an order. Unique in scope of your organization(s)."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Optional header ID to track and analyze requests and behaviors across your Host system.",
+                    "key": "Instock-Correlation-ID",
+                    "value": "<string>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "Auto-generated ID in the response headers to reference a specific request, useful for debugging or seeking support.",
+                  "key": "Instock-Response-ID",
+                  "value": "string"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"bad_request\",\n  \"message\": \"Request body/path/query params cannot be validated.\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "b7d0b187-e553-443a-abcb-d9ed7dc76586",
+              "name": "Not found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    ":site_id",
+                    "orders",
+                    ":order_id",
+                    "status"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "site_id",
+                      "description": "(Required) ID of Instock site. Globally unique."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "order_id",
+                      "description": "(Required) ID of an order. Unique in scope of your organization(s)."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Optional header ID to track and analyze requests and behaviors across your Host system.",
+                    "key": "Instock-Correlation-ID",
+                    "value": "<string>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "Auto-generated ID in the response headers to reference a specific request, useful for debugging or seeking support.",
+                  "key": "Instock-Response-ID",
+                  "value": "string"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"resource_not_found\",\n  \"message\": \"order_id doesn't exist.\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "8811ae81-18d4-400d-b1c3-dec1ed36f9b6",
+              "name": "Internal server error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    ":site_id",
+                    "orders",
+                    ":order_id",
+                    "status"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "site_id",
+                      "description": "(Required) ID of Instock site. Globally unique."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "order_id",
+                      "description": "(Required) ID of an order. Unique in scope of your organization(s)."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Optional header ID to track and analyze requests and behaviors across your Host system.",
+                    "key": "Instock-Correlation-ID",
+                    "value": "<string>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "Auto-generated ID in the response headers to reference a specific request, useful for debugging or seeking support.",
+                  "key": "Instock-Response-ID",
+                  "value": "string"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"internal_server_error\",\n  \"message\": \"Unexpected error occurred.\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.instock.com/v1",
+      "key": "baseUrl"
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{bearerToken}}"
+      }
+    ]
+  },
+  "info": {
+    "_postman_id": "bf891578-f27d-4c21-bc09-77cf88e4447b",
+    "name": "Instock API reference Articles Orders API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "# Overview \nThis reference is a comprehensive guide to understanding of Instock API and is aimed to \nhelp developers to integrate their Host system with Instock Cloud (Incloud).\n\nInstock API is REST-based. It has predictable resource URLs, accepts JSON in the HTTP body, returns JSON-encoded\nresponses, and uses standard HTTP response codes to indicate errors, methods and authentication.\nOur API uses `GET`, `POST`, `PUT` methods to perform all operations. \n`GET` method is both used for retrieval of a single or listing multiple objects at once.\n\n## Conventions\n* HTTPS is required for all requests. Requests over plain HTTP will fail.\n* All requests without authentication will fail.\n* Bulk request is supported only to upload articles into Incloud.\n* Property names are in `snake_case` (not `camelCase` or `kebab-case`).\n* Temporal values (datetimes) are encoded in [RFC 3339](https://www.rfc-editor.org/rfc/rfc3339) strings, e.g. `2022-06-06T12:37:00Z`.\n* All path parameters are always returned in response body, except for `POST` and `PUT` methods.\n\n## Authentication \nInstock API offers authentication in form of Bearer token.\nBearer token must be present in each request header. \nThe token provides a full access to all resources and methods of Instock API to its client.\n\n**Note**: currently Bearer token is issued by Instock and supplied to API users during onboarding.\n\nFor example, if you'd like to retrieve sites available to your organization, your request will look like:\n\n``` cURL\ncurl -X GET \n  -H 'Content-Type: application/json' \\\n  -H 'Authorization: {access_token}' \\\n  https://api.instock.com/v1/sites \\\n```\n\n## Errors \n\nInstock API always returns errors in a common format. For example:\n```JSON\n{\n  \"code\": \"bad_request\",\n  \"message\": \"Request body/path/query params cannot be validated.\"\n}\n```\nThe `code` indicates the general class of error read by your Host system.\nThe `message` is a human-readable explanation of what went wrong.\n\n### Common HTTP error code responses\n\n| **HTTP code** | **Code** | **Description** | **Potential solution** |\n|---|---|---|---|\n| 400 | `bad_request`  | The request could not be understood. | Ensure that syntax is correct in parameters of request and its body. |\n| 400 | `resource_cannot_be_created`  | Resource may already exist or has certain creation rules. | Ensure that resource doesn't already exist or it doesn't have any restrictions for creation.<br> For bulk operations, ensure that all objects are valid. |\n| 400 | `resource_cannot_be_updated`  | Resource has certain update rules. | Ensure that resource doesn't have any restrictions that can yield this error. |\n| 401 | `unauthorized` | Requestor is unauthorized. | Ensure that your access token is valid. |\n| 403 | `forbidden` | Requestor does not have permissions to perform an operation. | Ensure that your access token has permissions to perform an operation. |\n| 404 | `resource_not_found` | Resource doesn't exist. | Ensure that the resource is correctly identified by ID. |\n| 500 | `internal_server_error` | Something went wrong on our end. | An unexpected error occurred. Reach out to Instock for support. |\n\n**Note**: each endpoint below has samples of errors it may return. \n\n## Request IDs\nInstock API auto-generates request identifier with each API response.\nYou can find this value in the response headers as `Instock-Request-ID`.\nUse it to refer to a specific request when debugging or reaching out to Instock for support.\n\n``` \nInstock-Request-ID: request_id\n```\n\n## Correlation IDs\nYou can optionally extend your request and add `Instock-Correlation-ID` to the header.\nUse it to analyze incorrect and faulty behavior across your Host system. \nFor example, if you'd like to retrieve sites available to your organization and pass `Instock-Correlation-ID`, your\nrequest will look like:\n\n``` cURL\ncurl -X GET \n  -H 'Content-Type: application/json' \\\n  -H 'Authorization: your-token' \\\n  -H 'Instock-Correlation-ID: your-correlation-id' \\\n  https://api.instock.com/v1/sites \\\n```\n\n## Pagination \nEndpoints that return a list of objects use pagination. Instock API uses cursor-based pagination.\nThis approach allows Host system to request a part of the list, receiving results and `next_cursor` in the response.\nThe latter could be used to access the next part of the list.\n\n**Note**: setting `page_size` lesser than 10 or greater than 1000 will yield an error.\n\n| Parameter | Request/Response | Type | Description |\n|---|---|---|---|\n| `start_cursor` | Request | string<br>(optional) | Cursor returned from a previous response, used to request the next page of the results. |\n| `page_size` | Request | string<br>(optional) | The number of objects returned in response. <br>Has default and maximum values. |\n| `has_more` | Response | bool | If `true`, use `next_cursor` to access next part of the list. <br>If `false`, response includes the end of the list. |\n| `next_cursor` | Response | string | Only available when `has_more` is `true`. <br>Used to retrieve the next page of results by passing the value as the `start_cursor`<br>parameter to the same endpoint. |\n\n## Unique identifiers\n\nThroughout API reference below, you will encounter multiple unique identifiers (UIDs) that are required to perform\ncertain operations.\nFor example, to create customer order, your Host system must:\n  * provide `site_id` to specify exact instance of Instock ASRS installation,\n  * and supply `order_id`. Usually `order_id` value corresponds to the ID of an order that Host system has.\n\nThe table below indicates source (which system issues UID) and scope (at what level UID must be unique).\n\n| ID | Source | Scope | Description |\n|---|---|---|---|\n| `org_id` | Instock | Global | ID assigned to your organization by Instock. |\n| `site_id` | Instock | Global | ID assigned to an individual Instock site that belongs to your organization. |\n| `article_id` | Host | Organization | ID of a product/SKU uploaded by Host system to Incloud. |\n| `order_id` | Host | Organization | ID of an order created by Host system in Incloud. |\n| `ordertask_id` | Instock | Organization | ID of an individual chunk of order fulfillment. |\n\n## Additional attributes \n\nEvery article and order contain `attributes`, which are reserved for custom and pre-defined parameters that your \norganization may require for fulfillment-related operations. \n\n### Custom attributes\n\nBefore integration, your IT and Instock teams should agree upon `attributes` that will be configured \nspecifically for your site(s). Incloud will consume these attributes to perform certain operations throughout \nfulfillment process, e.g. decanting, picking. Attributes can be added or updated in two ways: via API during operations\nsuch as customer order creation or through the workstation UI during operation at ASRS, like decanting.\n\n#### Order attributes\n\nFor example, `cutoff_time` for a customer order — the time when order fulfillment starts, i.e. change its status from `registered` to `reserved`. \n\n``` JSON\n{\n  \"org_id\": \"org_id_001\",\n  \"site_id\": \"1.1.0-1\",\n  \"order_id\": \"order_id_001\",\n  \"kind\": \"customer\",\n  \"placed_at\": \"2022-03-05T07:38:39Z\",\n  \"attributes\": {\n    \"cutoff_time\": \"2022-03-05T16:00:00Z\",\n  },\n  \"lines\": [\n    {\n      \"line_id\": \"00132455-1\",\n      \"article_id\": \"1003000031678\",\n      \"qty\": 1\n    }\n  ]\n}\n```\n\nAnother example involves adding an Advanced Shipping Notice ID (ASN ID) by an associate during decanting.\nThis attribute can be retrieved via API in a reception order. This way, you'll be able to track reception in your\nsystem using the order attribute during decanting.\n\n```\n{\n  \"org_id\": \"org_id_001\",\n  \"site_id\": \"1.1.0-1\",\n  \"order_id\": \"8b72a983-c909-4dd6-b5d4-01d1f4b2a608\",\n  \"kind\": \"reception\",\n  \"placed_at\": \"2024-03-27T13:22:47Z\",\n  \"attributes\": {\n      \"org_id_001:asn\": \"ASN-1818AE4RF\"\n  },\n  \"lines\": [\n      {\n          \"line_id\": \"af7e23f7-08e7-4cf1-b644-1b0cf329e574\",\n          \"article_id\": \"99.21004\",\n          \"qty\": 15\n      }\n  ]\n}\n```\n\n#### Article attributes\n\nAnother example involves the use of product identifiers. While `article_id` serves as the standard unique identifier, \nour system allows organizations to incorporate alternative identifiers, such as EAN, SKU, UPC, ISBN within the article\nobject as attributes (see the example below). These identifiers enable warehouse associates to scan products\nusing those specific codes designated by your organization during decanting.\n\n``` JSON\n{\n  \"articles\": [\n    {\n      \"article_id\": \"116000487727\",\n      \"name\": \"Cheerios Original Cereal, 12 Oz\",\n      \"is_serial_numbered\": false,\n      \"dimensions\": {\n        \"x\": \"7.75\",\n        \"y\": \"12\",\n        \"z\": \"2.75\",\n        \"uom\": \"in\"\n      },\n      \"attributes\": {\n        \"upc\": \"016000275287\",\n        \"sku\": \"CHRC-120Z-001\"\n      }\n    }\n  ]\n}\n```\n\n### Pre-defined attributes\nPre-defined attributes are parameters set by the system to cater to common requirements across different organizations.\nThese attributes are standardized and offer functionalities that are frequently needed in the fulfillment process.\n\n| Attribute | Description |\n|---|---|\n| `main_image` | Stores article's main image URL, helping with quick identification and differentiation of articles, for example, during picking. Images can be in `.png`, `.jpg`, or `.gif` format.|\n\n## Available API methods\n\nThe table below contains the summary of available API methods for the Instock API client.\n\n| Resource   | Available API methods |\n|------------|-----------------------|\n| Sites      | `GET` - List all sites |\n| Articles   | `POST` - Upload article(s)<br>`GET` - List all articles<br>`GET` - Retrieve article<br>`PUT` - Update article |\n| Orders     | `POST` - Create customer order<br>`GET` - List all orders<br>`PUT` - Update customer order<br>`GET` - Retrieve order<br>`GET` - Retrieve order status<br>`POST` - Advance order status (debug)<br>`DELETE` - Cancel registered order |\n| Ordertasks | `GET` - Retrieve ordertask |\n| Inventory  | `GET` - List all articles inventory<br>`POST` - Retrieve multiple articles inventory<br>`PUT` - Adjust article inventory (debug)<br>`GET` - Retrieve article inventory |\n| Moves      | `GET` - List all articles moves<br>`GET` - Retrieve article moves |\n\n\nContact Support:\n Name: Instock\n Email: info@instock.com",
+      "type": "text/plain"
+    }
+  }
+}

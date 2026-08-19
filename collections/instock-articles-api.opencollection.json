@@ -1,0 +1,130 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Instock API reference Articles API",
+    "version": "0.1.0"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Articles",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List all articles",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.instock.com/v1/articles",
+            "headers": [
+              {
+                "name": "Instock-Correlation-ID",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "start_cursor",
+                "value": "",
+                "type": "query",
+                "description": "Cursor returned from a previous response, \nused to request the next page of the results. \n"
+              },
+              {
+                "name": "page_size",
+                "value": "",
+                "type": "query",
+                "description": "The number of articles returned in response. \nDefault (minimum) value is 10, maximum value is 1000.\n"
+              }
+            ]
+          },
+          "docs": "Returns a paginated list of all articles known within your organization account."
+        },
+        {
+          "info": {
+            "name": "Upload article(s)",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.instock.com/v1/articles",
+            "headers": [
+              {
+                "name": "Instock-Correlation-ID",
+                "value": ""
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Uploads single or multiple articles to your Instock organization account. \n\n**Note**: \n  * if a particular article is not uploaded to your organization, warehouse operators won't be able to \nreceive it into Instock ASRS (decant).\n  * if bulk article upload contains at least one article that cannot be validated, Incloud will yield `400`\n  and entire request will fail.\n  * bulk article upload has a limit of maximum 1000 articles per request.   \n"
+        },
+        {
+          "info": {
+            "name": "Retrieve article",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.instock.com/v1/articles/:article_id",
+            "headers": [
+              {
+                "name": "Instock-Correlation-ID",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "article_id",
+                "value": "16000487727",
+                "type": "path",
+                "description": "ID of an article. Unique in scope of your organization(s)."
+              }
+            ]
+          },
+          "docs": "Retrieves a single existing article. Supply `article_id` either from article upload or articles list request,\nand Instock will return the corresponding article data.\n"
+        },
+        {
+          "info": {
+            "name": "Update article",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "https://api.instock.com/v1/articles/:article_id",
+            "headers": [
+              {
+                "name": "Instock-Correlation-ID",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "article_id",
+                "value": "16000487727",
+                "type": "path",
+                "description": "ID of an article. Unique in scope of your organization(s)."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Updates a single existing article by setting the values of parameters passed.\n\n**Note**: \n  * article update operation is performed via `PUT` method —\n  when updating an article, a complete order record (all fields) must be passed.\n  * if `article_id` has inventory moves, Incloud will yield `400` error. \n  In other words, if an article has already been decanted into ASRS, its properties cannot be updated as\n  Incloud already relies on its properties.\n  \n"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

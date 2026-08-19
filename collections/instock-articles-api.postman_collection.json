@@ -1,0 +1,1713 @@
+{
+  "item": [
+    {
+      "id": "b516129e-8b3b-4f71-a9ad-7bfe6ffe611c",
+      "name": "Articles",
+      "description": {
+        "content": "Instock is using the term `article` to describe unique product or SKU managed by Instock ASRS.\nArticles resource is mostly managed by you as a client of Instock API.\nArticle data is shared across all sites that belong to your organization.\n\n**Note**: \n  * currently articles with `is_serial_numbered: true` value cannot be uploaded or updated, Incloud will yield an error.\n  * `attributes` object can contain both custom and pre-defined values. Custom attributes defined\n   upon initial integration with Incloud.\n",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "800d3a89-aa21-4949-b652-2a62b87f4b39",
+          "name": "Upload article(s)",
+          "request": {
+            "name": "Upload article(s)",
+            "description": {
+              "content": "Uploads single or multiple articles to your Instock organization account. \n\n**Note**: \n  * if a particular article is not uploaded to your organization, warehouse operators won't be able to \nreceive it into Instock ASRS (decant).\n  * if bulk article upload contains at least one article that cannot be validated, Incloud will yield `400`\n  and entire request will fail.\n  * bulk article upload has a limit of maximum 1000 articles per request.   \n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "articles"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "disabled": false,
+                "description": "Optional header ID to track and analyze requests and behaviors across your Host system.",
+                "key": "Instock-Correlation-ID",
+                "value": "<string>"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"articles\": [\n    {\n      \"article_id\": \"<string>\",\n      \"is_serial_numbered\": false,\n      \"name\": \"<string>\",\n      \"dimensions\": {\n        \"x\": \"<string>\",\n        \"y\": \"<string>\",\n        \"z\": \"<string>\",\n        \"uom\": \"<string>\"\n      },\n      \"attributes\": {\n        \"key_0\": \"<string>\"\n      }\n    },\n    {\n      \"article_id\": \"<string>\",\n      \"is_serial_numbered\": false,\n      \"name\": \"<string>\",\n      \"dimensions\": {\n        \"x\": \"<string>\",\n        \"y\": \"<string>\",\n        \"z\": \"<string>\",\n        \"uom\": \"<string>\"\n      },\n      \"attributes\": {\n        \"key_0\": \"<string>\",\n        \"key_1\": \"<string>\",\n        \"key_2\": \"<string>\",\n        \"key_3\": \"<string>\"\n      }\n    }\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "56ab86de-a448-446e-8694-2c8080acbe30",
+              "name": "Successful operation.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "articles"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Optional header ID to track and analyze requests and behaviors across your Host system.",
+                    "key": "Instock-Correlation-ID",
+                    "value": "<string>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"articles\": [\n    {\n      \"article_id\": \"116000487727\",\n      \"name\": \"Cheerios Original Cereal, 12 Oz\",\n      \"is_serial_numbered\": false,\n      \"dimensions\": {\n        \"x\": \"7.75\",\n        \"y\": \"12\",\n        \"z\": \"2.75\",\n        \"uom\": \"in\"\n      },\n      \"attributes\": {\n        \"product_category_name\": \"Cereals & Bars\",\n        \"temp_zone\": \"ambient\"\n      }\n    }\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "Auto-generated ID in the response headers to reference a specific request, useful for debugging or seeking support.",
+                  "key": "Instock-Response-ID",
+                  "value": "string"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "\"Successful operation.\"",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "82e718f2-e24d-4e7c-9cfa-8ace0027b08a",
+              "name": "Bad request",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "articles"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Optional header ID to track and analyze requests and behaviors across your Host system.",
+                    "key": "Instock-Correlation-ID",
+                    "value": "<string>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"articles\": [\n    {\n      \"article_id\": \"116000487727\",\n      \"name\": \"Cheerios Original Cereal, 12 Oz\",\n      \"is_serial_numbered\": false,\n      \"dimensions\": {\n        \"x\": \"7.75\",\n        \"y\": \"12\",\n        \"z\": \"2.75\",\n        \"uom\": \"in\"\n      },\n      \"attributes\": {\n        \"product_category_name\": \"Cereals & Bars\",\n        \"temp_zone\": \"ambient\"\n      }\n    }\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "Auto-generated ID in the response headers to reference a specific request, useful for debugging or seeking support.",
+                  "key": "Instock-Response-ID",
+                  "value": "string"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"bad_request\",\n  \"message\": \"Request body/path/query params cannot be validated.\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "ef0a07a4-a906-4768-a405-5aca87040ca9",
+              "name": "Unauthorized",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "articles"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Optional header ID to track and analyze requests and behaviors across your Host system.",
+                    "key": "Instock-Correlation-ID",
+                    "value": "<string>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"articles\": [\n    {\n      \"article_id\": \"116000487727\",\n      \"name\": \"Cheerios Original Cereal, 12 Oz\",\n      \"is_serial_numbered\": false,\n      \"dimensions\": {\n        \"x\": \"7.75\",\n        \"y\": \"12\",\n        \"z\": \"2.75\",\n        \"uom\": \"in\"\n      },\n      \"attributes\": {\n        \"product_category_name\": \"Cereals & Bars\",\n        \"temp_zone\": \"ambient\"\n      }\n    }\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "Auto-generated ID in the response headers to reference a specific request, useful for debugging or seeking support.",
+                  "key": "Instock-Response-ID",
+                  "value": "string"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"unauthorized\",\n  \"message\": \"API key is not valid.\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "edaaeb6b-5e9f-430a-9ff5-6b9908934a92",
+              "name": "Forbidden",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "articles"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Optional header ID to track and analyze requests and behaviors across your Host system.",
+                    "key": "Instock-Correlation-ID",
+                    "value": "<string>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"articles\": [\n    {\n      \"article_id\": \"116000487727\",\n      \"name\": \"Cheerios Original Cereal, 12 Oz\",\n      \"is_serial_numbered\": false,\n      \"dimensions\": {\n        \"x\": \"7.75\",\n        \"y\": \"12\",\n        \"z\": \"2.75\",\n        \"uom\": \"in\"\n      },\n      \"attributes\": {\n        \"product_category_name\": \"Cereals & Bars\",\n        \"temp_zone\": \"ambient\"\n      }\n    }\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "Auto-generated ID in the response headers to reference a specific request, useful for debugging or seeking support.",
+                  "key": "Instock-Response-ID",
+                  "value": "string"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"forbidden\",\n  \"message\": \"API key doesn't have permissions to perform the request.\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "4123ba87-7712-4a2d-9ff7-544923606851",
+              "name": "Internal server error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "articles"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Optional header ID to track and analyze requests and behaviors across your Host system.",
+                    "key": "Instock-Correlation-ID",
+                    "value": "<string>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"articles\": [\n    {\n      \"article_id\": \"116000487727\",\n      \"name\": \"Cheerios Original Cereal, 12 Oz\",\n      \"is_serial_numbered\": false,\n      \"dimensions\": {\n        \"x\": \"7.75\",\n        \"y\": \"12\",\n        \"z\": \"2.75\",\n        \"uom\": \"in\"\n      },\n      \"attributes\": {\n        \"product_category_name\": \"Cereals & Bars\",\n        \"temp_zone\": \"ambient\"\n      }\n    }\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "Auto-generated ID in the response headers to reference a specific request, useful for debugging or seeking support.",
+                  "key": "Instock-Response-ID",
+                  "value": "string"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"internal_server_error\",\n  \"message\": \"Unexpected error occurred.\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "945628e6-9ae8-4416-9e3f-6728e10069ad",
+          "name": "List all articles",
+          "request": {
+            "name": "List all articles",
+            "description": {
+              "content": "Returns a paginated list of all articles known within your organization account.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "articles"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "start_cursor",
+                  "value": "",
+                  "description": "Cursor returned from a previous response, \nused to request the next page of the results. \n"
+                },
+                {
+                  "disabled": false,
+                  "key": "page_size",
+                  "value": "10",
+                  "description": "The number of articles returned in response. \nDefault (minimum) value is 10, maximum value is 1000.\n"
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "disabled": false,
+                "description": "Optional header ID to track and analyze requests and behaviors across your Host system.",
+                "key": "Instock-Correlation-ID",
+                "value": "<string>"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "3691c22f-3340-43a7-b036-4c6d1b5f3a98",
+              "name": "Successful operation.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "articles"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "start_cursor",
+                      "value": "fe2cc560-036c-44cd-90e8-294d5a74cebc"
+                    },
+                    {
+                      "key": "page_size",
+                      "value": "10"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Optional header ID to track and analyze requests and behaviors across your Host system.",
+                    "key": "Instock-Correlation-ID",
+                    "value": "<string>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "Auto-generated ID in the response headers to reference a specific request, useful for debugging or seeking support.",
+                  "key": "Instock-Response-ID",
+                  "value": "string"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"has_more\": false,\n  \"next_cursor\": \"\",\n  \"articles\": [\n    {\n      \"article_id\": \"1003000031678\",\n      \"name\": \"Quaker Apples and Cinnamon Instant Oatmeal Packets\",\n      \"is_serial_numbered\": false,\n      \"dimensions\": {\n        \"x\": \"4.9\",\n        \"y\": \"7.9\",\n        \"z\": \"3.1\",\n        \"uom\": \"m\"\n      },\n      \"attributes\": {\n        \"product_category_name\": \"Cereals & Bars\",\n        \"temp_zone\": \"ambient\",\n        \"promotion_price\": \"2.99\"\n      }\n    },\n    {\n      \"article_id\": \"116000487727\",\n      \"name\": \"Cheerios Original Cereal, 12 Oz\",\n      \"is_serial_numbered\": false,\n      \"dimensions\": {\n        \"x\": \"7.75\",\n        \"y\": \"12\",\n        \"z\": \"2.75\",\n        \"uom\": \"in\"\n      },\n      \"attributes\": {\n        \"product_category_name\": \"Cereals & Bars\"\n      }\n    },\n    {\n      \"article_id\": \"116000275270\",\n      \"name\": \"Cheerios Honey Nut Cereal, 12 Oz\",\n      \"is_serial_numbered\": false,\n      \"dimensions\": {\n        \"x\": \"7.75\",\n        \"y\": \"12\",\n        \"z\": \"2.75\",\n        \"uom\": \"in\"\n      },\n      \"attributes\": {\n        \"product_category_name\": \"Cereals & Bars\"\n      }\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "96375e04-6046-4400-8cb6-680f7ecc864a",
+              "name": "Bad request",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "articles"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "start_cursor",
+                      "value": "fe2cc560-036c-44cd-90e8-294d5a74cebc"
+                    },
+                    {
+                      "key": "page_size",
+                      "value": "10"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Optional header ID to track and analyze requests and behaviors across your Host system.",
+                    "key": "Instock-Correlation-ID",
+                    "value": "<string>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "Auto-generated ID in the response headers to reference a specific request, useful for debugging or seeking support.",
+                  "key": "Instock-Response-ID",
+                  "value": "string"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"bad_request\",\n  \"message\": \"Request body/path/query params cannot be validated.\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "2dcdf2ab-8ecf-4eac-98f7-dc2c36fed1ba",
+              "name": "Unauthorized",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "articles"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "start_cursor",
+                      "value": "fe2cc560-036c-44cd-90e8-294d5a74cebc"
+                    },
+                    {
+                      "key": "page_size",
+                      "value": "10"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Optional header ID to track and analyze requests and behaviors across your Host system.",
+                    "key": "Instock-Correlation-ID",
+                    "value": "<string>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "Auto-generated ID in the response headers to reference a specific request, useful for debugging or seeking support.",
+                  "key": "Instock-Response-ID",
+                  "value": "string"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"unauthorized\",\n  \"message\": \"API key is not valid.\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "3c447cfa-05e6-454f-b295-b4b51548cd37",
+              "name": "Forbidden",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "articles"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "start_cursor",
+                      "value": "fe2cc560-036c-44cd-90e8-294d5a74cebc"
+                    },
+                    {
+                      "key": "page_size",
+                      "value": "10"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Optional header ID to track and analyze requests and behaviors across your Host system.",
+                    "key": "Instock-Correlation-ID",
+                    "value": "<string>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "Auto-generated ID in the response headers to reference a specific request, useful for debugging or seeking support.",
+                  "key": "Instock-Response-ID",
+                  "value": "string"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"forbidden\",\n  \"message\": \"API key doesn't have permissions to perform the request.\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "9426c7c1-f473-45d4-bf00-d33c57498e0d",
+              "name": "Internal server error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "articles"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "start_cursor",
+                      "value": "fe2cc560-036c-44cd-90e8-294d5a74cebc"
+                    },
+                    {
+                      "key": "page_size",
+                      "value": "10"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Optional header ID to track and analyze requests and behaviors across your Host system.",
+                    "key": "Instock-Correlation-ID",
+                    "value": "<string>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "Auto-generated ID in the response headers to reference a specific request, useful for debugging or seeking support.",
+                  "key": "Instock-Response-ID",
+                  "value": "string"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"internal_server_error\",\n  \"message\": \"Unexpected error occurred.\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "a40c859f-048c-494e-a7bc-06d40544b1ec",
+          "name": "Retrieve article",
+          "request": {
+            "name": "Retrieve article",
+            "description": {
+              "content": "Retrieves a single existing article. Supply `article_id` either from article upload or articles list request,\nand Instock will return the corresponding article data.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "articles",
+                ":article_id"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "article_id",
+                  "description": "(Required) ID of an article. Unique in scope of your organization(s)."
+                }
+              ]
+            },
+            "header": [
+              {
+                "disabled": false,
+                "description": "Optional header ID to track and analyze requests and behaviors across your Host system.",
+                "key": "Instock-Correlation-ID",
+                "value": "<string>"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "67ccd333-f450-41d4-a97a-6d462fbdb502",
+              "name": "Successful operation",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "articles",
+                    ":article_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "article_id",
+                      "description": "(Required) ID of an article. Unique in scope of your organization(s)."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Optional header ID to track and analyze requests and behaviors across your Host system.",
+                    "key": "Instock-Correlation-ID",
+                    "value": "<string>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "Auto-generated ID in the response headers to reference a specific request, useful for debugging or seeking support.",
+                  "key": "Instock-Response-ID",
+                  "value": "string"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"article_id\": \"116000487727\",\n  \"name\": \"Cheerios Original Cereal, 12 Oz\",\n  \"is_serial_numbered\": false,\n  \"dimensions\": {\n    \"x\": \"7.75\",\n    \"y\": \"12\",\n    \"z\": \"2.75\",\n    \"uom\": \"in\"\n  },\n  \"attributes\": {\n    \"product_category_name\": \"Cereals & Bars\",\n    \"temp_zone\": \"ambient\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "04815c46-b0e8-4841-aee3-90d66719f76d",
+              "name": "Bad request",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "articles",
+                    ":article_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "article_id",
+                      "description": "(Required) ID of an article. Unique in scope of your organization(s)."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Optional header ID to track and analyze requests and behaviors across your Host system.",
+                    "key": "Instock-Correlation-ID",
+                    "value": "<string>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "Auto-generated ID in the response headers to reference a specific request, useful for debugging or seeking support.",
+                  "key": "Instock-Response-ID",
+                  "value": "string"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"bad_request\",\n  \"message\": \"Request body/path/query params cannot be validated.\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "69dbac48-45a8-4421-be26-d05aa8b14c78",
+              "name": "Unauthorized",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "articles",
+                    ":article_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "article_id",
+                      "description": "(Required) ID of an article. Unique in scope of your organization(s)."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Optional header ID to track and analyze requests and behaviors across your Host system.",
+                    "key": "Instock-Correlation-ID",
+                    "value": "<string>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "Auto-generated ID in the response headers to reference a specific request, useful for debugging or seeking support.",
+                  "key": "Instock-Response-ID",
+                  "value": "string"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"unauthorized\",\n  \"message\": \"API key is not valid.\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "ece33236-ab38-447b-b02e-02d0293b80aa",
+              "name": "Forbidden",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "articles",
+                    ":article_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "article_id",
+                      "description": "(Required) ID of an article. Unique in scope of your organization(s)."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Optional header ID to track and analyze requests and behaviors across your Host system.",
+                    "key": "Instock-Correlation-ID",
+                    "value": "<string>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "Auto-generated ID in the response headers to reference a specific request, useful for debugging or seeking support.",
+                  "key": "Instock-Response-ID",
+                  "value": "string"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"forbidden\",\n  \"message\": \"API key doesn't have permissions to perform the request.\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "bcf68152-721d-4b9a-8fdf-b77bc6d8abde",
+              "name": "Not found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "articles",
+                    ":article_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "article_id",
+                      "description": "(Required) ID of an article. Unique in scope of your organization(s)."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Optional header ID to track and analyze requests and behaviors across your Host system.",
+                    "key": "Instock-Correlation-ID",
+                    "value": "<string>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "Auto-generated ID in the response headers to reference a specific request, useful for debugging or seeking support.",
+                  "key": "Instock-Response-ID",
+                  "value": "string"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"resource_not_found\",\n  \"message\": \"article_id doesn't exist.\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "986eee24-05a4-420a-a804-7e3e93facec7",
+              "name": "Internal server error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "articles",
+                    ":article_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "article_id",
+                      "description": "(Required) ID of an article. Unique in scope of your organization(s)."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Optional header ID to track and analyze requests and behaviors across your Host system.",
+                    "key": "Instock-Correlation-ID",
+                    "value": "<string>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "Auto-generated ID in the response headers to reference a specific request, useful for debugging or seeking support.",
+                  "key": "Instock-Response-ID",
+                  "value": "string"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"internal_server_error\",\n  \"message\": \"Unexpected error occurred.\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "74ad863a-a5c4-450f-ab6e-01026225c2a2",
+          "name": "Update article",
+          "request": {
+            "name": "Update article",
+            "description": {
+              "content": "Updates a single existing article by setting the values of parameters passed.\n\n**Note**: \n  * article update operation is performed via `PUT` method —\n  when updating an article, a complete order record (all fields) must be passed.\n  * if `article_id` has inventory moves, Incloud will yield `400` error. \n  In other words, if an article has already been decanted into ASRS, its properties cannot be updated as\n  Incloud already relies on its properties.\n  \n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "articles",
+                ":article_id"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "article_id",
+                  "description": "(Required) ID of an article. Unique in scope of your organization(s)."
+                }
+              ]
+            },
+            "header": [
+              {
+                "disabled": false,
+                "description": "Optional header ID to track and analyze requests and behaviors across your Host system.",
+                "key": "Instock-Correlation-ID",
+                "value": "<string>"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "PUT",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"article_id\": \"<string>\",\n  \"name\": \"<string>\",\n  \"is_serial_numbered\": false,\n  \"dimensions\": {\n    \"x\": \"<string>\",\n    \"y\": \"<string>\",\n    \"z\": \"<string>\",\n    \"uom\": \"<string>\"\n  },\n  \"attributes\": {\n    \"key_0\": \"<string>\"\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "90aba0a3-016a-4681-9e97-c25538c44ea5",
+              "name": "Successful operation.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "articles",
+                    ":article_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "article_id",
+                      "description": "(Required) ID of an article. Unique in scope of your organization(s)."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Optional header ID to track and analyze requests and behaviors across your Host system.",
+                    "key": "Instock-Correlation-ID",
+                    "value": "<string>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PUT",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"article_id\": \"116000487727\",\n  \"name\": \"Cheerios Original Cereal, 12 Oz\",\n  \"is_serial_numbered\": false,\n  \"dimensions\": {\n    \"x\": \"7.75\",\n    \"y\": \"12\",\n    \"z\": \"2.75\",\n    \"uom\": \"in\"\n  },\n  \"attributes\": {\n    \"product_category_name\": \"Cereals & Bars\",\n    \"temp_zone\": \"ambient\",\n    \"promotion_price\": \"1.69\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "Auto-generated ID in the response headers to reference a specific request, useful for debugging or seeking support.",
+                  "key": "Instock-Response-ID",
+                  "value": "string"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "\"Successful operation.\"",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "32f1b463-ea1f-424a-b83f-80417e5ebe0c",
+              "name": "Bad request",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "articles",
+                    ":article_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "article_id",
+                      "description": "(Required) ID of an article. Unique in scope of your organization(s)."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Optional header ID to track and analyze requests and behaviors across your Host system.",
+                    "key": "Instock-Correlation-ID",
+                    "value": "<string>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PUT",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"article_id\": \"116000487727\",\n  \"name\": \"Cheerios Original Cereal, 12 Oz\",\n  \"is_serial_numbered\": false,\n  \"dimensions\": {\n    \"x\": \"7.75\",\n    \"y\": \"12\",\n    \"z\": \"2.75\",\n    \"uom\": \"in\"\n  },\n  \"attributes\": {\n    \"product_category_name\": \"Cereals & Bars\",\n    \"temp_zone\": \"ambient\",\n    \"promotion_price\": \"1.69\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "Auto-generated ID in the response headers to reference a specific request, useful for debugging or seeking support.",
+                  "key": "Instock-Response-ID",
+                  "value": "string"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"bad_request\",\n  \"message\": \"Request body/path/query params cannot be validated.\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "8b95db1f-cf4c-4915-bf15-6f7ce417d20d",
+              "name": "Unauthorized",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "articles",
+                    ":article_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "article_id",
+                      "description": "(Required) ID of an article. Unique in scope of your organization(s)."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Optional header ID to track and analyze requests and behaviors across your Host system.",
+                    "key": "Instock-Correlation-ID",
+                    "value": "<string>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PUT",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"article_id\": \"116000487727\",\n  \"name\": \"Cheerios Original Cereal, 12 Oz\",\n  \"is_serial_numbered\": false,\n  \"dimensions\": {\n    \"x\": \"7.75\",\n    \"y\": \"12\",\n    \"z\": \"2.75\",\n    \"uom\": \"in\"\n  },\n  \"attributes\": {\n    \"product_category_name\": \"Cereals & Bars\",\n    \"temp_zone\": \"ambient\",\n    \"promotion_price\": \"1.69\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "Auto-generated ID in the response headers to reference a specific request, useful for debugging or seeking support.",
+                  "key": "Instock-Response-ID",
+                  "value": "string"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"unauthorized\",\n  \"message\": \"API key is not valid.\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "e6e3aba2-47f5-405f-ad8b-5caf87b4e103",
+              "name": "Forbidden",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "articles",
+                    ":article_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "article_id",
+                      "description": "(Required) ID of an article. Unique in scope of your organization(s)."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Optional header ID to track and analyze requests and behaviors across your Host system.",
+                    "key": "Instock-Correlation-ID",
+                    "value": "<string>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PUT",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"article_id\": \"116000487727\",\n  \"name\": \"Cheerios Original Cereal, 12 Oz\",\n  \"is_serial_numbered\": false,\n  \"dimensions\": {\n    \"x\": \"7.75\",\n    \"y\": \"12\",\n    \"z\": \"2.75\",\n    \"uom\": \"in\"\n  },\n  \"attributes\": {\n    \"product_category_name\": \"Cereals & Bars\",\n    \"temp_zone\": \"ambient\",\n    \"promotion_price\": \"1.69\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "Auto-generated ID in the response headers to reference a specific request, useful for debugging or seeking support.",
+                  "key": "Instock-Response-ID",
+                  "value": "string"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"forbidden\",\n  \"message\": \"API key doesn't have permissions to perform the request.\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "930d9f7c-60f3-4832-bd44-63b34f793858",
+              "name": "Not found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "articles",
+                    ":article_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "article_id",
+                      "description": "(Required) ID of an article. Unique in scope of your organization(s)."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Optional header ID to track and analyze requests and behaviors across your Host system.",
+                    "key": "Instock-Correlation-ID",
+                    "value": "<string>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PUT",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"article_id\": \"116000487727\",\n  \"name\": \"Cheerios Original Cereal, 12 Oz\",\n  \"is_serial_numbered\": false,\n  \"dimensions\": {\n    \"x\": \"7.75\",\n    \"y\": \"12\",\n    \"z\": \"2.75\",\n    \"uom\": \"in\"\n  },\n  \"attributes\": {\n    \"product_category_name\": \"Cereals & Bars\",\n    \"temp_zone\": \"ambient\",\n    \"promotion_price\": \"1.69\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "Auto-generated ID in the response headers to reference a specific request, useful for debugging or seeking support.",
+                  "key": "Instock-Response-ID",
+                  "value": "string"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"resource_not_found\",\n  \"message\": \"article_id doesn't exist.\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "0f82fb6a-2e4c-4abd-be61-20a766b6155f",
+              "name": "Internal server error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "articles",
+                    ":article_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "article_id",
+                      "description": "(Required) ID of an article. Unique in scope of your organization(s)."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Optional header ID to track and analyze requests and behaviors across your Host system.",
+                    "key": "Instock-Correlation-ID",
+                    "value": "<string>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PUT",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"article_id\": \"116000487727\",\n  \"name\": \"Cheerios Original Cereal, 12 Oz\",\n  \"is_serial_numbered\": false,\n  \"dimensions\": {\n    \"x\": \"7.75\",\n    \"y\": \"12\",\n    \"z\": \"2.75\",\n    \"uom\": \"in\"\n  },\n  \"attributes\": {\n    \"product_category_name\": \"Cereals & Bars\",\n    \"temp_zone\": \"ambient\",\n    \"promotion_price\": \"1.69\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "disabled": false,
+                  "description": "Auto-generated ID in the response headers to reference a specific request, useful for debugging or seeking support.",
+                  "key": "Instock-Response-ID",
+                  "value": "string"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"internal_server_error\",\n  \"message\": \"Unexpected error occurred.\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.instock.com/v1",
+      "key": "baseUrl"
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{bearerToken}}"
+      }
+    ]
+  },
+  "info": {
+    "_postman_id": "f5818653-0c3d-4f87-abd1-ff108288c3fd",
+    "name": "Instock API reference Articles API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "# Overview \nThis reference is a comprehensive guide to understanding of Instock API and is aimed to \nhelp developers to integrate their Host system with Instock Cloud (Incloud).\n\nInstock API is REST-based. It has predictable resource URLs, accepts JSON in the HTTP body, returns JSON-encoded\nresponses, and uses standard HTTP response codes to indicate errors, methods and authentication.\nOur API uses `GET`, `POST`, `PUT` methods to perform all operations. \n`GET` method is both used for retrieval of a single or listing multiple objects at once.\n\n## Conventions\n* HTTPS is required for all requests. Requests over plain HTTP will fail.\n* All requests without authentication will fail.\n* Bulk request is supported only to upload articles into Incloud.\n* Property names are in `snake_case` (not `camelCase` or `kebab-case`).\n* Temporal values (datetimes) are encoded in [RFC 3339](https://www.rfc-editor.org/rfc/rfc3339) strings, e.g. `2022-06-06T12:37:00Z`.\n* All path parameters are always returned in response body, except for `POST` and `PUT` methods.\n\n## Authentication \nInstock API offers authentication in form of Bearer token.\nBearer token must be present in each request header. \nThe token provides a full access to all resources and methods of Instock API to its client.\n\n**Note**: currently Bearer token is issued by Instock and supplied to API users during onboarding.\n\nFor example, if you'd like to retrieve sites available to your organization, your request will look like:\n\n``` cURL\ncurl -X GET \n  -H 'Content-Type: application/json' \\\n  -H 'Authorization: {access_token}' \\\n  https://api.instock.com/v1/sites \\\n```\n\n## Errors \n\nInstock API always returns errors in a common format. For example:\n```JSON\n{\n  \"code\": \"bad_request\",\n  \"message\": \"Request body/path/query params cannot be validated.\"\n}\n```\nThe `code` indicates the general class of error read by your Host system.\nThe `message` is a human-readable explanation of what went wrong.\n\n### Common HTTP error code responses\n\n| **HTTP code** | **Code** | **Description** | **Potential solution** |\n|---|---|---|---|\n| 400 | `bad_request`  | The request could not be understood. | Ensure that syntax is correct in parameters of request and its body. |\n| 400 | `resource_cannot_be_created`  | Resource may already exist or has certain creation rules. | Ensure that resource doesn't already exist or it doesn't have any restrictions for creation.<br> For bulk operations, ensure that all objects are valid. |\n| 400 | `resource_cannot_be_updated`  | Resource has certain update rules. | Ensure that resource doesn't have any restrictions that can yield this error. |\n| 401 | `unauthorized` | Requestor is unauthorized. | Ensure that your access token is valid. |\n| 403 | `forbidden` | Requestor does not have permissions to perform an operation. | Ensure that your access token has permissions to perform an operation. |\n| 404 | `resource_not_found` | Resource doesn't exist. | Ensure that the resource is correctly identified by ID. |\n| 500 | `internal_server_error` | Something went wrong on our end. | An unexpected error occurred. Reach out to Instock for support. |\n\n**Note**: each endpoint below has samples of errors it may return. \n\n## Request IDs\nInstock API auto-generates request identifier with each API response.\nYou can find this value in the response headers as `Instock-Request-ID`.\nUse it to refer to a specific request when debugging or reaching out to Instock for support.\n\n``` \nInstock-Request-ID: request_id\n```\n\n## Correlation IDs\nYou can optionally extend your request and add `Instock-Correlation-ID` to the header.\nUse it to analyze incorrect and faulty behavior across your Host system. \nFor example, if you'd like to retrieve sites available to your organization and pass `Instock-Correlation-ID`, your\nrequest will look like:\n\n``` cURL\ncurl -X GET \n  -H 'Content-Type: application/json' \\\n  -H 'Authorization: your-token' \\\n  -H 'Instock-Correlation-ID: your-correlation-id' \\\n  https://api.instock.com/v1/sites \\\n```\n\n## Pagination \nEndpoints that return a list of objects use pagination. Instock API uses cursor-based pagination.\nThis approach allows Host system to request a part of the list, receiving results and `next_cursor` in the response.\nThe latter could be used to access the next part of the list.\n\n**Note**: setting `page_size` lesser than 10 or greater than 1000 will yield an error.\n\n| Parameter | Request/Response | Type | Description |\n|---|---|---|---|\n| `start_cursor` | Request | string<br>(optional) | Cursor returned from a previous response, used to request the next page of the results. |\n| `page_size` | Request | string<br>(optional) | The number of objects returned in response. <br>Has default and maximum values. |\n| `has_more` | Response | bool | If `true`, use `next_cursor` to access next part of the list. <br>If `false`, response includes the end of the list. |\n| `next_cursor` | Response | string | Only available when `has_more` is `true`. <br>Used to retrieve the next page of results by passing the value as the `start_cursor`<br>parameter to the same endpoint. |\n\n## Unique identifiers\n\nThroughout API reference below, you will encounter multiple unique identifiers (UIDs) that are required to perform\ncertain operations.\nFor example, to create customer order, your Host system must:\n  * provide `site_id` to specify exact instance of Instock ASRS installation,\n  * and supply `order_id`. Usually `order_id` value corresponds to the ID of an order that Host system has.\n\nThe table below indicates source (which system issues UID) and scope (at what level UID must be unique).\n\n| ID | Source | Scope | Description |\n|---|---|---|---|\n| `org_id` | Instock | Global | ID assigned to your organization by Instock. |\n| `site_id` | Instock | Global | ID assigned to an individual Instock site that belongs to your organization. |\n| `article_id` | Host | Organization | ID of a product/SKU uploaded by Host system to Incloud. |\n| `order_id` | Host | Organization | ID of an order created by Host system in Incloud. |\n| `ordertask_id` | Instock | Organization | ID of an individual chunk of order fulfillment. |\n\n## Additional attributes \n\nEvery article and order contain `attributes`, which are reserved for custom and pre-defined parameters that your \norganization may require for fulfillment-related operations. \n\n### Custom attributes\n\nBefore integration, your IT and Instock teams should agree upon `attributes` that will be configured \nspecifically for your site(s). Incloud will consume these attributes to perform certain operations throughout \nfulfillment process, e.g. decanting, picking. Attributes can be added or updated in two ways: via API during operations\nsuch as customer order creation or through the workstation UI during operation at ASRS, like decanting.\n\n#### Order attributes\n\nFor example, `cutoff_time` for a customer order — the time when order fulfillment starts, i.e. change its status from `registered` to `reserved`. \n\n``` JSON\n{\n  \"org_id\": \"org_id_001\",\n  \"site_id\": \"1.1.0-1\",\n  \"order_id\": \"order_id_001\",\n  \"kind\": \"customer\",\n  \"placed_at\": \"2022-03-05T07:38:39Z\",\n  \"attributes\": {\n    \"cutoff_time\": \"2022-03-05T16:00:00Z\",\n  },\n  \"lines\": [\n    {\n      \"line_id\": \"00132455-1\",\n      \"article_id\": \"1003000031678\",\n      \"qty\": 1\n    }\n  ]\n}\n```\n\nAnother example involves adding an Advanced Shipping Notice ID (ASN ID) by an associate during decanting.\nThis attribute can be retrieved via API in a reception order. This way, you'll be able to track reception in your\nsystem using the order attribute during decanting.\n\n```\n{\n  \"org_id\": \"org_id_001\",\n  \"site_id\": \"1.1.0-1\",\n  \"order_id\": \"8b72a983-c909-4dd6-b5d4-01d1f4b2a608\",\n  \"kind\": \"reception\",\n  \"placed_at\": \"2024-03-27T13:22:47Z\",\n  \"attributes\": {\n      \"org_id_001:asn\": \"ASN-1818AE4RF\"\n  },\n  \"lines\": [\n      {\n          \"line_id\": \"af7e23f7-08e7-4cf1-b644-1b0cf329e574\",\n          \"article_id\": \"99.21004\",\n          \"qty\": 15\n      }\n  ]\n}\n```\n\n#### Article attributes\n\nAnother example involves the use of product identifiers. While `article_id` serves as the standard unique identifier, \nour system allows organizations to incorporate alternative identifiers, such as EAN, SKU, UPC, ISBN within the article\nobject as attributes (see the example below). These identifiers enable warehouse associates to scan products\nusing those specific codes designated by your organization during decanting.\n\n``` JSON\n{\n  \"articles\": [\n    {\n      \"article_id\": \"116000487727\",\n      \"name\": \"Cheerios Original Cereal, 12 Oz\",\n      \"is_serial_numbered\": false,\n      \"dimensions\": {\n        \"x\": \"7.75\",\n        \"y\": \"12\",\n        \"z\": \"2.75\",\n        \"uom\": \"in\"\n      },\n      \"attributes\": {\n        \"upc\": \"016000275287\",\n        \"sku\": \"CHRC-120Z-001\"\n      }\n    }\n  ]\n}\n```\n\n### Pre-defined attributes\nPre-defined attributes are parameters set by the system to cater to common requirements across different organizations.\nThese attributes are standardized and offer functionalities that are frequently needed in the fulfillment process.\n\n| Attribute | Description |\n|---|---|\n| `main_image` | Stores article's main image URL, helping with quick identification and differentiation of articles, for example, during picking. Images can be in `.png`, `.jpg`, or `.gif` format.|\n\n## Available API methods\n\nThe table below contains the summary of available API methods for the Instock API client.\n\n| Resource   | Available API methods |\n|------------|-----------------------|\n| Sites      | `GET` - List all sites |\n| Articles   | `POST` - Upload article(s)<br>`GET` - List all articles<br>`GET` - Retrieve article<br>`PUT` - Update article |\n| Orders     | `POST` - Create customer order<br>`GET` - List all orders<br>`PUT` - Update customer order<br>`GET` - Retrieve order<br>`GET` - Retrieve order status<br>`POST` - Advance order status (debug)<br>`DELETE` - Cancel registered order |\n| Ordertasks | `GET` - Retrieve ordertask |\n| Inventory  | `GET` - List all articles inventory<br>`POST` - Retrieve multiple articles inventory<br>`PUT` - Adjust article inventory (debug)<br>`GET` - Retrieve article inventory |\n| Moves      | `GET` - List all articles moves<br>`GET` - Retrieve article moves |\n\n\nContact Support:\n Name: Instock\n Email: info@instock.com",
+      "type": "text/plain"
+    }
+  }
+}
