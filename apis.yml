@@ -126,6 +126,8 @@ apis:
   humanURL: https://instock.com/en/docs/api/
   baseURL: https://api.instock.com/v1
   tags:
+  - Order
+  tags_raw:
   - Orders
   properties:
   - type: OpenAPI
