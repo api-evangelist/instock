@@ -1,12 +1,7 @@
 {
   "provider": "instock",
   "sources": [
-    "instock-articles-api-openapi.yml",
-    "instock-inventory-api-openapi.yml",
-    "instock-moves-api-openapi.yml",
-    "instock-orders-api-openapi.yml",
-    "instock-ordertasks-api-openapi.yml",
-    "instock-sites-api-openapi.yml"
+    "_original/instock-openapi.json"
   ],
   "outputs": [
     "instock-articles-api-openapi.yml",
@@ -19,6 +14,17 @@
   "archived": [],
   "errors": [],
   "warnings": [],
-  "notes": [],
-  "skipped": []
+  "notes": [
+    "sourced from openapi/_original/ (1 archived document(s)); previously refined output at the top level was skipped rather than re-split",
+    "instock-openapi.json: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
+    "apis.yml register: already-registered"
+  ],
+  "skipped": [
+    "instock-articles-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "instock-inventory-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "instock-moves-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "instock-orders-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "instock-ordertasks-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "instock-sites-api-openapi.yml: previously refined output, superseded by openapi/_original/"
+  ]
 }
