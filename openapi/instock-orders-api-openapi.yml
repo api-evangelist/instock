@@ -551,359 +551,7 @@ paths:
         '500':
           $ref: '#/components/responses/InternalServerError'
 components:
-  parameters:
-    startCursor:
-      name: start_cursor
-      in: query
-      required: false
-      description: "Cursor returned from a previous response, \nused to request the next page of the results. \n"
-      schema:
-        type: string
-        example: fe2cc560-036c-44cd-90e8-294d5a74cebc
-        default: ''
-    instockCorrelationID:
-      name: Instock-Correlation-ID
-      description: Optional header ID to track and analyze requests and behaviors across your Host system.
-      in: header
-      required: false
-      schema:
-        type: string
-    siteID:
-      name: site_id
-      in: path
-      required: true
-      description: ID of Instock site. Globally unique.
-      schema:
-        $ref: '#/components/schemas/siteId'
-      example: 1.1.0-1
-    pageSize:
-      name: page_size
-      in: query
-      required: false
-      description: "The number of articles returned in response. \nDefault (minimum) value is 10, maximum value is 1000.\n"
-      schema:
-        type: integer
-        format: int64
-        example: 10
-        default: 10
-        maximum: 1000
-    orderID:
-      name: order_id
-      in: path
-      description: ID of an order. Unique in scope of your organization(s).
-      required: true
-      schema:
-        type: string
-      example: '00132455'
-  examples:
-    orderStatusDone:
-      value:
-        org_id: org_id_001
-        site_id: 1.1.0-1
-        order_id: '00132456'
-        order_status: done
-        timestamp: '2022-03-05T09:30:20Z'
-        ordertask_ids:
-        - ot0001
-        - ot0002
-        lines:
-        - line_id: 00132456-1
-          article_id: '116000487727'
-          qty:
-            reserved: 10
-            free: 10
-            requested: 10
-        - line_id: 00132456-2
-          article_id: '1003000031678'
-          qty:
-            reserved: 5
-            free: 195
-            requested: 5
-    receptionOrder:
-      value:
-        org_id: org_id_001
-        site_id: 1.1.0-1
-        order_id: 8b72a983-c909-4dd6-b5d4-01d1f4b2a669
-        kind: reception
-        placed_at: '2024-03-27T13:24:47Z'
-        attributes:
-          org_id_001:asn: ASN-1818AE4RF
-        lines:
-        - line_id: af7e23f7-08e7-4cf1-b644-1b0cf289e574
-          article_id: '99.21004'
-          qty: 15
-        - line_id: e9ce63cc-dfa3-4edb-adf5-cec750e56bcd
-          article_id: '99.91001'
-          qty: 100
-    orderStatusCancelled:
-      value:
-        org_id: org_id_001
-        site_id: 1.1.0-1
-        order_id: '00132457'
-        order_status: canceled
-        timestamp: '2022-03-05T08:30:25Z'
-        ordertask_ids:
-        - ot0003
-        - ot0004
-        lines:
-        - line_id: 00132456-1
-          article_id: '116000487727'
-          qty:
-            reserved: 10
-            free: 10
-            requested: 10
-        - line_id: 00132456-2
-          article_id: '1003000031678'
-          qty:
-            reserved: 5
-            free: 195
-            requested: 5
-    orderSingleLine:
-      value:
-        org_id: org_id_001
-        site_id: 1.1.0-1
-        order_id: '00132455'
-        kind: customer
-        placed_at: '2022-03-05T07:38:39Z'
-        attributes:
-          property1: string
-          property2: string
-        lines:
-        - line_id: 00132455-1
-          article_id: '1003000031678'
-          qty: 1
-    orderStatusRegistered:
-      value:
-        org_id: org_id_001
-        site_id: 1.1.0-1
-        order_id: '00132456'
-        order_status: registered
-        timestamp: '2022-03-05T08:15:21Z'
-        ordertask_ids:
-        - ''
-        lines:
-        - line_id: 00132456-1
-          article_id: '116000487727'
-          qty:
-            reserved: 0
-            free: 20
-            requested: 10
-        - line_id: 00132456-2
-          article_id: '1003000031678'
-          qty:
-            reserved: 0
-            free: 200
-            requested: 5
-    orderStatusReserved:
-      value:
-        org_id: org_id_001
-        site_id: 1.1.0-1
-        order_id: '00132456'
-        order_status: registered
-        timestamp: '2022-03-05T08:30:20Z'
-        ordertask_ids:
-        - ot0001
-        - ot0002
-        lines:
-        - line_id: 00132456-1
-          article_id: '116000487727'
-          qty:
-            reserved: 10
-            free: 10
-            requested: 10
-        - line_id: 00132456-2
-          article_id: '1003000031678'
-          qty:
-            reserved: 5
-            free: 195
-            requested: 5
-    orderSeveralLines:
-      value:
-        org_id: org_id_001
-        site_id: 1.1.0-1
-        order_id: '00132456'
-        kind: customer
-        placed_at: '2022-03-05T10:45:09Z'
-        attributes:
-          property1: string
-          property2: string
-        lines:
-        - line_id: 00132456-1
-          article_id: '116000487727'
-          qty: 1
-        - line_id: 00132456-2
-          article_id: '1003000031678'
-          qty: 2
-    listOfSiteOrders:
-      value:
-        has_more: false
-        next_cursor: ''
-        org_id: org_id_001
-        site_id: 1.1.0-1
-        orders:
-        - order_id: '00132457'
-          site_id: 1.1.0-1
-          kind: customer
-          placed_at: '2022-03-06T12:45:09Z'
-          attributes:
-            property1: string
-            property2: string
-          lines:
-          - line_id: 00132457-1
-            article_id: '116000275270'
-            qty: 1
-          - line_id: 00132457-2
-            article_id: '1003000031678'
-            qty: 2
-          - line_id: 00132457-3
-            article_id: '116000487727'
-            qty: 3
-        - order_id: 00132458
-          site_id: 1.1.0-1
-          kind: adjustment
-          placed_at: '2022-03-06T12:47:19Z'
-          attributes:
-            property1: string
-            property2: string
-          lines:
-          - line_id: 00132458-1
-            article_id: '116000275270'
-            qty: 1
-        - order_id: 00132459
-          site_id: 1.1.0-1
-          kind: reception
-          placed_at: '2022-03-06T12:47:19Z'
-          attributes:
-            property1: string
-            property2: string
-          lines:
-          - line_id: 00132459-1
-            article_id: '116000275270'
-            qty: 14
-          - line_id: 00132459-2
-            article_id: '116000275271'
-            qty: 20
-          - line_id: 00132459-3
-            article_id: '116000275274'
-            qty: 10
   schemas:
-    placedAtTimestamp:
-      type: string
-      format: date-time
-      description: Time when order was placed [RFC 3339](https://www.rfc-editor.org/rfc/rfc3339).
-      example: '2023-01-01T00:00:00Z'
-    toCellId:
-      type: string
-      description: ID of the target storage cell to which a specific article moved.
-      minLength: 1
-      maxLength: 1024
-      example: VM-TIY6J-P001
-    getSingleOrder:
-      type: object
-      properties:
-        org_id:
-          type: string
-          description: ID of an organization. Globally unique.
-        site_id:
-          type: string
-          description: ID of Instock site. Globally unique.
-        order_id:
-          $ref: '#/components/schemas/orderId'
-        kind:
-          type: string
-          enum:
-          - customer
-          - adjustment
-          - reception
-          - extraction
-          default: customer
-          description: "Type of an order:\n  * `customer` - order placed by a customer.\n  * `adjustment`- order to correct inventory.\n  * `reception` - order to receive goods from suppliers.\n  * `extraction` - order to extract assets from ASRS.\n"
-        placed_at:
-          $ref: '#/components/schemas/placedAtTimestamp'
-        attributes:
-          type: object
-          description: Custom attribute(s) added to an order.
-          additionalProperties:
-            type: string
-        lines:
-          type: array
-          description: List of lines within an order.
-          items:
-            type: object
-            properties:
-              line_id:
-                $ref: '#/components/schemas/lineId'
-              article_id:
-                $ref: '#/components/schemas/articleId'
-              qty:
-                type: integer
-                format: int64
-                description: Quantity of a specific article in a single order line.
-    siteId:
-      type: string
-      description: ID of Instock site. Globally unique.
-    order:
-      type: object
-      properties:
-        org_id:
-          type: string
-          description: ID of an organization. Globally unique.
-        site_id:
-          type: string
-          description: ID of Instock site. Globally unique.
-        order_id:
-          $ref: '#/components/schemas/orderId'
-        kind:
-          type: string
-          enum:
-          - customer
-          default: customer
-          description: "Type of an order:\n * `customer` - order placed by a customer.\n"
-        placed_at:
-          $ref: '#/components/schemas/placedAtTimestamp'
-        attributes:
-          type: object
-          description: Custom attribute(s) added to an order.
-          additionalProperties:
-            type: string
-        lines:
-          type: array
-          description: List of lines within an order.
-          items:
-            type: object
-            properties:
-              line_id:
-                $ref: '#/components/schemas/lineId'
-              article_id:
-                $ref: '#/components/schemas/articleId'
-              qty:
-                type: integer
-                format: int64
-                description: Quantity of a specific article in a single order line.
-    orderId:
-      type: string
-      description: ID of an order. Unique in scope of your organization(s).
-      pattern: ^[a-zA-Z0-9_+.:-]+$
-      minLength: 1
-      maxLength: 128
-    articleId:
-      type: string
-      description: ID of an article. Unique in scope of your organization(s).
-      pattern: ^[a-zA-Z0-9_+.]+$
-    orderStatusRequestTimestamp:
-      type: string
-      format: date-time
-      description: Timestamp of order status request [RFC 3339](https://www.rfc-editor.org/rfc/rfc3339).
-      example: '2023-01-01T00:00:00Z'
-    Error:
-      type: object
-      properties:
-        code:
-          description: Code that identifies the reason of an error.
-          type: string
-        message:
-          description: Description of an error.
-          type: string
     orderStatus:
       type: object
       properties:
@@ -1020,37 +668,326 @@ components:
                     qty:
                       type: integer
                       format: int64
+    placedAtTimestamp:
+      type: string
+      format: date-time
+      description: Time when order was placed [RFC 3339](https://www.rfc-editor.org/rfc/rfc3339).
+      example: '2023-01-01T00:00:00Z'
+    siteId:
+      type: string
+      description: ID of Instock site. Globally unique.
+    toCellId:
+      type: string
+      description: ID of the target storage cell to which a specific article moved.
+      minLength: 1
+      maxLength: 1024
+      example: VM-TIY6J-P001
+    Error:
+      type: object
+      properties:
+        code:
+          description: Code that identifies the reason of an error.
+          type: string
+        message:
+          description: Description of an error.
+          type: string
+    getSingleOrder:
+      type: object
+      properties:
+        org_id:
+          type: string
+          description: ID of an organization. Globally unique.
+        site_id:
+          type: string
+          description: ID of Instock site. Globally unique.
+        order_id:
+          $ref: '#/components/schemas/orderId'
+        kind:
+          type: string
+          enum:
+          - customer
+          - adjustment
+          - reception
+          - extraction
+          default: customer
+          description: "Type of an order:\n  * `customer` - order placed by a customer.\n  * `adjustment`- order to correct inventory.\n  * `reception` - order to receive goods from suppliers.\n  * `extraction` - order to extract assets from ASRS.\n"
+        placed_at:
+          $ref: '#/components/schemas/placedAtTimestamp'
+        attributes:
+          type: object
+          description: Custom attribute(s) added to an order.
+          additionalProperties:
+            type: string
+        lines:
+          type: array
+          description: List of lines within an order.
+          items:
+            type: object
+            properties:
+              line_id:
+                $ref: '#/components/schemas/lineId'
+              article_id:
+                $ref: '#/components/schemas/articleId'
+              qty:
+                type: integer
+                format: int64
+                description: Quantity of a specific article in a single order line.
+    orderId:
+      type: string
+      description: ID of an order. Unique in scope of your organization(s).
+      pattern: ^[a-zA-Z0-9_+.:-]+$
+      minLength: 1
+      maxLength: 128
+    order:
+      type: object
+      properties:
+        org_id:
+          type: string
+          description: ID of an organization. Globally unique.
+        site_id:
+          type: string
+          description: ID of Instock site. Globally unique.
+        order_id:
+          $ref: '#/components/schemas/orderId'
+        kind:
+          type: string
+          enum:
+          - customer
+          default: customer
+          description: "Type of an order:\n * `customer` - order placed by a customer.\n"
+        placed_at:
+          $ref: '#/components/schemas/placedAtTimestamp'
+        attributes:
+          type: object
+          description: Custom attribute(s) added to an order.
+          additionalProperties:
+            type: string
+        lines:
+          type: array
+          description: List of lines within an order.
+          items:
+            type: object
+            properties:
+              line_id:
+                $ref: '#/components/schemas/lineId'
+              article_id:
+                $ref: '#/components/schemas/articleId'
+              qty:
+                type: integer
+                format: int64
+                description: Quantity of a specific article in a single order line.
     lineId:
       type: string
       description: ID of an order line. Unique in scope of your organization(s).
       pattern: ^[a-zA-Z0-9_+.:-]+$
       minLength: 1
       maxLength: 128
+    articleId:
+      type: string
+      description: ID of an article. Unique in scope of your organization(s).
+      pattern: ^[a-zA-Z0-9_+.]+$
+    orderStatusRequestTimestamp:
+      type: string
+      format: date-time
+      description: Timestamp of order status request [RFC 3339](https://www.rfc-editor.org/rfc/rfc3339).
+      example: '2023-01-01T00:00:00Z'
+  examples:
+    orderStatusReserved:
+      value:
+        org_id: org_id_001
+        site_id: 1.1.0-1
+        order_id: '00132456'
+        order_status: registered
+        timestamp: '2022-03-05T08:30:20Z'
+        ordertask_ids:
+        - ot0001
+        - ot0002
+        lines:
+        - line_id: 00132456-1
+          article_id: '116000487727'
+          qty:
+            reserved: 10
+            free: 10
+            requested: 10
+        - line_id: 00132456-2
+          article_id: '1003000031678'
+          qty:
+            reserved: 5
+            free: 195
+            requested: 5
+    orderSeveralLines:
+      value:
+        org_id: org_id_001
+        site_id: 1.1.0-1
+        order_id: '00132456'
+        kind: customer
+        placed_at: '2022-03-05T10:45:09Z'
+        attributes:
+          property1: string
+          property2: string
+        lines:
+        - line_id: 00132456-1
+          article_id: '116000487727'
+          qty: 1
+        - line_id: 00132456-2
+          article_id: '1003000031678'
+          qty: 2
+    orderStatusRegistered:
+      value:
+        org_id: org_id_001
+        site_id: 1.1.0-1
+        order_id: '00132456'
+        order_status: registered
+        timestamp: '2022-03-05T08:15:21Z'
+        ordertask_ids:
+        - ''
+        lines:
+        - line_id: 00132456-1
+          article_id: '116000487727'
+          qty:
+            reserved: 0
+            free: 20
+            requested: 10
+        - line_id: 00132456-2
+          article_id: '1003000031678'
+          qty:
+            reserved: 0
+            free: 200
+            requested: 5
+    orderStatusDone:
+      value:
+        org_id: org_id_001
+        site_id: 1.1.0-1
+        order_id: '00132456'
+        order_status: done
+        timestamp: '2022-03-05T09:30:20Z'
+        ordertask_ids:
+        - ot0001
+        - ot0002
+        lines:
+        - line_id: 00132456-1
+          article_id: '116000487727'
+          qty:
+            reserved: 10
+            free: 10
+            requested: 10
+        - line_id: 00132456-2
+          article_id: '1003000031678'
+          qty:
+            reserved: 5
+            free: 195
+            requested: 5
+    orderSingleLine:
+      value:
+        org_id: org_id_001
+        site_id: 1.1.0-1
+        order_id: '00132455'
+        kind: customer
+        placed_at: '2022-03-05T07:38:39Z'
+        attributes:
+          property1: string
+          property2: string
+        lines:
+        - line_id: 00132455-1
+          article_id: '1003000031678'
+          qty: 1
+    listOfSiteOrders:
+      value:
+        has_more: false
+        next_cursor: ''
+        org_id: org_id_001
+        site_id: 1.1.0-1
+        orders:
+        - order_id: '00132457'
+          site_id: 1.1.0-1
+          kind: customer
+          placed_at: '2022-03-06T12:45:09Z'
+          attributes:
+            property1: string
+            property2: string
+          lines:
+          - line_id: 00132457-1
+            article_id: '116000275270'
+            qty: 1
+          - line_id: 00132457-2
+            article_id: '1003000031678'
+            qty: 2
+          - line_id: 00132457-3
+            article_id: '116000487727'
+            qty: 3
+        - order_id: 00132458
+          site_id: 1.1.0-1
+          kind: adjustment
+          placed_at: '2022-03-06T12:47:19Z'
+          attributes:
+            property1: string
+            property2: string
+          lines:
+          - line_id: 00132458-1
+            article_id: '116000275270'
+            qty: 1
+        - order_id: 00132459
+          site_id: 1.1.0-1
+          kind: reception
+          placed_at: '2022-03-06T12:47:19Z'
+          attributes:
+            property1: string
+            property2: string
+          lines:
+          - line_id: 00132459-1
+            article_id: '116000275270'
+            qty: 14
+          - line_id: 00132459-2
+            article_id: '116000275271'
+            qty: 20
+          - line_id: 00132459-3
+            article_id: '116000275274'
+            qty: 10
+    receptionOrder:
+      value:
+        org_id: org_id_001
+        site_id: 1.1.0-1
+        order_id: 8b72a983-c909-4dd6-b5d4-01d1f4b2a669
+        kind: reception
+        placed_at: '2024-03-27T13:24:47Z'
+        attributes:
+          org_id_001:asn: ASN-1818AE4RF
+        lines:
+        - line_id: af7e23f7-08e7-4cf1-b644-1b0cf289e574
+          article_id: '99.21004'
+          qty: 15
+        - line_id: e9ce63cc-dfa3-4edb-adf5-cec750e56bcd
+          article_id: '99.91001'
+          qty: 100
+    orderStatusCancelled:
+      value:
+        org_id: org_id_001
+        site_id: 1.1.0-1
+        order_id: '00132457'
+        order_status: canceled
+        timestamp: '2022-03-05T08:30:25Z'
+        ordertask_ids:
+        - ot0003
+        - ot0004
+        lines:
+        - line_id: 00132456-1
+          article_id: '116000487727'
+          qty:
+            reserved: 10
+            free: 10
+            requested: 10
+        - line_id: 00132456-2
+          article_id: '1003000031678'
+          qty:
+            reserved: 5
+            free: 195
+            requested: 5
+  headers:
+    instockRequestID:
+      description: Auto-generated ID in the response headers to reference a specific request, useful for debugging or seeking support.
+      schema:
+        type: string
   responses:
-    Forbidden:
-      description: Forbidden
-      headers:
-        Instock-Response-ID:
-          $ref: '#/components/headers/instockRequestID'
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-          example:
-            code: forbidden
-            message: API key doesn't have permissions to perform the request.
-    InternalServerError:
-      description: Internal server error
-      headers:
-        Instock-Response-ID:
-          $ref: '#/components/headers/instockRequestID'
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-          example:
-            code: internal_server_error
-            message: Unexpected error occurred.
     Unauthorized:
       description: Unauthorized
       headers:
@@ -1063,11 +1000,74 @@ components:
           example:
             code: unauthorized
             message: API key is not valid.
-  headers:
-    instockRequestID:
-      description: Auto-generated ID in the response headers to reference a specific request, useful for debugging or seeking support.
+    InternalServerError:
+      description: Internal server error
+      headers:
+        Instock-Response-ID:
+          $ref: '#/components/headers/instockRequestID'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            code: internal_server_error
+            message: Unexpected error occurred.
+    Forbidden:
+      description: Forbidden
+      headers:
+        Instock-Response-ID:
+          $ref: '#/components/headers/instockRequestID'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            code: forbidden
+            message: API key doesn't have permissions to perform the request.
+  parameters:
+    pageSize:
+      name: page_size
+      in: query
+      required: false
+      description: "The number of articles returned in response. \nDefault (minimum) value is 10, maximum value is 1000.\n"
+      schema:
+        type: integer
+        format: int64
+        example: 10
+        default: 10
+        maximum: 1000
+    instockCorrelationID:
+      name: Instock-Correlation-ID
+      description: Optional header ID to track and analyze requests and behaviors across your Host system.
+      in: header
+      required: false
       schema:
         type: string
+    startCursor:
+      name: start_cursor
+      in: query
+      required: false
+      description: "Cursor returned from a previous response, \nused to request the next page of the results. \n"
+      schema:
+        type: string
+        example: fe2cc560-036c-44cd-90e8-294d5a74cebc
+        default: ''
+    siteID:
+      name: site_id
+      in: path
+      required: true
+      description: ID of Instock site. Globally unique.
+      schema:
+        $ref: '#/components/schemas/siteId'
+      example: 1.1.0-1
+    orderID:
+      name: order_id
+      in: path
+      description: ID of an order. Unique in scope of your organization(s).
+      required: true
+      schema:
+        type: string
+      example: '00132455'
   securitySchemes:
     bearerAuth:
       bearerFormat: JWT

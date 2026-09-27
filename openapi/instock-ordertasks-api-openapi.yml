@@ -99,27 +99,6 @@ paths:
           $ref: '#/components/responses/InternalServerError'
 components:
   schemas:
-    orderId:
-      type: string
-      description: ID of an order. Unique in scope of your organization(s).
-      pattern: ^[a-zA-Z0-9_+.:-]+$
-      minLength: 1
-      maxLength: 128
-    toCellId:
-      type: string
-      description: ID of the target storage cell to which a specific article moved.
-      minLength: 1
-      maxLength: 1024
-      example: VM-TIY6J-P001
-    Error:
-      type: object
-      properties:
-        code:
-          description: Code that identifies the reason of an error.
-          type: string
-        message:
-          description: Description of an error.
-          type: string
     orderTask:
       type: object
       properties:
@@ -170,19 +149,64 @@ components:
                     qty:
                       type: integer
                       description: Quantity of items of a specific article within specific target storage cell.
+    siteId:
+      type: string
+      description: ID of Instock site. Globally unique.
+    orderId:
+      type: string
+      description: ID of an order. Unique in scope of your organization(s).
+      pattern: ^[a-zA-Z0-9_+.:-]+$
+      minLength: 1
+      maxLength: 128
+    toCellId:
+      type: string
+      description: ID of the target storage cell to which a specific article moved.
+      minLength: 1
+      maxLength: 1024
+      example: VM-TIY6J-P001
+    Error:
+      type: object
+      properties:
+        code:
+          description: Code that identifies the reason of an error.
+          type: string
+        message:
+          description: Description of an error.
+          type: string
     lineId:
       type: string
       description: ID of an order line. Unique in scope of your organization(s).
       pattern: ^[a-zA-Z0-9_+.:-]+$
       minLength: 1
       maxLength: 128
-    siteId:
-      type: string
-      description: ID of Instock site. Globally unique.
     articleId:
       type: string
       description: ID of an article. Unique in scope of your organization(s).
       pattern: ^[a-zA-Z0-9_+.]+$
+  parameters:
+    siteID:
+      name: site_id
+      in: path
+      required: true
+      description: ID of Instock site. Globally unique.
+      schema:
+        $ref: '#/components/schemas/siteId'
+      example: 1.1.0-1
+    orderTaskID:
+      name: ordertask_id
+      in: path
+      description: ID of an order task. Unique in scope of your organization(s).
+      required: true
+      schema:
+        type: string
+      example: ot0001
+    instockCorrelationID:
+      name: Instock-Correlation-ID
+      description: Optional header ID to track and analyze requests and behaviors across your Host system.
+      in: header
+      required: false
+      schema:
+        type: string
   responses:
     InternalServerError:
       description: Internal server error
@@ -220,30 +244,6 @@ components:
           example:
             code: forbidden
             message: API key doesn't have permissions to perform the request.
-  parameters:
-    instockCorrelationID:
-      name: Instock-Correlation-ID
-      description: Optional header ID to track and analyze requests and behaviors across your Host system.
-      in: header
-      required: false
-      schema:
-        type: string
-    orderTaskID:
-      name: ordertask_id
-      in: path
-      description: ID of an order task. Unique in scope of your organization(s).
-      required: true
-      schema:
-        type: string
-      example: ot0001
-    siteID:
-      name: site_id
-      in: path
-      required: true
-      description: ID of Instock site. Globally unique.
-      schema:
-        $ref: '#/components/schemas/siteId'
-      example: 1.1.0-1
   headers:
     instockRequestID:
       description: Auto-generated ID in the response headers to reference a specific request, useful for debugging or seeking support.

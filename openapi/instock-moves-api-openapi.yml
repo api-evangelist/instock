@@ -178,7 +178,38 @@ paths:
         '500':
           $ref: '#/components/responses/InternalServerError'
 components:
+  headers:
+    instockRequestID:
+      description: Auto-generated ID in the response headers to reference a specific request, useful for debugging or seeking support.
+      schema:
+        type: string
   parameters:
+    articleID:
+      name: article_id
+      in: path
+      description: ID of an article. Unique in scope of your organization(s).
+      required: true
+      schema:
+        $ref: '#/components/schemas/articleId'
+      example: 016000487727
+    pageSize:
+      name: page_size
+      in: query
+      required: false
+      description: "The number of articles returned in response. \nDefault (minimum) value is 10, maximum value is 1000.\n"
+      schema:
+        type: integer
+        format: int64
+        example: 10
+        default: 10
+        maximum: 1000
+    instockCorrelationID:
+      name: Instock-Correlation-ID
+      description: Optional header ID to track and analyze requests and behaviors across your Host system.
+      in: header
+      required: false
+      schema:
+        type: string
     startCursor:
       name: start_cursor
       in: query
@@ -188,27 +219,6 @@ components:
         type: string
         example: fe2cc560-036c-44cd-90e8-294d5a74cebc
         default: ''
-    fromTimestamp:
-      name: from_timestamp
-      in: query
-      required: true
-      schema:
-        $ref: '#/components/schemas/movesFromTimestamp'
-    instockCorrelationID:
-      name: Instock-Correlation-ID
-      description: Optional header ID to track and analyze requests and behaviors across your Host system.
-      in: header
-      required: false
-      schema:
-        type: string
-    articleID:
-      name: article_id
-      in: path
-      description: ID of an article. Unique in scope of your organization(s).
-      required: true
-      schema:
-        $ref: '#/components/schemas/articleId'
-      example: 016000487727
     toTimestamp:
       name: to_timestamp
       in: query
@@ -223,24 +233,108 @@ components:
       schema:
         $ref: '#/components/schemas/siteId'
       example: 1.1.0-1
-    pageSize:
-      name: page_size
-      in: query
-      required: false
-      description: "The number of articles returned in response. \nDefault (minimum) value is 10, maximum value is 1000.\n"
-      schema:
-        type: integer
-        format: int64
-        example: 10
-        default: 10
-        maximum: 1000
     toCellID:
       name: to_cell_id
       in: query
       required: false
       schema:
         $ref: '#/components/schemas/toCellId'
+    fromTimestamp:
+      name: from_timestamp
+      in: query
+      required: true
+      schema:
+        $ref: '#/components/schemas/movesFromTimestamp'
   schemas:
+    siteId:
+      type: string
+      description: ID of Instock site. Globally unique.
+    toCellId:
+      type: string
+      description: ID of the target storage cell to which a specific article moved.
+      minLength: 1
+      maxLength: 1024
+      example: VM-TIY6J-P001
+    movesAllArticles:
+      type: object
+      properties:
+        has_more:
+          type: boolean
+          description: 'If `true`, `next_cursor` to access next part of the list.
+
+            If `false`, response includes the end of the list.
+
+            '
+        next_cursor:
+          type: string
+          description: "Only available when `has_more` is `true`.\nUsed to retrieve the next page of results by \npassing the value as the `start_cursor` parameter \nto the same endpoint.\n"
+        org_id:
+          type: string
+          description: ID of an organization. Globally unique.
+        site_id:
+          type: string
+          description: ID of Instock site. Globally unique.
+        moves:
+          description: Move records of article(s).
+          type: array
+          items:
+            type: object
+            properties:
+              article_id:
+                $ref: '#/components/schemas/articleId'
+              qty:
+                type: integer
+                format: int64
+                description: Quantity of items of a specific article moved between cells.
+              move_timestamp:
+                type: string
+                format: date-time
+                description: Move timestamp of specific article.
+              user_id:
+                type: string
+                description: Unique ID of a user that performed the move.
+              order_id:
+                $ref: '#/components/schemas/orderId'
+              from_cell_id:
+                type: string
+                description: Cell from which specific article moved.
+              to_cell_id:
+                $ref: '#/components/schemas/toCellId'
+              from_account_id:
+                type: string
+                description: Account that passed a specific article.
+              to_account_id:
+                type: string
+                description: Account that registered a specific article.
+    Error:
+      type: object
+      properties:
+        code:
+          description: Code that identifies the reason of an error.
+          type: string
+        message:
+          description: Description of an error.
+          type: string
+    movesToTimestamp:
+      type: string
+      format: date-time
+      description: Finish date of article moves [RFC 3339](https://www.rfc-editor.org/rfc/rfc3339).
+      example: '2023-01-01T00:00:00Z'
+    orderId:
+      type: string
+      description: ID of an order. Unique in scope of your organization(s).
+      pattern: ^[a-zA-Z0-9_+.:-]+$
+      minLength: 1
+      maxLength: 128
+    articleId:
+      type: string
+      description: ID of an article. Unique in scope of your organization(s).
+      pattern: ^[a-zA-Z0-9_+.]+$
+    movesFromTimestamp:
+      type: string
+      format: date-time
+      description: Start date of article moves [RFC 3339](https://www.rfc-editor.org/rfc/rfc3339).
+      example: '2023-01-01T00:00:00Z'
     movesArticleId:
       type: object
       properties:
@@ -294,120 +388,7 @@ components:
               to_account_id:
                 type: string
                 description: Account that registered a specific article.
-    toCellId:
-      type: string
-      description: ID of the target storage cell to which a specific article moved.
-      minLength: 1
-      maxLength: 1024
-      example: VM-TIY6J-P001
-    siteId:
-      type: string
-      description: ID of Instock site. Globally unique.
-    movesAllArticles:
-      type: object
-      properties:
-        has_more:
-          type: boolean
-          description: 'If `true`, `next_cursor` to access next part of the list.
-
-            If `false`, response includes the end of the list.
-
-            '
-        next_cursor:
-          type: string
-          description: "Only available when `has_more` is `true`.\nUsed to retrieve the next page of results by \npassing the value as the `start_cursor` parameter \nto the same endpoint.\n"
-        org_id:
-          type: string
-          description: ID of an organization. Globally unique.
-        site_id:
-          type: string
-          description: ID of Instock site. Globally unique.
-        moves:
-          description: Move records of article(s).
-          type: array
-          items:
-            type: object
-            properties:
-              article_id:
-                $ref: '#/components/schemas/articleId'
-              qty:
-                type: integer
-                format: int64
-                description: Quantity of items of a specific article moved between cells.
-              move_timestamp:
-                type: string
-                format: date-time
-                description: Move timestamp of specific article.
-              user_id:
-                type: string
-                description: Unique ID of a user that performed the move.
-              order_id:
-                $ref: '#/components/schemas/orderId'
-              from_cell_id:
-                type: string
-                description: Cell from which specific article moved.
-              to_cell_id:
-                $ref: '#/components/schemas/toCellId'
-              from_account_id:
-                type: string
-                description: Account that passed a specific article.
-              to_account_id:
-                type: string
-                description: Account that registered a specific article.
-    orderId:
-      type: string
-      description: ID of an order. Unique in scope of your organization(s).
-      pattern: ^[a-zA-Z0-9_+.:-]+$
-      minLength: 1
-      maxLength: 128
-    movesToTimestamp:
-      type: string
-      format: date-time
-      description: Finish date of article moves [RFC 3339](https://www.rfc-editor.org/rfc/rfc3339).
-      example: '2023-01-01T00:00:00Z'
-    articleId:
-      type: string
-      description: ID of an article. Unique in scope of your organization(s).
-      pattern: ^[a-zA-Z0-9_+.]+$
-    Error:
-      type: object
-      properties:
-        code:
-          description: Code that identifies the reason of an error.
-          type: string
-        message:
-          description: Description of an error.
-          type: string
-    movesFromTimestamp:
-      type: string
-      format: date-time
-      description: Start date of article moves [RFC 3339](https://www.rfc-editor.org/rfc/rfc3339).
-      example: '2023-01-01T00:00:00Z'
   responses:
-    Forbidden:
-      description: Forbidden
-      headers:
-        Instock-Response-ID:
-          $ref: '#/components/headers/instockRequestID'
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-          example:
-            code: forbidden
-            message: API key doesn't have permissions to perform the request.
-    InternalServerError:
-      description: Internal server error
-      headers:
-        Instock-Response-ID:
-          $ref: '#/components/headers/instockRequestID'
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-          example:
-            code: internal_server_error
-            message: Unexpected error occurred.
     Unauthorized:
       description: Unauthorized
       headers:
@@ -420,33 +401,31 @@ components:
           example:
             code: unauthorized
             message: API key is not valid.
+    InternalServerError:
+      description: Internal server error
+      headers:
+        Instock-Response-ID:
+          $ref: '#/components/headers/instockRequestID'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            code: internal_server_error
+            message: Unexpected error occurred.
+    Forbidden:
+      description: Forbidden
+      headers:
+        Instock-Response-ID:
+          $ref: '#/components/headers/instockRequestID'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            code: forbidden
+            message: API key doesn't have permissions to perform the request.
   examples:
-    singleArticleMoves:
-      value:
-        has_more: false
-        next_cursor: ''
-        org_id: org_id_001
-        site_id: 1.1.0-1
-        article_id: '1003000031678'
-        moves:
-        - article_id: '1003000031678'
-          qty: 12
-          move_timestamp: '2022-06-06T14:38:39Z'
-          user_id: '00001'
-          order_id: '00132431'
-          from_cell_id: cell_001
-          to_cell_id: cell_002
-          from_account_id: account_001
-          to_account_id: account_002
-        - article_id: '1003000031678'
-          qty: 2
-          move_timestamp: '2022-06-03T14:38:39Z'
-          user_id: '00001'
-          order_id: '00132457'
-          from_cell_id: cell_003
-          to_cell_id: cell_004
-          from_account_id: account_001
-          to_account_id: account_002
     allArticleMoves:
       value:
         has_more: false
@@ -481,11 +460,32 @@ components:
           to_cell_id: cell_004
           from_account_id: account_001
           to_account_id: account_002
-  headers:
-    instockRequestID:
-      description: Auto-generated ID in the response headers to reference a specific request, useful for debugging or seeking support.
-      schema:
-        type: string
+    singleArticleMoves:
+      value:
+        has_more: false
+        next_cursor: ''
+        org_id: org_id_001
+        site_id: 1.1.0-1
+        article_id: '1003000031678'
+        moves:
+        - article_id: '1003000031678'
+          qty: 12
+          move_timestamp: '2022-06-06T14:38:39Z'
+          user_id: '00001'
+          order_id: '00132431'
+          from_cell_id: cell_001
+          to_cell_id: cell_002
+          from_account_id: account_001
+          to_account_id: account_002
+        - article_id: '1003000031678'
+          qty: 2
+          move_timestamp: '2022-06-03T14:38:39Z'
+          user_id: '00001'
+          order_id: '00132457'
+          from_cell_id: cell_003
+          to_cell_id: cell_004
+          from_account_id: account_001
+          to_account_id: account_002
   securitySchemes:
     bearerAuth:
       bearerFormat: JWT

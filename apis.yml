@@ -59,6 +59,15 @@ tags:
 - Logistics
 - ASRS
 - Supply Chain
+- Inventory
+tags_raw:
+- Company
+- Robotics
+- Warehouse Automation
+- Fulfillment
+- Logistics
+- ASRS
+- Supply Chain
 - Inventory Management
 apis:
 - aid: instock:instock-articles-api
