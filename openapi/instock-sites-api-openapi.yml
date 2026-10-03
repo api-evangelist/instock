@@ -86,6 +86,22 @@ components:
     siteId:
       type: string
       description: ID of Instock site. Globally unique.
+    sites:
+      type: object
+      properties:
+        sites:
+          type: array
+          description: List of available site ID(s) to your organization
+          items:
+            $ref: '#/components/schemas/site'
+    site:
+      type: object
+      properties:
+        site_id:
+          $ref: '#/components/schemas/siteId'
+        is_virtual:
+          type: boolean
+          description: Property that shows if the site is only available virtually.
     Error:
       type: object
       properties:
@@ -95,22 +111,6 @@ components:
         message:
           description: Description of an error.
           type: string
-    site:
-      type: object
-      properties:
-        site_id:
-          $ref: '#/components/schemas/siteId'
-        is_virtual:
-          type: boolean
-          description: Property that shows if the site is only available virtually.
-    sites:
-      type: object
-      properties:
-        sites:
-          type: array
-          description: List of available site ID(s) to your organization
-          items:
-            $ref: '#/components/schemas/site'
   examples:
     sites:
       value:
@@ -120,18 +120,6 @@ components:
         - site_id: 1.1.0-2
           is_virtual: false
   responses:
-    InternalServerError:
-      description: Internal server error
-      headers:
-        Instock-Response-ID:
-          $ref: '#/components/headers/instockRequestID'
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-          example:
-            code: internal_server_error
-            message: Unexpected error occurred.
     Forbidden:
       description: Forbidden
       headers:
@@ -156,6 +144,18 @@ components:
           example:
             code: unauthorized
             message: API key is not valid.
+    InternalServerError:
+      description: Internal server error
+      headers:
+        Instock-Response-ID:
+          $ref: '#/components/headers/instockRequestID'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            code: internal_server_error
+            message: Unexpected error occurred.
   headers:
     instockRequestID:
       description: Auto-generated ID in the response headers to reference a specific request, useful for debugging or seeking support.

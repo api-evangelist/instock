@@ -99,6 +99,40 @@ paths:
           $ref: '#/components/responses/InternalServerError'
 components:
   schemas:
+    siteId:
+      type: string
+      description: ID of Instock site. Globally unique.
+    lineId:
+      type: string
+      description: ID of an order line. Unique in scope of your organization(s).
+      pattern: ^[a-zA-Z0-9_+.:-]+$
+      minLength: 1
+      maxLength: 128
+    toCellId:
+      type: string
+      description: ID of the target storage cell to which a specific article moved.
+      minLength: 1
+      maxLength: 1024
+      example: VM-TIY6J-P001
+    articleId:
+      type: string
+      description: ID of an article. Unique in scope of your organization(s).
+      pattern: ^[a-zA-Z0-9_+.]+$
+    Error:
+      type: object
+      properties:
+        code:
+          description: Code that identifies the reason of an error.
+          type: string
+        message:
+          description: Description of an error.
+          type: string
+    orderId:
+      type: string
+      description: ID of an order. Unique in scope of your organization(s).
+      pattern: ^[a-zA-Z0-9_+.:-]+$
+      minLength: 1
+      maxLength: 128
     orderTask:
       type: object
       properties:
@@ -149,49 +183,7 @@ components:
                     qty:
                       type: integer
                       description: Quantity of items of a specific article within specific target storage cell.
-    siteId:
-      type: string
-      description: ID of Instock site. Globally unique.
-    orderId:
-      type: string
-      description: ID of an order. Unique in scope of your organization(s).
-      pattern: ^[a-zA-Z0-9_+.:-]+$
-      minLength: 1
-      maxLength: 128
-    toCellId:
-      type: string
-      description: ID of the target storage cell to which a specific article moved.
-      minLength: 1
-      maxLength: 1024
-      example: VM-TIY6J-P001
-    Error:
-      type: object
-      properties:
-        code:
-          description: Code that identifies the reason of an error.
-          type: string
-        message:
-          description: Description of an error.
-          type: string
-    lineId:
-      type: string
-      description: ID of an order line. Unique in scope of your organization(s).
-      pattern: ^[a-zA-Z0-9_+.:-]+$
-      minLength: 1
-      maxLength: 128
-    articleId:
-      type: string
-      description: ID of an article. Unique in scope of your organization(s).
-      pattern: ^[a-zA-Z0-9_+.]+$
   parameters:
-    siteID:
-      name: site_id
-      in: path
-      required: true
-      description: ID of Instock site. Globally unique.
-      schema:
-        $ref: '#/components/schemas/siteId'
-      example: 1.1.0-1
     orderTaskID:
       name: ordertask_id
       in: path
@@ -200,6 +192,14 @@ components:
       schema:
         type: string
       example: ot0001
+    siteID:
+      name: site_id
+      in: path
+      required: true
+      description: ID of Instock site. Globally unique.
+      schema:
+        $ref: '#/components/schemas/siteId'
+      example: 1.1.0-1
     instockCorrelationID:
       name: Instock-Correlation-ID
       description: Optional header ID to track and analyze requests and behaviors across your Host system.
@@ -208,30 +208,6 @@ components:
       schema:
         type: string
   responses:
-    InternalServerError:
-      description: Internal server error
-      headers:
-        Instock-Response-ID:
-          $ref: '#/components/headers/instockRequestID'
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-          example:
-            code: internal_server_error
-            message: Unexpected error occurred.
-    Unauthorized:
-      description: Unauthorized
-      headers:
-        Instock-Response-ID:
-          $ref: '#/components/headers/instockRequestID'
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-          example:
-            code: unauthorized
-            message: API key is not valid.
     Forbidden:
       description: Forbidden
       headers:
@@ -244,6 +220,30 @@ components:
           example:
             code: forbidden
             message: API key doesn't have permissions to perform the request.
+    Unauthorized:
+      description: Unauthorized
+      headers:
+        Instock-Response-ID:
+          $ref: '#/components/headers/instockRequestID'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            code: unauthorized
+            message: API key is not valid.
+    InternalServerError:
+      description: Internal server error
+      headers:
+        Instock-Response-ID:
+          $ref: '#/components/headers/instockRequestID'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            code: internal_server_error
+            message: Unexpected error occurred.
   headers:
     instockRequestID:
       description: Auto-generated ID in the response headers to reference a specific request, useful for debugging or seeking support.
