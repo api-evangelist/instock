@@ -82,6 +82,35 @@ paths:
         '500':
           $ref: '#/components/responses/InternalServerError'
 components:
+  schemas:
+    site:
+      type: object
+      properties:
+        site_id:
+          $ref: '#/components/schemas/siteId'
+        is_virtual:
+          type: boolean
+          description: Property that shows if the site is only available virtually.
+    siteId:
+      type: string
+      description: ID of Instock site. Globally unique.
+    Error:
+      type: object
+      properties:
+        code:
+          description: Code that identifies the reason of an error.
+          type: string
+        message:
+          description: Description of an error.
+          type: string
+    sites:
+      type: object
+      properties:
+        sites:
+          type: array
+          description: List of available site ID(s) to your organization
+          items:
+            $ref: '#/components/schemas/site'
   responses:
     Forbidden:
       description: Forbidden
@@ -95,18 +124,6 @@ components:
           example:
             code: forbidden
             message: API key doesn't have permissions to perform the request.
-    Unauthorized:
-      description: Unauthorized
-      headers:
-        Instock-Response-ID:
-          $ref: '#/components/headers/instockRequestID'
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-          example:
-            code: unauthorized
-            message: API key is not valid.
     InternalServerError:
       description: Internal server error
       headers:
@@ -119,48 +136,18 @@ components:
           example:
             code: internal_server_error
             message: Unexpected error occurred.
-  parameters:
-    instockCorrelationID:
-      name: Instock-Correlation-ID
-      description: Optional header ID to track and analyze requests and behaviors across your Host system.
-      in: header
-      required: false
-      schema:
-        type: string
-  schemas:
-    sites:
-      type: object
-      properties:
-        sites:
-          type: array
-          description: List of available site ID(s) to your organization
-          items:
-            $ref: '#/components/schemas/site'
-    siteId:
-      type: string
-      description: ID of Instock site. Globally unique.
-    site:
-      type: object
-      properties:
-        site_id:
-          $ref: '#/components/schemas/siteId'
-        is_virtual:
-          type: boolean
-          description: Property that shows if the site is only available virtually.
-    Error:
-      type: object
-      properties:
-        code:
-          description: Code that identifies the reason of an error.
-          type: string
-        message:
-          description: Description of an error.
-          type: string
-  headers:
-    instockRequestID:
-      description: Auto-generated ID in the response headers to reference a specific request, useful for debugging or seeking support.
-      schema:
-        type: string
+    Unauthorized:
+      description: Unauthorized
+      headers:
+        Instock-Response-ID:
+          $ref: '#/components/headers/instockRequestID'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            code: unauthorized
+            message: API key is not valid.
   examples:
     sites:
       value:
@@ -169,6 +156,19 @@ components:
           is_virtual: true
         - site_id: 1.1.0-2
           is_virtual: false
+  parameters:
+    instockCorrelationID:
+      name: Instock-Correlation-ID
+      description: Optional header ID to track and analyze requests and behaviors across your Host system.
+      in: header
+      required: false
+      schema:
+        type: string
+  headers:
+    instockRequestID:
+      description: Auto-generated ID in the response headers to reference a specific request, useful for debugging or seeking support.
+      schema:
+        type: string
   securitySchemes:
     bearerAuth:
       bearerFormat: JWT

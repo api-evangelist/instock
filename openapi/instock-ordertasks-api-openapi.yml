@@ -98,31 +98,22 @@ paths:
         '500':
           $ref: '#/components/responses/InternalServerError'
 components:
-  parameters:
-    siteID:
-      name: site_id
-      in: path
-      required: true
-      description: ID of Instock site. Globally unique.
-      schema:
-        $ref: '#/components/schemas/siteId'
-      example: 1.1.0-1
-    instockCorrelationID:
-      name: Instock-Correlation-ID
-      description: Optional header ID to track and analyze requests and behaviors across your Host system.
-      in: header
-      required: false
-      schema:
-        type: string
-    orderTaskID:
-      name: ordertask_id
-      in: path
-      description: ID of an order task. Unique in scope of your organization(s).
-      required: true
-      schema:
-        type: string
-      example: ot0001
   schemas:
+    lineId:
+      type: string
+      description: ID of an order line. Unique in scope of your organization(s).
+      pattern: ^[a-zA-Z0-9_+.:-]+$
+      minLength: 1
+      maxLength: 128
+    siteId:
+      type: string
+      description: ID of Instock site. Globally unique.
+    orderId:
+      type: string
+      description: ID of an order. Unique in scope of your organization(s).
+      pattern: ^[a-zA-Z0-9_+.:-]+$
+      minLength: 1
+      maxLength: 128
     toCellId:
       type: string
       description: ID of the target storage cell to which a specific article moved.
@@ -179,21 +170,6 @@ components:
                     qty:
                       type: integer
                       description: Quantity of items of a specific article within specific target storage cell.
-    orderId:
-      type: string
-      description: ID of an order. Unique in scope of your organization(s).
-      pattern: ^[a-zA-Z0-9_+.:-]+$
-      minLength: 1
-      maxLength: 128
-    siteId:
-      type: string
-      description: ID of Instock site. Globally unique.
-    lineId:
-      type: string
-      description: ID of an order line. Unique in scope of your organization(s).
-      pattern: ^[a-zA-Z0-9_+.:-]+$
-      minLength: 1
-      maxLength: 128
     articleId:
       type: string
       description: ID of an article. Unique in scope of your organization(s).
@@ -220,18 +196,6 @@ components:
           example:
             code: forbidden
             message: API key doesn't have permissions to perform the request.
-    Unauthorized:
-      description: Unauthorized
-      headers:
-        Instock-Response-ID:
-          $ref: '#/components/headers/instockRequestID'
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-          example:
-            code: unauthorized
-            message: API key is not valid.
     InternalServerError:
       description: Internal server error
       headers:
@@ -244,6 +208,42 @@ components:
           example:
             code: internal_server_error
             message: Unexpected error occurred.
+    Unauthorized:
+      description: Unauthorized
+      headers:
+        Instock-Response-ID:
+          $ref: '#/components/headers/instockRequestID'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            code: unauthorized
+            message: API key is not valid.
+  parameters:
+    instockCorrelationID:
+      name: Instock-Correlation-ID
+      description: Optional header ID to track and analyze requests and behaviors across your Host system.
+      in: header
+      required: false
+      schema:
+        type: string
+    siteID:
+      name: site_id
+      in: path
+      required: true
+      description: ID of Instock site. Globally unique.
+      schema:
+        $ref: '#/components/schemas/siteId'
+      example: 1.1.0-1
+    orderTaskID:
+      name: ordertask_id
+      in: path
+      description: ID of an order task. Unique in scope of your organization(s).
+      required: true
+      schema:
+        type: string
+      example: ot0001
   examples:
     orderTaskWithSeveralLines:
       value:

@@ -306,146 +306,7 @@ paths:
         '500':
           $ref: '#/components/responses/InternalServerError'
 components:
-  examples:
-    MultipleArticles:
-      value:
-        articles:
-        - article_id: '1003000031678'
-          name: Quaker Apples and Cinnamon Instant Oatmeal Packets
-          is_serial_numbered: false
-          dimensions:
-            x: '4.9'
-            y: '7.9'
-            z: '3.1'
-            uom: m
-          attributes:
-            product_category_name: Cereals & Bars
-            temp_zone: ambient
-            promotion_price: '2.99'
-        - article_id: '116000487727'
-          name: Cheerios Original Cereal, 12 Oz
-          is_serial_numbered: false
-          dimensions:
-            x: '7.75'
-            y: '12'
-            z: '2.75'
-            uom: in
-          attributes:
-            product_category_name: Cereals & Bars
-    SingleArticle:
-      value:
-        articles:
-        - article_id: '116000487727'
-          name: Cheerios Original Cereal, 12 Oz
-          is_serial_numbered: false
-          dimensions:
-            x: '7.75'
-            y: '12'
-            z: '2.75'
-            uom: in
-          attributes:
-            product_category_name: Cereals & Bars
-            temp_zone: ambient
-    RetrieveSingleArticle:
-      value:
-        article_id: '116000487727'
-        name: Cheerios Original Cereal, 12 Oz
-        is_serial_numbered: false
-        dimensions:
-          x: '7.75'
-          y: '12'
-          z: '2.75'
-          uom: in
-        attributes:
-          product_category_name: Cereals & Bars
-          temp_zone: ambient
-    UpdateArticle:
-      value:
-        article_id: '116000487727'
-        name: Cheerios Original Cereal, 12 Oz
-        is_serial_numbered: false
-        dimensions:
-          x: '7.75'
-          y: '12'
-          z: '2.75'
-          uom: in
-        attributes:
-          product_category_name: Cereals & Bars
-          temp_zone: ambient
-          promotion_price: '1.69'
-    listOfArticles:
-      value:
-        has_more: false
-        next_cursor: ''
-        articles:
-        - article_id: '1003000031678'
-          name: Quaker Apples and Cinnamon Instant Oatmeal Packets
-          is_serial_numbered: false
-          dimensions:
-            x: '4.9'
-            y: '7.9'
-            z: '3.1'
-            uom: m
-          attributes:
-            product_category_name: Cereals & Bars
-            temp_zone: ambient
-            promotion_price: '2.99'
-        - article_id: '116000487727'
-          name: Cheerios Original Cereal, 12 Oz
-          is_serial_numbered: false
-          dimensions:
-            x: '7.75'
-            y: '12'
-            z: '2.75'
-            uom: in
-          attributes:
-            product_category_name: Cereals & Bars
-        - article_id: '116000275270'
-          name: Cheerios Honey Nut Cereal, 12 Oz
-          is_serial_numbered: false
-          dimensions:
-            x: '7.75'
-            y: '12'
-            z: '2.75'
-            uom: in
-          attributes:
-            product_category_name: Cereals & Bars
   schemas:
-    article:
-      type: object
-      properties:
-        article_id:
-          $ref: '#/components/schemas/articleId'
-        name:
-          type: string
-          description: Name of an article.
-        is_serial_numbered:
-          type: boolean
-          description: Is article serial numbered?
-          default: false
-        dimensions:
-          description: Dimensions of an article.
-          properties:
-            x:
-              type: string
-              description: Width.
-            y:
-              type: string
-              description: Height.
-            z:
-              type: string
-              description: Depth.
-            uom:
-              type: string
-              enum:
-              - m
-              - in
-              description: Units of measurement, meters or inches.
-        attributes:
-          type: object
-          description: Custom attribute(s) added to a specific article.
-          additionalProperties:
-            type: string
     listArticles:
       type: object
       properties:
@@ -535,6 +396,41 @@ components:
                 description: Custom attribute(s) added to a specific article.
                 additionalProperties:
                   type: string
+    article:
+      type: object
+      properties:
+        article_id:
+          $ref: '#/components/schemas/articleId'
+        name:
+          type: string
+          description: Name of an article.
+        is_serial_numbered:
+          type: boolean
+          description: Is article serial numbered?
+          default: false
+        dimensions:
+          description: Dimensions of an article.
+          properties:
+            x:
+              type: string
+              description: Width.
+            y:
+              type: string
+              description: Height.
+            z:
+              type: string
+              description: Depth.
+            uom:
+              type: string
+              enum:
+              - m
+              - in
+              description: Units of measurement, meters or inches.
+        attributes:
+          type: object
+          description: Custom attribute(s) added to a specific article.
+          additionalProperties:
+            type: string
     articleId:
       type: string
       description: ID of an article. Unique in scope of your organization(s).
@@ -548,23 +444,148 @@ components:
         message:
           description: Description of an error.
           type: string
+  responses:
+    Forbidden:
+      description: Forbidden
+      headers:
+        Instock-Response-ID:
+          $ref: '#/components/headers/instockRequestID'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            code: forbidden
+            message: API key doesn't have permissions to perform the request.
+    InternalServerError:
+      description: Internal server error
+      headers:
+        Instock-Response-ID:
+          $ref: '#/components/headers/instockRequestID'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            code: internal_server_error
+            message: Unexpected error occurred.
+    Unauthorized:
+      description: Unauthorized
+      headers:
+        Instock-Response-ID:
+          $ref: '#/components/headers/instockRequestID'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            code: unauthorized
+            message: API key is not valid.
+  examples:
+    listOfArticles:
+      value:
+        has_more: false
+        next_cursor: ''
+        articles:
+        - article_id: '1003000031678'
+          name: Quaker Apples and Cinnamon Instant Oatmeal Packets
+          is_serial_numbered: false
+          dimensions:
+            x: '4.9'
+            y: '7.9'
+            z: '3.1'
+            uom: m
+          attributes:
+            product_category_name: Cereals & Bars
+            temp_zone: ambient
+            promotion_price: '2.99'
+        - article_id: '116000487727'
+          name: Cheerios Original Cereal, 12 Oz
+          is_serial_numbered: false
+          dimensions:
+            x: '7.75'
+            y: '12'
+            z: '2.75'
+            uom: in
+          attributes:
+            product_category_name: Cereals & Bars
+        - article_id: '116000275270'
+          name: Cheerios Honey Nut Cereal, 12 Oz
+          is_serial_numbered: false
+          dimensions:
+            x: '7.75'
+            y: '12'
+            z: '2.75'
+            uom: in
+          attributes:
+            product_category_name: Cereals & Bars
+    SingleArticle:
+      value:
+        articles:
+        - article_id: '116000487727'
+          name: Cheerios Original Cereal, 12 Oz
+          is_serial_numbered: false
+          dimensions:
+            x: '7.75'
+            y: '12'
+            z: '2.75'
+            uom: in
+          attributes:
+            product_category_name: Cereals & Bars
+            temp_zone: ambient
+    UpdateArticle:
+      value:
+        article_id: '116000487727'
+        name: Cheerios Original Cereal, 12 Oz
+        is_serial_numbered: false
+        dimensions:
+          x: '7.75'
+          y: '12'
+          z: '2.75'
+          uom: in
+        attributes:
+          product_category_name: Cereals & Bars
+          temp_zone: ambient
+          promotion_price: '1.69'
+    MultipleArticles:
+      value:
+        articles:
+        - article_id: '1003000031678'
+          name: Quaker Apples and Cinnamon Instant Oatmeal Packets
+          is_serial_numbered: false
+          dimensions:
+            x: '4.9'
+            y: '7.9'
+            z: '3.1'
+            uom: m
+          attributes:
+            product_category_name: Cereals & Bars
+            temp_zone: ambient
+            promotion_price: '2.99'
+        - article_id: '116000487727'
+          name: Cheerios Original Cereal, 12 Oz
+          is_serial_numbered: false
+          dimensions:
+            x: '7.75'
+            y: '12'
+            z: '2.75'
+            uom: in
+          attributes:
+            product_category_name: Cereals & Bars
+    RetrieveSingleArticle:
+      value:
+        article_id: '116000487727'
+        name: Cheerios Original Cereal, 12 Oz
+        is_serial_numbered: false
+        dimensions:
+          x: '7.75'
+          y: '12'
+          z: '2.75'
+          uom: in
+        attributes:
+          product_category_name: Cereals & Bars
+          temp_zone: ambient
   parameters:
-    instockCorrelationID:
-      name: Instock-Correlation-ID
-      description: Optional header ID to track and analyze requests and behaviors across your Host system.
-      in: header
-      required: false
-      schema:
-        type: string
-    startCursor:
-      name: start_cursor
-      in: query
-      required: false
-      description: "Cursor returned from a previous response, \nused to request the next page of the results. \n"
-      schema:
-        type: string
-        example: fe2cc560-036c-44cd-90e8-294d5a74cebc
-        default: ''
     pageSize:
       name: page_size
       in: query
@@ -584,43 +605,22 @@ components:
       schema:
         $ref: '#/components/schemas/articleId'
       example: 016000487727
-  responses:
-    Forbidden:
-      description: Forbidden
-      headers:
-        Instock-Response-ID:
-          $ref: '#/components/headers/instockRequestID'
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-          example:
-            code: forbidden
-            message: API key doesn't have permissions to perform the request.
-    Unauthorized:
-      description: Unauthorized
-      headers:
-        Instock-Response-ID:
-          $ref: '#/components/headers/instockRequestID'
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-          example:
-            code: unauthorized
-            message: API key is not valid.
-    InternalServerError:
-      description: Internal server error
-      headers:
-        Instock-Response-ID:
-          $ref: '#/components/headers/instockRequestID'
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-          example:
-            code: internal_server_error
-            message: Unexpected error occurred.
+    instockCorrelationID:
+      name: Instock-Correlation-ID
+      description: Optional header ID to track and analyze requests and behaviors across your Host system.
+      in: header
+      required: false
+      schema:
+        type: string
+    startCursor:
+      name: start_cursor
+      in: query
+      required: false
+      description: "Cursor returned from a previous response, \nused to request the next page of the results. \n"
+      schema:
+        type: string
+        example: fe2cc560-036c-44cd-90e8-294d5a74cebc
+        default: ''
   headers:
     instockRequestID:
       description: Auto-generated ID in the response headers to reference a specific request, useful for debugging or seeking support.

@@ -178,13 +178,78 @@ paths:
         '500':
           $ref: '#/components/responses/InternalServerError'
 components:
+  parameters:
+    toTimestamp:
+      name: to_timestamp
+      in: query
+      required: true
+      schema:
+        $ref: '#/components/schemas/movesToTimestamp'
+    fromTimestamp:
+      name: from_timestamp
+      in: query
+      required: true
+      schema:
+        $ref: '#/components/schemas/movesFromTimestamp'
+    articleID:
+      name: article_id
+      in: path
+      description: ID of an article. Unique in scope of your organization(s).
+      required: true
+      schema:
+        $ref: '#/components/schemas/articleId'
+      example: 016000487727
+    pageSize:
+      name: page_size
+      in: query
+      required: false
+      description: "The number of articles returned in response. \nDefault (minimum) value is 10, maximum value is 1000.\n"
+      schema:
+        type: integer
+        format: int64
+        example: 10
+        default: 10
+        maximum: 1000
+    instockCorrelationID:
+      name: Instock-Correlation-ID
+      description: Optional header ID to track and analyze requests and behaviors across your Host system.
+      in: header
+      required: false
+      schema:
+        type: string
+    siteID:
+      name: site_id
+      in: path
+      required: true
+      description: ID of Instock site. Globally unique.
+      schema:
+        $ref: '#/components/schemas/siteId'
+      example: 1.1.0-1
+    toCellID:
+      name: to_cell_id
+      in: query
+      required: false
+      schema:
+        $ref: '#/components/schemas/toCellId'
+    startCursor:
+      name: start_cursor
+      in: query
+      required: false
+      description: "Cursor returned from a previous response, \nused to request the next page of the results. \n"
+      schema:
+        type: string
+        example: fe2cc560-036c-44cd-90e8-294d5a74cebc
+        default: ''
   schemas:
-    toCellId:
-      type: string
-      description: ID of the target storage cell to which a specific article moved.
-      minLength: 1
-      maxLength: 1024
-      example: VM-TIY6J-P001
+    Error:
+      type: object
+      properties:
+        code:
+          description: Code that identifies the reason of an error.
+          type: string
+        message:
+          description: Description of an error.
+          type: string
     movesAllArticles:
       type: object
       properties:
@@ -236,6 +301,18 @@ components:
               to_account_id:
                 type: string
                 description: Account that registered a specific article.
+    orderId:
+      type: string
+      description: ID of an order. Unique in scope of your organization(s).
+      pattern: ^[a-zA-Z0-9_+.:-]+$
+      minLength: 1
+      maxLength: 128
+    toCellId:
+      type: string
+      description: ID of the target storage cell to which a specific article moved.
+      minLength: 1
+      maxLength: 1024
+      example: VM-TIY6J-P001
     movesArticleId:
       type: object
       properties:
@@ -289,21 +366,11 @@ components:
               to_account_id:
                 type: string
                 description: Account that registered a specific article.
-    Error:
-      type: object
-      properties:
-        code:
-          description: Code that identifies the reason of an error.
-          type: string
-        message:
-          description: Description of an error.
-          type: string
-    orderId:
+    movesToTimestamp:
       type: string
-      description: ID of an order. Unique in scope of your organization(s).
-      pattern: ^[a-zA-Z0-9_+.:-]+$
-      minLength: 1
-      maxLength: 128
+      format: date-time
+      description: Finish date of article moves [RFC 3339](https://www.rfc-editor.org/rfc/rfc3339).
+      example: '2023-01-01T00:00:00Z'
     siteId:
       type: string
       description: ID of Instock site. Globally unique.
@@ -312,16 +379,23 @@ components:
       format: date-time
       description: Start date of article moves [RFC 3339](https://www.rfc-editor.org/rfc/rfc3339).
       example: '2023-01-01T00:00:00Z'
-    movesToTimestamp:
-      type: string
-      format: date-time
-      description: Finish date of article moves [RFC 3339](https://www.rfc-editor.org/rfc/rfc3339).
-      example: '2023-01-01T00:00:00Z'
     articleId:
       type: string
       description: ID of an article. Unique in scope of your organization(s).
       pattern: ^[a-zA-Z0-9_+.]+$
   responses:
+    InternalServerError:
+      description: Internal server error
+      headers:
+        Instock-Response-ID:
+          $ref: '#/components/headers/instockRequestID'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            code: internal_server_error
+            message: Unexpected error occurred.
     Forbidden:
       description: Forbidden
       headers:
@@ -346,18 +420,6 @@ components:
           example:
             code: unauthorized
             message: API key is not valid.
-    InternalServerError:
-      description: Internal server error
-      headers:
-        Instock-Response-ID:
-          $ref: '#/components/headers/instockRequestID'
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-          example:
-            code: internal_server_error
-            message: Unexpected error occurred.
   examples:
     singleArticleMoves:
       value:
@@ -419,68 +481,6 @@ components:
           to_cell_id: cell_004
           from_account_id: account_001
           to_account_id: account_002
-  parameters:
-    startCursor:
-      name: start_cursor
-      in: query
-      required: false
-      description: "Cursor returned from a previous response, \nused to request the next page of the results. \n"
-      schema:
-        type: string
-        example: fe2cc560-036c-44cd-90e8-294d5a74cebc
-        default: ''
-    toCellID:
-      name: to_cell_id
-      in: query
-      required: false
-      schema:
-        $ref: '#/components/schemas/toCellId'
-    articleID:
-      name: article_id
-      in: path
-      description: ID of an article. Unique in scope of your organization(s).
-      required: true
-      schema:
-        $ref: '#/components/schemas/articleId'
-      example: 016000487727
-    siteID:
-      name: site_id
-      in: path
-      required: true
-      description: ID of Instock site. Globally unique.
-      schema:
-        $ref: '#/components/schemas/siteId'
-      example: 1.1.0-1
-    pageSize:
-      name: page_size
-      in: query
-      required: false
-      description: "The number of articles returned in response. \nDefault (minimum) value is 10, maximum value is 1000.\n"
-      schema:
-        type: integer
-        format: int64
-        example: 10
-        default: 10
-        maximum: 1000
-    fromTimestamp:
-      name: from_timestamp
-      in: query
-      required: true
-      schema:
-        $ref: '#/components/schemas/movesFromTimestamp'
-    instockCorrelationID:
-      name: Instock-Correlation-ID
-      description: Optional header ID to track and analyze requests and behaviors across your Host system.
-      in: header
-      required: false
-      schema:
-        type: string
-    toTimestamp:
-      name: to_timestamp
-      in: query
-      required: true
-      schema:
-        $ref: '#/components/schemas/movesToTimestamp'
   headers:
     instockRequestID:
       description: Auto-generated ID in the response headers to reference a specific request, useful for debugging or seeking support.
