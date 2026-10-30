@@ -64,6 +64,118 @@
 > Full detail: **[Where this data comes from](https://apievangelist.com/about/where-our-data-comes-from)**
 <!-- API-EVANGELIST-PROVENANCE:END -->
 
-Instock is a company surfaced as a portfolio company of lux-capital and added to the API Evangelist network as a stub for enrichment. Sector: robotics. This profile is a lead awaiting the enrichment pipeline.
+Instock is a robotics company delivering a goods-to-person automated storage and retrieval system (ASRS) as a fulfillment robotics-as-a-service (RaaS) offering. The system pairs a static "Grid" racking framework, stackable "Bins", and autonomous three-dimensional "Robots" with "Incloud", a cloud software platform that orchestrates warehouse fulfillment operations. Instock publishes a REST-based HTTP API (Incloud) that lets a customer's host systems (PIM/IMS/OMS) integrate with the ASRS: managing sites, uploading articles (SKUs), creating and advancing customer orders, tracking order tasks, and reading inventory and article moves. The API accepts and returns JSON, uses Bearer-token (JWT) authentication issued during onboarding, cursor-based pagination, snake_case properties, and RFC 3339 timestamps. Instock was surfaced as a portfolio company of Lux Capital. Sector: robotics / warehouse automation.
 
-Backed by: lux-capital
+**Areas:** Company · Robotics · Warehouse Automation · Fulfillment · Logistics · ASRS · Supply Chain · Inventory
+
+## Instock on APIs.io
+
+Everything profiled for Instock is published on APIs.io rather than in this repository. Start at the provider page — **[apis.io/providers/instock/](https://apis.io/providers/instock/)** — or go straight to one of the APIs or properties below.
+
+### APIs (6)
+
+- [Instock Articles API](https://apis.io/apis/instock/instock-articles-api/) — Instock is using the term `article` to describe unique product or SKU managed by Instock ASRS. Articles resource is mostly managed by you as a client of…
+- [Instock Inventory API](https://apis.io/apis/instock/instock-inventory-api/) — Inventory resource returns data on the current quantity of article(s) that your organization has uploaded, use it to track articles that are low in stock or…
+- [Instock Moves API](https://apis.io/apis/instock/instock-moves-api/) — Moves allow to retrieve data on article(s) flow in and out of of a particular site owned by your organization. List moves of all articles or retrieve them…
+- [Instock Orders API](https://apis.io/apis/instock/instock-orders-api/) — Intentions of users of Instock ASRS are represented by `orders` structure. Orders resource allows: * create/update/retrieve records for picking of goods…
+- [Instock Ordertasks API](https://apis.io/apis/instock/instock-ordertasks-api/) — Fulfillment of orders by associates and ASRS is split into chunks called `ordertasks`. An `ordertask` can represent a picking of several lines of customer…
+- [Instock Sites API](https://apis.io/apis/instock/instock-sites-api/) — Each Instock site (or just site) represents a single instance of Instock ASRS. Such instance can represent either physical installation of ASRS or a…
+
+### Published properties
+
+Each property below is a page on APIs.io carrying the machine-readable artifact and what it says.
+
+#### MCP servers (1)
+
+Model Context Protocol servers that expose the API to agents.
+
+- [instock](https://apis.io/servers/instock/instock/)
+
+#### Collections (6)
+
+Postman and Open Collection request collections.
+
+- [Instock API reference Articles API](https://apis.io/collections/instock/open-instock-articles-api/)
+- [Instock API reference Articles Inventory API](https://apis.io/collections/instock/open-instock-inventory-api/)
+- [Instock API reference Articles Moves API](https://apis.io/collections/instock/open-instock-moves-api/)
+- [Instock API reference Articles Orders API](https://apis.io/collections/instock/open-instock-orders-api/)
+- [Instock API reference Articles Ordertasks API](https://apis.io/collections/instock/open-instock-ordertasks-api/)
+- [Instock API reference Articles Sites API](https://apis.io/collections/instock/open-instock-sites-api/)
+
+#### Overlays (1)
+
+OpenAPI overlays, including conversational phrasing for each operation.
+
+- [Instock Openapi Overlay](https://apis.io/overlays/instock/instock-openapi-overlay/)
+
+#### Security (2)
+
+Authentication, trust centre, and vulnerability disclosure.
+
+- [Instock Authentication](https://apis.io/security/instock/instock-authentication/)
+- [Instock Domain Security](https://apis.io/security/instock/instock-domain-security/)
+
+## Where to find this API
+
+Links to the company's own pages. This repository publishes no copy of their specifications — the canonical document is theirs and lives at the URLs below.
+
+- [Website](https://instock.com)
+- [Documentation](https://instock.com/en/docs/)
+- [Getting started](https://instock.com/en/docs/getting-started/)
+- [API reference](https://instock.com/en/docs/api/)
+- [Support](https://instock.com/en/contact-us/)
+- [Blog](https://instock.com/en/news/)
+- [Privacy policy](https://instock.com/en/privacy-policy)
+
+## API Evangelist rating
+
+**Kin Score 35.8** — thin · rubric 0.24.0 · scored 2026-10-17
+
+| Facet | Score |
+|---|---|
+| Discoverability | 73.2 |
+| Contract quality | 55.4 |
+| Contract governance | 4.5 |
+| Operational transparency | 0.0 |
+| Developer ergonomics | 66.1 |
+| Access clarity | 6.6 |
+
+**Agent readiness 28.9** — agent-ready
+
+| Agent-readiness dimension | Result |
+|---|---|
+| Spec Presence | yes |
+| Agentic Access | — |
+| Reversibility Documented | documented (partial credit) |
+| MCP Server | — |
+| Auth Clarity | bearer (partial credit) |
+| Idempotency | — |
+| Error Semantics | verified |
+| OpenAPI Examples | verified |
+| Rate Limit Signal | — |
+| Event Surface Described | — |
+| Agent Skills | derived (partial credit) |
+| Well Known Catalog | — |
+| Consent Identity | — |
+| Agent Card | — |
+| Dry Run Mode | — |
+| Delegated Identity | — |
+| Protected Resource Metadata | — |
+| Dynamic Client Registration | — |
+| Agentic Commerce | — |
+
+**Regulatory alignment 16.7** — Horizontal (data, software, accessibility, platform)
+
+The rubric is published at [github.com/api-evangelist/kin-score](https://github.com/api-evangelist/kin-score). The per-check breakdown behind these numbers — which checks were earned, partial or missed — along with score history and how this provider compares to its peers, is available at [apis.io/providers/instock/](https://apis.io/providers/instock/).
+
+## How this profile is made
+
+API Evangelist profiles a company's public API surface the way a developer would find it: the website, developer portal and documentation, the specifications it publishes, its public repositories, and its pricing, status and changelog pages. From that it derives the properties above — contracts split per API, workflows, schemas, collections, governance rules, plans and rate limits — and scores them against the published [Kin Score rubric](https://github.com/api-evangelist/kin-score).
+
+The artifacts are published on [APIs.io](https://apis.io), not in this repository. This repository is the public record for Instock: the place to say something is wrong, missing or out of date, and to ask for a re-score or a removal.
+
+## Open an issue
+
+- **Something about this listing** — a wrong description, a missing API, a stale artifact or a question about the rating: [open an issue on this repository](https://github.com/api-evangelist/instock/issues/new).
+- **A new API, or one that is not in the catalog yet** — [submit it on APIs.io](https://apis.io/add/).
+- **Anything else** — [the APIs.io inbox](https://github.com/api-search/inbox/issues/new) or [info@apievangelist.com](mailto:info@apievangelist.com).
